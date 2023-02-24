@@ -15,5 +15,6 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class FNode {
   String type;
+  String value;
   List<FNode> children;
 }

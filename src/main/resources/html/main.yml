@@ -1,34 +1,36 @@
 ---
 type: 'ROOT'
 children:
-  - type: Node
+  - type: LINE
     value: <!DOCTYPE html>
-  - type: Node
+  - type: LINE
     value: <html lang="en">
-  - type: NODE
-    value: <head>
+  - type: LINE
+    value: "<head>\n"
     children:
-      - type: Node
+      - type: LINE
         value: <meta charset="UTF-8">
-      - type: Node
+      - type: LINE
         value: <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      - type: Node
+      - type: LINE
         value: <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      - type: Node
-        value: <title>
-      - type: VARIABLE
-        value: Document-title
-        action: RESOLVE
-      - type: Node
-        value: </title>
-  - type: NODE
+      - type: LINE
+        children:
+          - type: NODE
+            value: <title>
+          - type: VARIABLE
+            value: project-name
+            action: RESOLVE
+          - type: NODE
+            value: </title>
+  - type: LINE
     value: </head>
-  - type: NODE
+  - type: LINE
     value: <body>
   - type: VARIABLE
     action: DOWNSTREAM
-  - type: NODE
+  - type: LINE
     value: </body>
-  - type: NODE
+  - type: LINE
     value: </html>
 ...

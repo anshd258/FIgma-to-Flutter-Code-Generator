@@ -1,7 +1,6 @@
 package com.necleo.codemonkey.lib.types;
 
 import com.necleo.codemonkey.lib.types.enums.ASTType;
-
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -14,7 +13,6 @@ import lombok.experimental.FieldDefaults;
 @Builder
 public class ASTNode {
   ASTType type;
-  @Builder.Default
-  List<ASTNode> children = new ArrayList<>();
+  @Builder.Default List<ASTNode> children = new ArrayList<>();
   String value;
 }
