@@ -17,22 +17,36 @@ configurations {
 
 repositories {
 	mavenCentral()
+	maven {
+		url 'https://repo.clojars.org'
+		name 'Clojars'
+	}
 }
 
 dependencies {
-//	implementation 'org.springframework.boot:spring-boot-starter-security'
+	//	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
-// https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml
+	// https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml
 	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.14.2'
 	// https://mvnrepository.com/artifact/org.yaml/snakeyaml
 	implementation 'org.yaml:snakeyaml:1.33'
-
-
+	// https://mvnrepository.com/artifact/io.awspring.cloud/spring-cloud-starter-aws
+	implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.4'
+	// https://mvnrepository.com/artifact/io.awspring.cloud/spring-cloud-aws-messaging
+	implementation 'io.awspring.cloud:spring-cloud-aws-messaging:2.4.4'
+	// https://mvnrepository.com/artifact/io.awspring.cloud/spring-cloud-aws-autoconfigure
+	implementation 'io.awspring.cloud:spring-cloud-aws-autoconfigure:2.4.4'
+	// https://mvnrepository.com/artifact/com.amazonaws/amazon-sqs-java-messaging-lib
+	implementation 'com.amazonaws:amazon-sqs-java-messaging-lib:2.1.0'
+	// https://mvnrepository.com/artifact/org.springframework/spring-messaging
+	implementation 'org.springframework:spring-messaging:5.3.24'
+	// https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.2'
 
 }
 
