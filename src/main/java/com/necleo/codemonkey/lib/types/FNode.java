@@ -1,10 +1,9 @@
 package com.necleo.codemonkey.lib.types;
 
 import com.necleo.codemonkey.lib.types.interfaces.Rect;
+import java.util.List;
 import lombok.Builder;
 import lombok.extern.jackson.Jacksonized;
-
-import java.util.List;
 
 /**
  * Type declaration of figma screen <br>
@@ -14,7 +13,17 @@ import java.util.List;
  */
 @Builder
 @Jacksonized
-public record FNode(String id, int[][] absoluteTransform, int[][] relativeTransform, int x, int y, int rotation, int width, int height, List<FNode> children, boolean visible, boolean locked, Rect absoluteRenderBounds, Rect absoluteBoundingbox) {
-
-}
-
+public record FNode(
+    String id,
+    int[][] absoluteTransform,
+    int[][] relativeTransform,
+    int x,
+    int y,
+    int rotation,
+    int width,
+    int height,
+    List<FNode> children,
+    boolean visible,
+    boolean locked,
+    Rect absoluteRenderBounds,
+    Rect absoluteBoundingbox) {}

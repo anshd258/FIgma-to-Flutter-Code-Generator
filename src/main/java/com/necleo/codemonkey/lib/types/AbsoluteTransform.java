@@ -8,6 +8,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AbsoluteTransform {
-    private int[][] absoluteTransform;
+  private int[][] absoluteTransform;
 }
-
