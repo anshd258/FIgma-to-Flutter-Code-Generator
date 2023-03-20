@@ -9,20 +9,21 @@ import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+@Slf4j
 public class FigmaLayersTreeDataConsumer {
   ObjectMapper objectMapper;
 
   @SqsListener(value = "code-gen-queue")
   public void processMessage(String message) throws JsonProcessingException {
-    System.out.println("Received message: " + message);
+    log.debug("Received message: " + message);
     // Process the message
     List<FNode> fNodes = objectMapper.readValue(message, new TypeReference<>() {});
-    System.out.println(fNodes.get(0).locked());
   }
 }
 // convert the string to java class then pass it to codegenservice

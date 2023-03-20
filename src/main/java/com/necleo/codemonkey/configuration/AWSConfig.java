@@ -17,10 +17,10 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 public class AWSConfig {
 
-  @Value("${aws.access.key}")
+  @Value("${cloud.aws.credentials.accessKey}")
   String accessKey;
 
-  @Value("${aws.secret.key}")
+  @Value("${cloud.aws.credentials.secretKey}")
   String secretKey;
 
   @Bean
