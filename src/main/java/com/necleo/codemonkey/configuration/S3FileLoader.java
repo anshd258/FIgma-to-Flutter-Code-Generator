@@ -37,16 +37,14 @@ public class S3FileLoader {
   public Map<String, List<YamlProp>> loadS3Files() throws IOException {
     Map<String, List<YamlProp>> folderToObjectsMap = new HashMap<>();
 
-    ListObjectsRequest listObjectsRequest = new ListObjectsRequest()
-            .withBucketName(bucketName)
-            .withPrefix(folderName + "/");
+    ListObjectsRequest listObjectsRequest =
+        new ListObjectsRequest().withBucketName(bucketName).withPrefix(folderName + "/");
     ObjectListing objectListing;
     do {
       objectListing = s3Client.listObjects(listObjectsRequest);
       for (S3ObjectSummary objectSummary : objectListing.getObjectSummaries()) {
         String key = objectSummary.getKey();
-        if(key.equals(folderName + "/"))
-            continue;
+        if (key.equals(folderName + "/")) continue;
         S3Object s3Object = s3Client.getObject(new GetObjectRequest(bucketName, key));
         InputStream inputStream = s3Object.getObjectContent();
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -55,8 +53,7 @@ public class S3FileLoader {
         while ((line = reader.readLine()) != null) {
           stringBuilder.append(line);
         }
-        if(stringBuilder.isEmpty())
-            continue;
+        if (stringBuilder.isEmpty()) continue;
         ObjectMapper objectMapper = new YAMLMapper();
         YamlProp myObject = objectMapper.readValue(stringBuilder.toString(), YamlProp.class);
         if (!folderToObjectsMap.containsKey(folderName)) {
@@ -69,5 +66,4 @@ public class S3FileLoader {
 
     return folderToObjectsMap;
   }
-
 }
