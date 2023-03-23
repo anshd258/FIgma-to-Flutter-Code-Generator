@@ -54,7 +54,7 @@ public class AstMaker {
 
   private void in(FNode fNode, int level, List<ASTNode> astChildren, YamlProp child) {
     if (child.getAction() == ASTAction.DOWNSTREAM) {
-      for (var fchild : fNode.children()) {
+      for (var fchild : fNode.getChildren()) {
         YamlProp yamlProp = null;
         //        if(fchild.getType().equals("h2")) {
         //            yamlProp = h2Yaml;

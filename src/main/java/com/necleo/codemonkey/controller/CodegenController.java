@@ -17,7 +17,8 @@ public class CodegenController {
 
   @PostMapping("/codegen")
   public Object postMethodName(@RequestBody String entity) {
+
     return entity;
-    // return codeGenService.gen(entity);
+    //    return codeGenService.gen(entity);
   }
 }
