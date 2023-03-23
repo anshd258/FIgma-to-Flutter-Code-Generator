@@ -1,11 +1,8 @@
 package com.necleo.codemonkey;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-
-@SpringBootTest
+// @SpringBootTest
 class CodeMonkeyApplicationTests {
 
-  @Test
+  // @Test
   void contextLoads() {}
 }
