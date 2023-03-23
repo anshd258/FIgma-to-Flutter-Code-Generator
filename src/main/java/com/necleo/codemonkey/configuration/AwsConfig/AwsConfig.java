@@ -2,6 +2,9 @@ package com.necleo.codemonkey.configuration.AwsConfig;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.sqs.AmazonSQSAsync;
 import com.amazonaws.services.sqs.AmazonSQSAsyncClientBuilder;
 import lombok.AccessLevel;
@@ -38,5 +41,13 @@ public class AwsConfig {
         .withRegion(region)
         .withCredentials(new AWSStaticCredentialsProvider(basicAWSCredentials()))
         .build();
+  }
+  @Bean
+  AmazonS3 getAmazonS3() {
+    BasicAWSCredentials awsCreds = new BasicAWSCredentials(accessKeyId, secretKey);
+    return AmazonS3ClientBuilder.standard()
+            .withRegion(Regions.AP_SOUTH_1)
+            .withCredentials(new AWSStaticCredentialsProvider(awsCreds))
+            .build();
   }
 }
