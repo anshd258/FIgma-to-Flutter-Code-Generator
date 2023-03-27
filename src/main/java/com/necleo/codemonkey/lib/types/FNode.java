@@ -2,14 +2,10 @@ package com.necleo.codemonkey.lib.types;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.necleo.codemonkey.lib.types.interfaces.Rect;
 import java.util.List;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.jackson.Jacksonized;
 
@@ -35,6 +31,12 @@ public class FNode {
   int rotation;
   int width;
   int height;
+
+  float topLeftRadius;
+  float topRightRadius;
+  float bottomLeftRadius;
+  float bottomRightRadius;
+  float strokeWeight;
   List<FNode> children;
   boolean visible;
   boolean locked;
