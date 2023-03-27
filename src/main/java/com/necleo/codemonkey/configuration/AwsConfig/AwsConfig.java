@@ -19,7 +19,6 @@ import org.springframework.context.annotation.Primary;
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class AwsConfig {
-
   @Value("${cloud.aws.credentials.accessKey}")
   String accessKeyId;
 
@@ -42,12 +41,13 @@ public class AwsConfig {
         .withCredentials(new AWSStaticCredentialsProvider(basicAWSCredentials()))
         .build();
   }
+
   @Bean
   AmazonS3 getAmazonS3() {
     BasicAWSCredentials awsCreds = new BasicAWSCredentials(accessKeyId, secretKey);
     return AmazonS3ClientBuilder.standard()
-            .withRegion(Regions.AP_SOUTH_1)
-            .withCredentials(new AWSStaticCredentialsProvider(awsCreds))
-            .build();
+        .withRegion(Regions.AP_SOUTH_1)
+        .withCredentials(new AWSStaticCredentialsProvider(awsCreds))
+        .build();
   }
 }

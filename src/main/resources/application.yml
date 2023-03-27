@@ -8,3 +8,27 @@ aws:
       name: ${AWS_S3_BUCKET_NAME:}
     base:
       folder: ${AWS_S3_BUCKET_FOLDER:}
+
+server:
+  port: 8080
+
+spring:
+  security:
+    user:
+      name: user
+      password: user
+
+cloud:
+  aws:
+    credentials:
+      accessKey: ${ACCESS_KEY:AKIA3TU5OEBRIGR2HNLN}
+      secretKey: ${SECRET_KEY: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}
+    region:
+      static: ${REGION:ap-south-1}
+    sqs:
+      codeGenQueueName: ${QUEUE_NAME:code-gen-queue}
+
+security:
+  basic:
+    enabled: false
+  ignored: //**
