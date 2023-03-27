@@ -2,12 +2,18 @@ package com.necleo.codemonkey.lib.types;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
+import com.necleo.codemonkey.lib.types.figma.*;
+import com.necleo.codemonkey.lib.types.figma.rect.Rect;
 import java.util.List;
+
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
-import lombok.extern.jackson.Jacksonized;
 
 /**
  * Type declaration of figma screen <br>
@@ -15,29 +21,60 @@ import lombok.extern.jackson.Jacksonized;
  * {@link #type} figma node type <br>
  * {@link #children} figma node children
  */
-@Builder
-@Jacksonized
-@Getter
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.NAME,
+    include = JsonTypeInfo.As.PROPERTY,
+    property = "type",
+    visible = true)
+@JsonSubTypes({
+  @JsonSubTypes.Type(value = FigmaRectangleNode.class, name = "RECTANGLE"),
+  @JsonSubTypes.Type(value = FigmaEllipseNode.class, name = "ELLIPSE"),
+  @JsonSubTypes.Type(value = FigmaLineNode.class, name = "LINE"),
+  @JsonSubTypes.Type(value = FigmaPolygonNode.class, name = "POLYGON"),
+  @JsonSubTypes.Type(value = FigmaStarNode.class, name = "STAR"),
+  @JsonSubTypes.Type(value = FigmaVectorNode.class, name = "VECTOR"),
+  @JsonSubTypes.Type(value = FigmaFrameNode.class, name = "FRAME"),
+  @JsonSubTypes.Type(value = FigmaComponentNode.class, name = "COMPONENT")
+})
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Getter
+@NoArgsConstructor
+@ToString
 public class FNode {
-  String id;
-  String type;
-  int[][] absoluteTransform;
-  int[][] relativeTransform;
-  int x;
-  int y;
-  int rotation;
-  int width;
-  int height;
+   FigmaNodeTypes type;
+   List<FNode> children;
+   String id;
+   String name;
+   boolean removed;
+   boolean visible;
+   boolean locked;
+   int[][] absoluteTransform;
+   int[][] relativeTransform;
+   int x;
+   int y;
+   int rotation;
+   int width;
+   int height;
+   Rect absoluteRenderBounds;
+   Rect absoluteBoundingbox;
 
-  float topLeftRadius;
-  float topRightRadius;
-  float bottomLeftRadius;
-  float bottomRightRadius;
-  float strokeWeight;
-  List<FNode> children;
-  boolean visible;
-  boolean locked;
+  public FNode(
+      String type,
+      List<FNode> children,
+      String id,
+      String name,
+      boolean removed,
+      boolean visible,
+      boolean locked,
+      int[][] absoluteTransform,
+      int[][] relativeTransform,
+      int x,
+      int y,
+      int rotation,
+      int width,
+      int height,
+      Rect absoluteRenderBounds,
+      Rect absoluteBoundingbox) {}
 }

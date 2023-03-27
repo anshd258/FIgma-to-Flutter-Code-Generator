@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -17,9 +19,9 @@ public class CodegenController {
   CodeGenService codeGenService;
 
   @PostMapping("/codegen")
-  public Object postMethodName(@RequestBody FNode entity) {
+  public Object postMethodName(@RequestBody List<FNode> entity) {
 
-    return codeGenService.gen(entity);
+    return codeGenService.gen(entity.get(0));
     //    return codeGenService.gen(entity);
   }
 }

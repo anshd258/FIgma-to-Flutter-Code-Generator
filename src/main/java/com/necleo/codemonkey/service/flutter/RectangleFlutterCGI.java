@@ -1,14 +1,16 @@
-package com.necleo.codemonkey.service.flutter;
+ package com.necleo.codemonkey.service.flutter;
 
-import com.necleo.codemonkey.lib.types.FNode;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+ import com.necleo.codemonkey.lib.types.FNode;
+ import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
+ import lombok.extern.slf4j.Slf4j;
+ import org.springframework.stereotype.Service;
 
-@Service
-@Slf4j
-public class RectangleFlutterCGI {
+ @Service
+ @Slf4j
+ public class RectangleFlutterCGI implements FlutterCGI <FigmaRectangleNode>{
 
-  public String generate(FNode fNode) {
+  public String generate(FigmaRectangleNode fNode) {
+
     String genCode = "";
 
     genCode += "\nContainer( \n";
@@ -22,21 +24,21 @@ public class RectangleFlutterCGI {
     return genCode;
   }
 
-  public String getHeight(FNode fNode) {
+  public String getHeight(FigmaRectangleNode fNode) {
     if (fNode.getHeight() != 0) {
       return "height:" + Integer.toString(fNode.getHeight()) + ",\n";
     }
     return "height:0,\n";
   }
 
-  public String getWidth(FNode fNode) {
+  public String getWidth(FigmaRectangleNode fNode) {
     if (fNode.getWidth() != 0) {
       return "width:" + Integer.toString(fNode.getWidth()) + ",\n";
     }
     return "width:0,\n";
   }
 
-  public String getBoxDecoration(FNode fNode) {
+  public String getBoxDecoration(FigmaRectangleNode fNode) {
     final String upperBoxDecoration = "decoration: BoxDecoration(\n";
     final String bottomBoxDecoration = "),\n";
     String genBoxDecoration = "";
@@ -52,7 +54,7 @@ public class RectangleFlutterCGI {
     return upperBoxDecoration+ genBoxDecoration + bottomBoxDecoration;
   }
 
-  public String borderRadius(FNode fNode) {
+  public String borderRadius(FigmaRectangleNode fNode) {
     final String upperBorderRadius = " borderRadius: BorderRadius.all(";
     final String bottomBorderRadius = "),\n";
     String topradiusL = " topLeft: Radius.circular(" + fNode.getTopLeftRadius() + "),\n";
@@ -70,10 +72,10 @@ public class RectangleFlutterCGI {
         + bottomBorderRadius;
   }
 
-  public String border(FNode fNode) {
+  public String border(FigmaRectangleNode fNode) {
     final String upperBorder = " border: Border.all(";
     final String bottomBorder = "),\n";
     final String width = "width:" + Float.toString(fNode.getStrokeWeight()) + ",\n";
     return upperBorder + width + bottomBorder;
   }
-}
+ }
