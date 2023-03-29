@@ -1,12 +1,16 @@
 package com.necleo.codemonkey.lib.types.figma.properties.vector.vertex;
 
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.jackson.Jacksonized;
 
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@Builder
+@Jacksonized
+// todo: check usage
 public class Vertex {
   private double x;
   private double y;

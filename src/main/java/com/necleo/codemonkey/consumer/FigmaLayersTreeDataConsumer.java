@@ -3,8 +3,7 @@ package com.necleo.codemonkey.consumer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.necleo.codemonkey.lib.types.FNode;
-import com.necleo.codemonkey.lib.types.figma.*;
+import com.necleo.codemonkey.lib.types.FigmaNode;
 import io.awspring.cloud.messaging.listener.annotation.SqsListener;
 import java.util.List;
 import lombok.AccessLevel;
@@ -26,23 +25,23 @@ public class FigmaLayersTreeDataConsumer {
       throws JsonProcessingException {
     log.debug("Received message {}", message);
     // Process the message
-    List<FNode> fNodes = objectMapper.readValue(message, new TypeReference<>() {});
-    if (fNodes.get(0).getType().equals("RECTANGLE")) {
-      FigmaRectangleNode figmaRectangleNode = (FigmaRectangleNode) fNodes.get(0);
-    } else if (fNodes.get(0).getType().equals("ELLIPSE")) {
-      FigmaEllipseNode figmaEllipseNode = (FigmaEllipseNode) fNodes.get(0);
-    } else if (fNodes.get(0).getType().equals("FRAME")) {
-      FigmaFrameNode figmaFrameNode = (FigmaFrameNode) fNodes.get(0);
-    } else if (fNodes.get(0).getType().equals("LINE")) {
-      FigmaLineNode figmaLineNode = (FigmaLineNode) fNodes.get(0);
-      System.out.println(figmaLineNode.height);
-    } else if (fNodes.get(0).getType().equals("STAR")) {
-      FigmaStarNode figmaStarNode = (FigmaStarNode) fNodes.get(0);
-    } else if (fNodes.get(0).getType().equals("POLYGON")) {
-      FigmaPolygonNode figmaEllipseNode = (FigmaPolygonNode) fNodes.get(0);
-    } else if (fNodes.get(0).getType().equals("VECTOR")) {
-      FigmaVectorNode figmaVectorNode = (FigmaVectorNode) fNodes.get(0);
-    }
+    List<FigmaNode> figmaNodes = objectMapper.readValue(message, new TypeReference<>() {});
+    //    if (figmaNodes.get(0).getType().equals("RECTANGLE")) {
+    //      FigmaRectangleNode figmaRectangleNode = (FigmaRectangleNode) figmaNodes.get(0);
+    //    } else if (figmaNodes.get(0).getType().equals("ELLIPSE")) {
+    //      FigmaEllipseNode figmaEllipseNode = (FigmaEllipseNode) figmaNodes.get(0);
+    //    } else if (figmaNodes.get(0).getType().equals("FRAME")) {
+    //      FigmaFrameNode figmaFrameNode = (FigmaFrameNode) figmaNodes.get(0);
+    //    } else if (figmaNodes.get(0).getType().equals("LINE")) {
+    //      FigmaLineNode figmaLineNode = (FigmaLineNode) figmaNodes.get(0);
+    //      System.out.println(figmaLineNode.height);
+    //    } else if (figmaNodes.get(0).getType().equals("STAR")) {
+    //      FigmaStarNode figmaStarNode = (FigmaStarNode) figmaNodes.get(0);
+    //    } else if (figmaNodes.get(0).getType().equals("POLYGON")) {
+    //      FigmaPolygonNode figmaEllipseNode = (FigmaPolygonNode) figmaNodes.get(0);
+    //    } else if (figmaNodes.get(0).getType().equals("VECTOR")) {
+    //      FigmaVectorNode figmaVectorNode = (FigmaVectorNode) figmaNodes.get(0);
+    //    }
     log.info(ProjectId);
   }
 }

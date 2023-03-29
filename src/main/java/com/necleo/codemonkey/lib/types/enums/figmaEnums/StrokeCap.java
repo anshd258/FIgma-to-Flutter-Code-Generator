@@ -1,5 +1,5 @@
 package com.necleo.codemonkey.lib.types.enums.figmaEnums;
-// will confirm this enum again
+// todo: will confirm this enum again
 public enum StrokeCap {
   NONE,
   ROUND,
