@@ -4,10 +4,10 @@ import com.necleo.codemonkey.enums.Language;
 import com.necleo.codemonkey.lib.engine.ast.AST2Text;
 import com.necleo.codemonkey.lib.engine.ast.AstMaker;
 import com.necleo.codemonkey.lib.types.ASTNode;
+import com.necleo.codemonkey.lib.types.FigmaNode;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import com.necleo.codemonkey.lib.types.FigmaNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Lookup;
 import org.springframework.stereotype.Service;
@@ -33,7 +33,7 @@ public class CodeGenService {
   public String gen(FigmaNode screen) {
     CodeGen processor = languageFactory.getCodeGenProcessor(Language.HTML_CSS);
     ASTNode astNode = processor.generate(screen);
-//    ASTNode astNode = astMaker().ast(screen);
+    //    ASTNode astNode = astMaker().ast(screen);
     StringBuffer text = aST2Text().toText(astNode);
     log.info("Code gen : \n{}", text.toString());
     return text.toString();
