@@ -34,9 +34,8 @@ public class FigmaLayersTreeDataConsumer {
     // Process the message
     List<FNode> fNodes = objectMapper.readValue(message, new TypeReference<>() {});
     if (fNodes.get(0).getType().equals("RECTANGLE")) {
-      FigmaRectangleNode
-              figmaRectangleNode = (FigmaRectangleNode) fNodes.get(0);
-//      return codeGenService.gen(figmaRectangleNode);
+      FigmaRectangleNode figmaRectangleNode = (FigmaRectangleNode) fNodes.get(0);
+      //      return codeGenService.gen(figmaRectangleNode);
 
     } else if (fNodes.get(0).getType().equals("ELLIPSE")) {
       FigmaEllipseNode figmaEllipseNode = (FigmaEllipseNode) fNodes.get(0);
@@ -53,7 +52,6 @@ public class FigmaLayersTreeDataConsumer {
       FigmaVectorNode figmaVectorNode = (FigmaVectorNode) fNodes.get(0);
     }
     log.info(ProjectId);
-
   }
 }
 // convert the string to java class then pass it to codegenservice

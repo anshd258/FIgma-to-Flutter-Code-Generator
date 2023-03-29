@@ -8,7 +8,6 @@ import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes
 import com.necleo.codemonkey.lib.types.figma.*;
 import com.necleo.codemonkey.lib.types.figma.rect.Rect;
 import java.util.List;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -43,22 +42,22 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @ToString
 public class FNode {
-   FigmaNodeTypes type;
-   List<FNode> children;
-   String id;
-   String name;
-   boolean removed;
-   boolean visible;
-   boolean locked;
-   int[][] absoluteTransform;
-   int[][] relativeTransform;
-   int x;
-   int y;
-   int rotation;
-   int width;
-   int height;
-   Rect absoluteRenderBounds;
-   Rect absoluteBoundingbox;
+  FigmaNodeTypes type;
+  List<FNode> children;
+  String id;
+  String name;
+  boolean removed;
+  boolean visible;
+  boolean locked;
+  int[][] absoluteTransform;
+  int[][] relativeTransform;
+  int x;
+  int y;
+  int rotation;
+  int width;
+  int height;
+  Rect absoluteRenderBounds;
+  Rect absoluteBoundingbox;
 
   public FNode(
       String type,

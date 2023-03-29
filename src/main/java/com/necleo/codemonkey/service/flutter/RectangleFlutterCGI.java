@@ -1,13 +1,12 @@
- package com.necleo.codemonkey.service.flutter;
+package com.necleo.codemonkey.service.flutter;
 
- import com.necleo.codemonkey.lib.types.FNode;
- import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
- import lombok.extern.slf4j.Slf4j;
- import org.springframework.stereotype.Service;
+import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
- @Service
- @Slf4j
- public class RectangleFlutterCGI implements FlutterCGI <FigmaRectangleNode>{
+@Service
+@Slf4j
+public class RectangleFlutterCGI implements FlutterCGI<FigmaRectangleNode> {
 
   public String generate(FigmaRectangleNode fNode) {
 
@@ -18,7 +17,7 @@
     genCode += getWidth(fNode);
     genCode += getBoxDecoration(fNode);
 
-    genCode += "),\n";
+    genCode += ")\n";
     System.out.println(genCode); // end indent
 
     return genCode;
@@ -42,6 +41,9 @@
     final String upperBoxDecoration = "decoration: BoxDecoration(\n";
     final String bottomBoxDecoration = "),\n";
     String genBoxDecoration = "";
+    if (fNode.getFills().get(0).getColor() != null && fNode.getFills().get(0).getOpacity() != 0) {
+      genBoxDecoration += color(fNode);
+    }
     if (fNode.getBottomLeftRadius() != 0
         || fNode.getTopLeftRadius() != 0
         || fNode.getTopRightRadius() != 0
@@ -51,19 +53,30 @@
     if (fNode.getStrokeWeight() != 0) {
       genBoxDecoration += border(fNode);
     }
-    return upperBoxDecoration+ genBoxDecoration + bottomBoxDecoration;
+    return upperBoxDecoration + genBoxDecoration + bottomBoxDecoration;
+  }
+
+  public String color(FigmaRectangleNode fNode) {
+    final String upperColor = "color: Color.fromRGBO(\n";
+    final String lowerColor = "),\n";
+    final String red = Math.round(fNode.getFills().get(0).getColor().getR() * 255) + ",";
+    final String green = Math.round(fNode.getFills().get(0).getColor().getG() * 255) + ",";
+    final String blue = Math.round(fNode.getFills().get(0).getColor().getB() * 255) + ",";
+    final String opacity = Float.toString(fNode.getFills().get(0).getOpacity());
+
+    return upperColor + red + green + blue + opacity + lowerColor;
   }
 
   public String borderRadius(FigmaRectangleNode fNode) {
-    final String upperBorderRadius = " borderRadius: BorderRadius.all(";
+    final String upperBorderRadius = " borderRadius: BorderRadius.only(";
     final String bottomBorderRadius = "),\n";
     String topradiusL = " topLeft: Radius.circular(" + fNode.getTopLeftRadius() + "),\n";
     String topradiusR =
         " topRight: Radius.circular(" + Float.toString(fNode.getTopRightRadius()) + "),\n";
     String bottomradiusL =
-        " bottomLeft:: Radius.circular(" + Float.toString(fNode.getBottomLeftRadius()) + "),\n";
+        " bottomLeft: Radius.circular(" + Float.toString(fNode.getBottomLeftRadius()) + "),\n";
     String bottomradiusR =
-        " bottomRight: Radius.circular(" + Float.toString(fNode.getBottomRightRadius()) + "),\n";
+        " bottomRight: Radius.circular(" + fNode.getBottomRightRadius() + "),\n";
     return upperBorderRadius
         + topradiusL
         + topradiusR
@@ -78,4 +91,4 @@
     final String width = "width:" + Float.toString(fNode.getStrokeWeight()) + ",\n";
     return upperBorder + width + bottomBorder;
   }
- }
+}

@@ -2,14 +2,13 @@ package com.necleo.codemonkey.controller;
 
 import com.necleo.codemonkey.lib.types.FNode;
 import com.necleo.codemonkey.service.CodeGenService;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
