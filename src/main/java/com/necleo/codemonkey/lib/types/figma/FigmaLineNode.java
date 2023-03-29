@@ -9,11 +9,12 @@ import com.necleo.codemonkey.lib.types.figma.properties.strokes.Strokes;
 import java.util.List;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 import lombok.extern.jackson.Jacksonized;
 
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Builder
+@SuperBuilder
 @Jacksonized
 public class FigmaLineNode extends FigmaNode {
 
