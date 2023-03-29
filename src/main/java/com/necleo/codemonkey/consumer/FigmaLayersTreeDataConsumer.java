@@ -3,14 +3,15 @@ package com.necleo.codemonkey.consumer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.necleo.codemonkey.lib.types.FigmaNode;
+import com.necleo.codemonkey.consumer.request.FigmaNodeConsumerRequest;
+import com.necleo.codemonkey.service.CodeGenService;
+import io.awspring.cloud.messaging.listener.SqsMessageDeletionPolicy;
 import io.awspring.cloud.messaging.listener.annotation.SqsListener;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,29 +21,20 @@ import org.springframework.stereotype.Service;
 public class FigmaLayersTreeDataConsumer {
   ObjectMapper objectMapper;
 
-//  @SqsListener(value = "${cloud.aws.sqs.codeGenQueueName}")
-  public void processMessage(String message, @Header("ProjectId") String ProjectId)
-      throws JsonProcessingException {
+  CodeGenService codeGenService;
+
+  @SqsListener(
+      value = "${cloud.aws.sqs.codeGenQueueName}",
+      deletionPolicy = SqsMessageDeletionPolicy.ON_SUCCESS)
+  public void processMessage(Message<String> message) throws JsonProcessingException {
     log.debug("Received message {}", message);
     // Process the message
-    List<FigmaNode> figmaNodes = objectMapper.readValue(message, new TypeReference<>() {});
-    //    if (figmaNodes.get(0).getType().equals("RECTANGLE")) {
-    //      FigmaRectangleNode figmaRectangleNode = (FigmaRectangleNode) figmaNodes.get(0);
-    //    } else if (figmaNodes.get(0).getType().equals("ELLIPSE")) {
-    //      FigmaEllipseNode figmaEllipseNode = (FigmaEllipseNode) figmaNodes.get(0);
-    //    } else if (figmaNodes.get(0).getType().equals("FRAME")) {
-    //      FigmaFrameNode figmaFrameNode = (FigmaFrameNode) figmaNodes.get(0);
-    //    } else if (figmaNodes.get(0).getType().equals("LINE")) {
-    //      FigmaLineNode figmaLineNode = (FigmaLineNode) figmaNodes.get(0);
-    //      System.out.println(figmaLineNode.height);
-    //    } else if (figmaNodes.get(0).getType().equals("STAR")) {
-    //      FigmaStarNode figmaStarNode = (FigmaStarNode) figmaNodes.get(0);
-    //    } else if (figmaNodes.get(0).getType().equals("POLYGON")) {
-    //      FigmaPolygonNode figmaEllipseNode = (FigmaPolygonNode) figmaNodes.get(0);
-    //    } else if (figmaNodes.get(0).getType().equals("VECTOR")) {
-    //      FigmaVectorNode figmaVectorNode = (FigmaVectorNode) figmaNodes.get(0);
-    //    }
-    log.info(ProjectId);
+    String projectId = message.getHeaders().get("ProjectId", String.class);
+    FigmaNodeConsumerRequest figmaNodes =
+        objectMapper.readValue(message.getPayload(), new TypeReference<>() {});
+
+    codeGenService.gen(figmaNodes.getScreen());
+    log.info(projectId);
   }
 }
 // convert the string to java class then pass it to codegenservice
