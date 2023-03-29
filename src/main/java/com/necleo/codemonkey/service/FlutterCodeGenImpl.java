@@ -1,12 +1,10 @@
 package com.necleo.codemonkey.service;
 
-import static com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes.RECTANGLE;
-
 import com.necleo.codemonkey.enums.Language;
 import com.necleo.codemonkey.lib.types.ASTNode;
 import com.necleo.codemonkey.lib.types.FNode;
-import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
-import com.necleo.codemonkey.service.flutter.RectangleFlutterCGI;
+import com.necleo.codemonkey.service.flutter.FigmaNodeFactory;
+import com.necleo.codemonkey.service.flutter.FlutterCGI;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -18,7 +16,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class FlutterCodeGenImpl implements CodeGen {
-  RectangleFlutterCGI rectangleFlutterCGI;
+
+  FigmaNodeFactory figmaNodeFactory;
 
   @Override
   public Language getLanguage() {
@@ -28,11 +27,8 @@ public class FlutterCodeGenImpl implements CodeGen {
   @Override
   public ASTNode generate(FNode fNode) {
     String genCode = "";
-    if (fNode.getType() == RECTANGLE) {
-      FigmaRectangleNode figmaRectangleNode = (FigmaRectangleNode) fNode;
-      genCode = rectangleFlutterCGI.generate(figmaRectangleNode);
-      log.debug(fNode.toString());
-    }
+    FlutterCGI flutterCGI = figmaNodeFactory.getNode(fNode);
+    genCode += flutterCGI.generate(fNode);
 
     return ASTNode.builder().value(genCode).build();
   }

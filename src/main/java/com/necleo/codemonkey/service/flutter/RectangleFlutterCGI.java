@@ -75,8 +75,7 @@ public class RectangleFlutterCGI implements FlutterCGI<FigmaRectangleNode> {
         " topRight: Radius.circular(" + Float.toString(fNode.getTopRightRadius()) + "),\n";
     String bottomradiusL =
         " bottomLeft: Radius.circular(" + Float.toString(fNode.getBottomLeftRadius()) + "),\n";
-    String bottomradiusR =
-        " bottomRight: Radius.circular(" + fNode.getBottomRightRadius() + "),\n";
+    String bottomradiusR = " bottomRight: Radius.circular(" + fNode.getBottomRightRadius() + "),\n";
     return upperBorderRadius
         + topradiusL
         + topradiusR
