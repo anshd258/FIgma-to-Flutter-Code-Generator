@@ -3,8 +3,8 @@ package com.necleo.codemonkey.service;
 import com.necleo.codemonkey.enums.Language;
 import com.necleo.codemonkey.lib.engine.ast.AST2Text;
 import com.necleo.codemonkey.lib.engine.ast.AstMaker;
-import com.necleo.codemonkey.lib.types.ASTNode;
 import com.necleo.codemonkey.lib.types.FigmaNode;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -30,12 +30,12 @@ public class CodeGenService {
     return null;
   }
 
-  public String gen(FigmaNode screen) {
+  public String gen(List<FigmaNode> screen) {
     CodeGen processor = languageFactory.getCodeGenProcessor(Language.HTML_CSS);
-    ASTNode astNode = processor.generate(screen);
-    //    ASTNode astNode = astMaker().ast(screen);
-    StringBuffer text = aST2Text().toText(astNode);
-    log.info("Code gen : \n{}", text.toString());
-    return text.toString();
+    List<String> bufferList =
+        screen.stream()
+            .map(figmaNode -> aST2Text().toText(processor.generate(figmaNode)).toString())
+            .toList();
+    return bufferList.toString();
   }
 }
