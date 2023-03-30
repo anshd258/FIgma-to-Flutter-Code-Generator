@@ -31,7 +31,7 @@ public class CodeGenService {
   }
 
   public String gen(List<FigmaNode> screen) {
-    CodeGen processor = languageFactory.getCodeGenProcessor(Language.HTML_CSS);
+    CodeGen processor = languageFactory.getCodeGenProcessor(Language.REACT);
     List<String> bufferList =
         screen.stream()
             .map(figmaNode -> aST2Text().toText(processor.generate(figmaNode)).toString())
