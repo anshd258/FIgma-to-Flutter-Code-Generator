@@ -4,6 +4,7 @@ import com.necleo.codemonkey.enums.FigmaNodeType;
 import com.necleo.codemonkey.enums.Language;
 import com.necleo.codemonkey.lib.types.ASTNode;
 import com.necleo.codemonkey.lib.types.FigmaNode;
+import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
 import com.necleo.codemonkey.service.react.ReactCGI;
 import com.necleo.codemonkey.service.react.ReactCGIFactory;
 import lombok.AccessLevel;
@@ -27,7 +28,7 @@ public class ReactCodeGenImpl implements CodeGen {
   public ASTNode generate(FigmaNode fNode) {
     FigmaNodeType figmaNodeType = FigmaNodeType.valueOf(fNode.getType().toUpperCase());
     ReactCGI reactCGI = reactCGIFactory.getCodeGenProcessor(figmaNodeType);
-    reactCGI.generate(fNode);
+
     return null;
   }
 }

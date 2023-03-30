@@ -17,11 +17,11 @@ import org.springframework.stereotype.Component;
 public class ReactCGIFactory {
   final ApplicationContext applicationContext;
 
-  Map<FigmaNodeType, ReactCGI<?>> codeGenMap;
+  Map<FigmaNodeType, ReactCGI> codeGenMap;
 
-  public ReactCGI<?> getCodeGenProcessor(FigmaNodeType type) {
+  public ReactCGI getCodeGenProcessor(FigmaNodeType type) {
 
-    ReactCGI<?> processor = codeGenMap.get(type);
+    ReactCGI processor = codeGenMap.get(type);
     if (processor == null) {
       throw new IllegalArgumentException(
           "No implementation found for PaymentProcessorType: " + type);

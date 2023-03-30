@@ -1,17 +1,18 @@
 package com.necleo.codemonkey.service.react;
 
 import com.necleo.codemonkey.enums.FigmaNodeType;
+import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class RectangleReactCGI implements ReactCGI<FigmaRectangleNode> {
+public class RectangleReactCGI implements ReactCGI {
 
   @Override
-  public String generate(FigmaRectangleNode fNode) {
-
+  public String generate(FigmaNode figmaNode) {
+    FigmaRectangleNode fNode = (FigmaRectangleNode) figmaNode;
     String genCode = "";
 
     genCode += "\n<div style=' \n";
