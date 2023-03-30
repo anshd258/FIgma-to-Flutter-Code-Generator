@@ -31,7 +31,7 @@ public class CodeGenService {
   }
 
   public String gen(FNode screen) {
-    CodeGen processor = languageFactory.getCodeGenProcessor(Language.HTML_CSS);
+    CodeGen processor = languageFactory.getCodeGenProcessor(Language.REACT);
     ASTNode astNode = processor.generate(screen);
 //    ASTNode astNode = astMaker().ast(screen);
     StringBuffer text = aST2Text().toText(astNode);

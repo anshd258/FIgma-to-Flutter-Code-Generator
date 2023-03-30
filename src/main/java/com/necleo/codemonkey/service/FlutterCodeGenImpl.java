@@ -15,7 +15,6 @@ public class FlutterCodeGenImpl implements CodeGen {
     @Override
     public ASTNode generate(FNode fNode) {
         if(Objects.equals(fNode.getType(), "RECTANGLE")) {
-
         }
         return null;
     }

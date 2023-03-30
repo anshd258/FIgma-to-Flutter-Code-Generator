@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
 public class FigmaLayersTreeDataConsumer {
   ObjectMapper objectMapper;
 
-  @SqsListener(value = "${cloud.aws.sqs.codeGenQueueName}")
+//  @SqsListener(value = "${cloud.aws.sqs.codeGenQueueName}")
   public void processMessage(String message, @Header("ProjectId") String ProjectId)
       throws JsonProcessingException {
     log.debug("Received message {}", message);
