@@ -1,13 +1,15 @@
 package com.necleo.codemonkey.lib.types.figma.rect;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.jackson.Jacksonized;
 
-@Setter
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Builder
+@Jacksonized
 public class Rect {
   int x;
 

@@ -1,6 +1,6 @@
 package com.necleo.codemonkey.controller;
 
-import com.necleo.codemonkey.lib.types.FNode;
+import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.service.CodeGenService;
 import java.util.List;
 import lombok.AccessLevel;
@@ -18,9 +18,7 @@ public class CodegenController {
   CodeGenService codeGenService;
 
   @PostMapping("/codegen")
-  public Object postMethodName(@RequestBody List<FNode> entity) {
-
+  public Object postMethodName(@RequestBody List<FigmaNode> entity) {
     return codeGenService.gen(entity.get(0));
-    //    return codeGenService.gen(entity);
   }
 }

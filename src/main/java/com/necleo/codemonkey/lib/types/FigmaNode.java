@@ -10,9 +10,10 @@ import com.necleo.codemonkey.lib.types.figma.rect.Rect;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
+import lombok.extern.jackson.Jacksonized;
 
 /**
  * Type declaration of figma screen <br>
@@ -20,11 +21,7 @@ import lombok.experimental.FieldDefaults;
  * {@link #type} figma node type <br>
  * {@link #children} figma node children
  */
-@JsonTypeInfo(
-    use = JsonTypeInfo.Id.NAME,
-    include = JsonTypeInfo.As.PROPERTY,
-    property = "type",
-    visible = true)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type", visible = true)
 @JsonSubTypes({
   @JsonSubTypes.Type(value = FigmaRectangleNode.class, name = "RECTANGLE"),
   @JsonSubTypes.Type(value = FigmaEllipseNode.class, name = "ELLIPSE"),
@@ -39,11 +36,12 @@ import lombok.experimental.FieldDefaults;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Getter
-@NoArgsConstructor
+@SuperBuilder
+@Jacksonized
 @ToString
-public class FNode {
+public class FigmaNode {
   FigmaNodeTypes type;
-  List<FNode> children;
+  List<FigmaNode> children;
   String id;
   String name;
   boolean removed;
@@ -57,23 +55,5 @@ public class FNode {
   int width;
   int height;
   Rect absoluteRenderBounds;
-  Rect absoluteBoundingbox;
-
-  public FNode(
-      String type,
-      List<FNode> children,
-      String id,
-      String name,
-      boolean removed,
-      boolean visible,
-      boolean locked,
-      int[][] absoluteTransform,
-      int[][] relativeTransform,
-      int x,
-      int y,
-      int rotation,
-      int width,
-      int height,
-      Rect absoluteRenderBounds,
-      Rect absoluteBoundingbox) {}
+  Rect absoluteBoundingBox;
 }

@@ -4,7 +4,7 @@ import com.necleo.codemonkey.enums.Language;
 import com.necleo.codemonkey.lib.engine.ast.AST2Text;
 import com.necleo.codemonkey.lib.engine.ast.AstMaker;
 import com.necleo.codemonkey.lib.types.ASTNode;
-import com.necleo.codemonkey.lib.types.FNode;
+import com.necleo.codemonkey.lib.types.FigmaNode;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -30,7 +30,7 @@ public class CodeGenService {
     return null;
   }
 
-  public String gen(FNode screen) {
+  public String gen(FigmaNode screen) {
     CodeGen processor = languageFactory.getCodeGenProcessor(Language.FLUTTER);
     ASTNode astNode = processor.generate(screen);
     //    ASTNode astNode = astMaker().ast(screen);

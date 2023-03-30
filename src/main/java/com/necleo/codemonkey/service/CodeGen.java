@@ -2,10 +2,10 @@ package com.necleo.codemonkey.service;
 
 import com.necleo.codemonkey.enums.Language;
 import com.necleo.codemonkey.lib.types.ASTNode;
-import com.necleo.codemonkey.lib.types.FNode;
+import com.necleo.codemonkey.lib.types.FigmaNode;
 
 public interface CodeGen {
   Language getLanguage();
 
-  ASTNode generate(FNode fNode);
+  ASTNode generate(FigmaNode fNode);
 }

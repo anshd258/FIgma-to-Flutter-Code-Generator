@@ -2,7 +2,7 @@ package com.necleo.codemonkey.service;
 
 import com.necleo.codemonkey.enums.Language;
 import com.necleo.codemonkey.lib.types.ASTNode;
-import com.necleo.codemonkey.lib.types.FNode;
+import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.service.flutter.FigmaNodeFactory;
 import com.necleo.codemonkey.service.flutter.FlutterCGI;
 import lombok.AccessLevel;
@@ -25,7 +25,7 @@ public class FlutterCodeGenImpl implements CodeGen {
   }
 
   @Override
-  public ASTNode generate(FNode fNode) {
+  public ASTNode generate(FigmaNode fNode) {
     String genCode = "";
     FlutterCGI flutterCGI = figmaNodeFactory.getNode(fNode);
     genCode += flutterCGI.generate(fNode);

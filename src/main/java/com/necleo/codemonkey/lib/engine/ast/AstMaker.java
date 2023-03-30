@@ -5,7 +5,7 @@ import com.necleo.codemonkey.lib.props.html.MainHtmlYaml;
 import com.necleo.codemonkey.lib.props.react.ComponentYaml;
 import com.necleo.codemonkey.lib.props.react.H2Yaml;
 import com.necleo.codemonkey.lib.types.ASTNode;
-import com.necleo.codemonkey.lib.types.FNode;
+import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.enums.ASTAction;
 import com.necleo.codemonkey.lib.types.enums.ASTType;
 import java.util.ArrayList;
@@ -26,18 +26,18 @@ public class AstMaker {
 
   MainHtmlYaml mainHtmlYaml;
 
-  public ASTNode ast(FNode fNode) {
+  public ASTNode ast(FigmaNode figmaNode) {
     return null;
   }
 
-  private ASTNode astFileNode(FNode fNode, YamlProp yamlProp, int level) {
+  private ASTNode astFileNode(FigmaNode figmaNode, YamlProp yamlProp, int level) {
     List<ASTNode> astChildren = new ArrayList<>();
     ASTType astType = ASTType.valueOf(yamlProp.getType().toUpperCase());
     pre(yamlProp, level, astChildren);
     ASTNode.ASTNodeBuilder astNodeBuilder =
         ASTNode.builder().type(astType).value(yamlProp.getValue());
     for (var child : yamlProp.getChildren()) {
-      in(fNode, level, astChildren, child);
+      in(figmaNode, level, astChildren, child);
     }
     post(astType, yamlProp, level, astChildren);
     return astNodeBuilder.children(astChildren).build();
@@ -52,9 +52,9 @@ public class AstMaker {
     //    }
   }
 
-  private void in(FNode fNode, int level, List<ASTNode> astChildren, YamlProp child) {
+  private void in(FigmaNode figmaNode, int level, List<ASTNode> astChildren, YamlProp child) {
     if (child.getAction() == ASTAction.DOWNSTREAM) {
-      for (var fchild : fNode.getChildren()) {
+      for (var fchild : figmaNode.getChildren()) {
         YamlProp yamlProp = null;
         //        if(fchild.getType().equals("h2")) {
         //            yamlProp = h2Yaml;
@@ -68,7 +68,7 @@ public class AstMaker {
     }
     //    astChildren.add(ASTNode.builder().type(ASTType.NODE).value(getIndent(level)).build());
     //    ASTNode astChild = ASTNode.builder().type(ASTType.NODE).value(child.getValue()).build();
-    astChildren.add(astFileNode(fNode, child, level));
+    astChildren.add(astFileNode(figmaNode, child, level));
   }
 
   private void post(ASTType astType, YamlProp mainHtmlYaml, int level, List<ASTNode> astChildren) {
