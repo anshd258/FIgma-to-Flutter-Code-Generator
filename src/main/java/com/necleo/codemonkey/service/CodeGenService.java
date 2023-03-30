@@ -34,8 +34,12 @@ public class CodeGenService {
     CodeGen processor = languageFactory.getCodeGenProcessor(Language.REACT);
     List<String> bufferList =
         screen.stream()
-            .map(figmaNode -> aST2Text().toText(processor.generate(figmaNode)).toString())
+            .map(figmaNode -> generateAstNode(processor, figmaNode))
             .toList();
     return bufferList.toString();
+  }
+
+  private String generateAstNode(CodeGen processor, FigmaNode figmaNode) {
+    return aST2Text().toText(processor.generate(figmaNode)).toString();
   }
 }

@@ -27,7 +27,7 @@ public class ReactCodeGenImpl implements CodeGen {
   public ASTNode generate(FigmaNode fNode) {
     FigmaNodeType figmaNodeType = FigmaNodeType.valueOf(fNode.getType().toUpperCase());
     ReactCGI reactCGI = reactCGIFactory.getCodeGenProcessor(figmaNodeType);
-    reactCGI.generate(fNode);
-    return null;
+    String generate = reactCGI.generate(fNode);
+    return ASTNode.builder().value(generate).build();
   }
 }
