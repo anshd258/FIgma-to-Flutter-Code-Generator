@@ -7,8 +7,6 @@ import com.necleo.codemonkey.consumer.request.FigmaNodeConsumerRequest;
 import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.service.CodeGenService;
 import com.necleo.codemonkey.service.FlutterCodeGenImpl;
-import io.awspring.cloud.messaging.listener.SqsMessageDeletionPolicy;
-import io.awspring.cloud.messaging.listener.annotation.SqsListener;
 import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
@@ -29,9 +27,9 @@ public class FigmaLayersTreeDataConsumer {
   FlutterCodeGenImpl flutterCodeGenImp;
   CodeGenService codeGenService;
 
-  @SqsListener(
-      value = "${cloud.aws.sqs.codeGenQueueName}",
-      deletionPolicy = SqsMessageDeletionPolicy.ON_SUCCESS)
+  //  @SqsListener(
+  //      value = "${cloud.aws.sqs.codeGenQueueName}",
+  //      deletionPolicy = SqsMessageDeletionPolicy.ON_SUCCESS)
   public void processMessage(Message<String> message) throws JsonProcessingException {
     log.debug("Received message {}", message);
     // Process the message

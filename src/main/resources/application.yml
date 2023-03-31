@@ -1,8 +1,8 @@
 aws:
   access:
-    key: ${AWS_ACCESS_KEY:}
+    key: ${AWS_ACCESS_KEY:AKIA3TU5OEBRIGR2HNLN}
   secret:
-    key: ${AWS_SECRET_KEY:}
+    key: ${AWS_SECRET_KEY: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}
 
 #  s3:
 #    bucket:
