@@ -1,10 +1,10 @@
 package com.necleo.codemonkey.service.flutter;
 
+import static com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes.RECTANGLE;
+
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import static com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes.RECTANGLE;
 
 @Service
 @Slf4j

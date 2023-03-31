@@ -4,10 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.necleo.codemonkey.consumer.request.FigmaNodeConsumerRequest;
+import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.service.CodeGenService;
 import com.necleo.codemonkey.service.FlutterCodeGenImpl;
 import io.awspring.cloud.messaging.listener.SqsMessageDeletionPolicy;
 import io.awspring.cloud.messaging.listener.annotation.SqsListener;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +39,11 @@ public class FigmaLayersTreeDataConsumer {
     FigmaNodeConsumerRequest figmaNodes =
         objectMapper.readValue(message.getPayload(), new TypeReference<>() {});
 
-    codeGenService.gen(figmaNodes.getScreen().get(0));
+    Map<String, TagData> tagDataMap =
+        figmaNodes.getTagData().stream()
+            .collect(Collectors.toMap(TagData::getFigmaNodeId, tagData -> tagData));
+    ;
+    codeGenService.gen(figmaNodes.getScreen().get(0), tagDataMap);
     log.info(projectId);
   }
 }
