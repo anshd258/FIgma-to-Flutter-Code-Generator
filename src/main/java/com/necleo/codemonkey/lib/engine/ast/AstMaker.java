@@ -2,10 +2,6 @@ package com.necleo.codemonkey.lib.engine.ast;
 
 import com.necleo.codemonkey.lib.types.ASTNode;
 import com.necleo.codemonkey.lib.types.FigmaNode;
-import com.necleo.codemonkey.lib.types.enums.ASTAction;
-import com.necleo.codemonkey.lib.types.enums.ASTType;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

@@ -32,7 +32,6 @@ public class FigmaLayersTreeDataConsumer {
     String projectId = message.getHeaders().get("ProjectId", String.class);
     FigmaNodeConsumerRequest figmaNodes =
         objectMapper.readValue(message.getPayload(), new TypeReference<>() {});
-
     codeGenService.gen(figmaNodes.getScreen());
     log.info(projectId);
   }
