@@ -22,8 +22,8 @@ public class CodegenController {
   @PostMapping("/codegen")
   public Object postMethodName(@RequestBody FigmaNodeConsumerRequest entity) {
     Map<String, TagData> tagDataMap =
-            entity.getTagData().stream()
-                    .collect(Collectors.toMap(TagData::getFigmaNodeId, tagData -> tagData));
+        entity.getTagData().stream()
+            .collect(Collectors.toMap(TagData::getFigmaNodeId, tagData -> tagData));
     return codeGenService.gen(entity.getScreen().get(0), tagDataMap);
   }
 }

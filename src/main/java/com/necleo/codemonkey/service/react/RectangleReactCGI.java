@@ -1,6 +1,5 @@
 package com.necleo.codemonkey.service.react;
 
-import com.necleo.codemonkey.enums.FigmaNodeType;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
@@ -36,7 +35,6 @@ public class RectangleReactCGI implements ReactCGI {
 
     return genCode;
   }
-
 
   public String getHeight(FigmaRectangleNode fNode) {
     if (fNode.getHeight() != 0) {
@@ -93,15 +91,17 @@ public class RectangleReactCGI implements ReactCGI {
   }
 
   public String border(FigmaRectangleNode fNode) {
-    final String fNodeColourR = (fNode.getFills().get(0).getColor().getR())+",";
-    final String fNodeColourG = (fNode.getFills().get(0).getColor().getB())+",";
+    final String fNodeColourR = (fNode.getFills().get(0).getColor().getR()) + ",";
+    final String fNodeColourG = (fNode.getFills().get(0).getColor().getB()) + ",";
     final String fNodeColourB = String.valueOf(fNode.getFills().get(0).getColor().getB());
 
     final String upperBorder = "border: '";
     final String width = (fNode.getStrokeWeight()) + "px ";
-    final String borderType = fNode.getStrokes().get(0).getType().toLowerCase() + " "; // this id must map the type of border ig
+    final String borderType =
+        fNode.getStrokes().get(0).getType().toLowerCase()
+            + " "; // this id must map the type of border ig
     final String colour = "rgb(" + fNodeColourR + fNodeColourG + fNodeColourB + ")";
-    return upperBorder + width + borderType + colour ;
+    return upperBorder + width + borderType + colour;
   }
 
   public String getHorizontalPosition(FigmaRectangleNode fNode) {
