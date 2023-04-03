@@ -8,6 +8,8 @@ import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.service.CodeGenService;
 import io.awspring.cloud.messaging.listener.SqsMessageDeletionPolicy;
 import io.awspring.cloud.messaging.listener.annotation.SqsListener;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -36,9 +38,11 @@ public class FigmaLayersTreeDataConsumer {
 
     Map<String, Object> o = objectMapper.readValue(message.getPayload(), new TypeReference<>() {});
 
-    Map<String, Object> screen = Map.of(
+    Map<String, Object> screen = new HashMap<>(Map.of(
             "screen",
-            ((Map<String, Object>) ((List<Object>) o.get("screen")).get(0)).get("selection"));
+            ((Map<String, Object>) ((List<Object>) o.get("screen")).get(0)).get("selection")));
+
+    screen.put("tag_data", o.get("tag_data"));
 
     FigmaNodeConsumerRequest figmaNodes =
         objectMapper.convertValue(screen, new TypeReference<>() {});
