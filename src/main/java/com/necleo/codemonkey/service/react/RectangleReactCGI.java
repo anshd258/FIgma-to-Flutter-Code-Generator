@@ -3,6 +3,7 @@ package com.necleo.codemonkey.service.react;
 import com.necleo.codemonkey.enums.FigmaNodeType;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
+import com.necleo.codemonkey.lib.types.figma.properties.fills.Color;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,7 @@ public class RectangleReactCGI implements ReactCGI {
     FigmaRectangleNode fNode = (FigmaRectangleNode) figmaNode;
     String genCode = "";
 
-    genCode += "\n<div style=' \n";
+    genCode += "\n<div style={{ \n";
     genCode += getHeight(fNode);
     genCode += getWidth(fNode);
     genCode += getBoxDecoration(fNode);
@@ -24,7 +25,8 @@ public class RectangleReactCGI implements ReactCGI {
     genCode += getVerticalPosition(fNode);
     genCode += getVisibility(fNode);
 
-    genCode += " '></div>,\n";
+    genCode += " }}>";
+    genCode += "</div>\n";
     System.out.println(genCode); // end indent
 
     return genCode;
@@ -37,29 +39,29 @@ public class RectangleReactCGI implements ReactCGI {
 
   public String getHeight(FigmaRectangleNode fNode) {
     if (fNode.getHeight() != 0) {
-      return "height:" + fNode.getHeight() + ",\n";
+      return "height: '" + fNode.getHeight() + "px',\n";
     }
-    return "height:0,\n";
+    return "height: '0px',\n";
   }
 
   public String getWidth(FigmaRectangleNode fNode) {
     if (fNode.getWidth() != 0) {
-      return "width:" + fNode.getWidth() + ",\n";
+      return "width: '" + fNode.getWidth() + "px',\n";
     }
-    return "width:0,\n";
+    return "width: '0px',\n";
   }
 
   public String getBoxDecoration(FigmaRectangleNode fNode) {
-    final String upperBoxDecoration = "box-decoration:' ";
-    final String bottomBoxDecoration = " ,\n";
+    final String upperBoxDecoration = "boxSizing: '";
+    final String bottomBoxDecoration = ",\n";
     String genBoxDecoration = "";
     if (fNode.getBottomLeftRadius() != 0
         || fNode.getTopLeftRadius() != 0
         || fNode.getTopRightRadius() != 0
         || fNode.getBottomRightRadius() != 0) {
-      genBoxDecoration = "border-box'; border-radius: '";
-      genBoxDecoration = genBoxDecoration + borderRadius(fNode) + " ' ";
-    } else genBoxDecoration = "none'";
+      genBoxDecoration = "border-box', \n border-radius: '";
+      genBoxDecoration = genBoxDecoration + borderRadius(fNode) + "px',\n";
+    } else genBoxDecoration = "unset',\n";
     if (fNode.getStrokeWeight() != 0) {
       genBoxDecoration += border(fNode);
     }
@@ -90,25 +92,30 @@ public class RectangleReactCGI implements ReactCGI {
   }
 
   public String border(FigmaRectangleNode fNode) {
-    final String upperBorder = " border: '";
-    final String bottomBorder = "',\n";
-    final String width = Float.toString(fNode.getStrokeWeight());
-    return upperBorder + width + bottomBorder;
+    final String fNodeColourR = (fNode.getFills().get(0).getColor().getR())+",";
+    final String fNodeColourG = (fNode.getFills().get(0).getColor().getB())+",";
+    final String fNodeColourB = String.valueOf(fNode.getFills().get(0).getColor().getB());
+
+    final String upperBorder = "border: '";
+    final String width = (fNode.getStrokeWeight()) + "px ";
+    final String borderType = fNode.getStrokes().get(0).getType().toLowerCase() + " "; // this id must map the type of border ig
+    final String colour = "rgb(" + fNodeColourR + fNodeColourG + fNodeColourB + ")";
+    return upperBorder + width + borderType + colour ;
   }
 
   public String getHorizontalPosition(FigmaRectangleNode fNode) {
-    return ("right: '" + Float.toString(fNode.getX()) + "' ");
+    return ("right: '" + (fNode.getX()) + "px',\n ");
   }
 
   public String getVerticalPosition(FigmaRectangleNode fNode) {
-    return ("top: '" + Float.toString(fNode.getY()) + "' ");
+    return ("top: '" + (fNode.getY()) + "px',\n ");
   }
 
   public String getVisibility(FigmaRectangleNode fNode) {
-    return ("visibility: '" + fNode.isVisible() + "' ");
+    return ("visibility: " + fNode.isVisible() + ",\n");
   }
 
   public String opacity(FigmaRectangleNode fNode) {
-    return ("visibility: '" + Float.toString(fNode.getOpacity()) + "' ");
+    return ("opacity: '" + (fNode.getOpacity()) + "',\n ");
   }
 }
