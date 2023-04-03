@@ -3,8 +3,10 @@ package com.necleo.codemonkey.service;
 import com.necleo.codemonkey.enums.Language;
 import com.necleo.codemonkey.lib.engine.ast.AST2Text;
 import com.necleo.codemonkey.lib.engine.ast.AstMaker;
+import com.necleo.codemonkey.lib.types.ASTNode;
 import com.necleo.codemonkey.lib.types.FigmaNode;
-import java.util.List;
+import com.necleo.codemonkey.lib.types.TagData;
+import java.util.Map;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -30,16 +32,13 @@ public class CodeGenService {
     return null;
   }
 
-  public String gen(List<FigmaNode> screen) {
-    CodeGen processor = languageFactory.getCodeGenProcessor(Language.REACT);
-    List<String> bufferList =
-        screen.stream()
-            .map(figmaNode -> generateAstNode(processor, figmaNode))
-            .toList();
-    return bufferList.toString();
-  }
+  public String gen(FigmaNode screen, Map<String, TagData> tagDataMap) {
 
-  private String generateAstNode(CodeGen processor, FigmaNode figmaNode) {
-    return aST2Text().toText(processor.generate(figmaNode)).toString();
+    CodeGen processor = languageFactory.getCodeGenProcessor(Language.REACT);
+    ASTNode astNode = processor.generate(screen, tagDataMap);
+    //    ASTNode astNode = astMaker().ast(screen);
+    StringBuffer text = aST2Text().toText(astNode);
+    log.info("Code gen : \n{}", text.toString());
+    return text.toString();
   }
 }

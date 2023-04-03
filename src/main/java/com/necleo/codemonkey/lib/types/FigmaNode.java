@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.*;
 import com.necleo.codemonkey.lib.types.figma.rect.Rect;
 import java.util.List;
@@ -39,7 +40,7 @@ import lombok.extern.jackson.Jacksonized;
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class FigmaNode {
-  String type;
+  FigmaNodeTypes type;
   List<FigmaNode> children;
   String id;
   String name;
