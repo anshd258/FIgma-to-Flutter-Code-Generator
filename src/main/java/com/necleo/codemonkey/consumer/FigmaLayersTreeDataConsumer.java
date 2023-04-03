@@ -6,15 +6,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.necleo.codemonkey.consumer.request.FigmaNodeConsumerRequest;
 import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.service.CodeGenService;
-
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import com.necleo.codemonkey.service.ReactCodeGenImpl;
 import io.awspring.cloud.messaging.listener.SqsMessageDeletionPolicy;
 import io.awspring.cloud.messaging.listener.annotation.SqsListener;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -23,30 +20,33 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-@Getter
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 public class FigmaLayersTreeDataConsumer {
   ObjectMapper objectMapper;
-  ReactCodeGenImpl reactCodeGenImp;
   CodeGenService codeGenService;
 
-    @SqsListener(
-        value = "${cloud.aws.sqs.codeGenQueueName}",
-        deletionPolicy = SqsMessageDeletionPolicy.ON_SUCCESS)
+  @SqsListener(
+      value = "${cloud.aws.sqs.codeGenQueueName}",
+      deletionPolicy = SqsMessageDeletionPolicy.ON_SUCCESS)
   public void processMessage(Message<String> message) throws JsonProcessingException {
     log.debug("Received message {}", message);
     // Process the message
     String projectId = message.getHeaders().get("ProjectId", String.class);
+
+    Map<String, Object> o = objectMapper.readValue(message.getPayload(), new TypeReference<>() {});
+
+    Map<String, Object> screen = Map.of(
+            "screen",
+            ((Map<String, Object>) ((List<Object>) o.get("screen")).get(0)).get("selection"));
+
     FigmaNodeConsumerRequest figmaNodes =
-            objectMapper.readValue(message.getPayload(), new TypeReference<>() {});
+        objectMapper.convertValue(screen, new TypeReference<>() {});
 
     Map<String, TagData> tagDataMap =
-            figmaNodes.getTagData().stream()
-                    .collect(Collectors.toMap(TagData::getFigmaNodeId, tagData -> tagData));
-    ;
+        figmaNodes.getTagData().stream()
+            .collect(Collectors.toMap(TagData::getFigmaNodeId, tagData -> tagData));
     codeGenService.gen(figmaNodes.getScreen().get(0), tagDataMap);
     log.info(projectId);
   }
 }
-// convert the string to java class then pass it to codegenservice
