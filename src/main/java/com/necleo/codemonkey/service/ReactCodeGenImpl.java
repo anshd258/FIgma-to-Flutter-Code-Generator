@@ -24,7 +24,7 @@ public class ReactCodeGenImpl implements CodeGen {
 
   @Override
   public Language getLanguage() {
-    return Language.FLUTTER;
+    return Language.REACT;
   }
 
   @Override

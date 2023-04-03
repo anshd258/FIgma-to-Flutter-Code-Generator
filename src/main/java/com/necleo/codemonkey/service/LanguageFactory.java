@@ -24,7 +24,7 @@ public class LanguageFactory {
     CodeGen processor = codeGenMap.get(type);
     if (processor == null) {
       throw new IllegalArgumentException(
-          "No implementation found for PaymentProcessorType: " + type);
+          "No implementation found for LanguageFactory: " + type);
     }
     return processor;
   }
@@ -41,7 +41,7 @@ public class LanguageFactory {
               Language type = codeGen.getLanguage();
               if (codeGenMap.containsKey(type)) {
                 throw new IllegalStateException(
-                    "Multiple implementations found for PaymentProcessorType: " + type);
+                    "Multiple implementations found for LanguageFactory: " + type);
               }
               codeGenMap.put(type, codeGen);
             });
