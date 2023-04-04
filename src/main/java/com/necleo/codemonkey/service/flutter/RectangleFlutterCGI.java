@@ -1,21 +1,39 @@
 package com.necleo.codemonkey.service.flutter;
 
+import com.necleo.codemonkey.lib.types.FigmaNode;
+import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
+import com.necleo.codemonkey.lib.types.figma.FigmaTextNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class RectangleFlutterCGI implements FlutterCGI<FigmaRectangleNode> {
+public class RectangleFlutterCGI implements FlutterCGI {
 
-  public String generate(FigmaRectangleNode fNode) {
+  @Override
+  public FigmaNodeTypes getEnumMapping() {
+    return FigmaNodeTypes.RECTANGLE;
+  }
+@Override
+  public String generate(FigmaNode figmaNode) {
+    if (!(figmaNode instanceof FigmaRectangleNode fNode)) {
+      throw new IllegalArgumentException();
+    }
+    return generat(fNode);
+  }
+
+
+
+
+  public String generat(FigmaRectangleNode figmaNode) {
 
     String genCode = "";
 
     genCode += "\nContainer( \n";
-    genCode += getHeight(fNode);
-    genCode += getWidth(fNode);
-    genCode += getBoxDecoration(fNode);
+    genCode += getHeight(figmaNode);
+    genCode += getWidth(figmaNode);
+    genCode += getBoxDecoration(figmaNode);
 
     genCode += ")\n";
     System.out.println(genCode); // end indent
@@ -23,21 +41,21 @@ public class RectangleFlutterCGI implements FlutterCGI<FigmaRectangleNode> {
     return genCode;
   }
 
-  public String getHeight(FigmaRectangleNode fNode) {
+  private String getHeight(FigmaRectangleNode fNode) {
     if (fNode.getHeight() != 0) {
       return "height:" + Integer.toString(fNode.getHeight()) + ",\n";
     }
     return "height:0,\n";
   }
 
-  public String getWidth(FigmaRectangleNode fNode) {
+  private String getWidth(FigmaRectangleNode fNode) {
     if (fNode.getWidth() != 0) {
       return "width:" + Integer.toString(fNode.getWidth()) + ",\n";
     }
     return "width:0,\n";
   }
 
-  public String getBoxDecoration(FigmaRectangleNode fNode) {
+  private String getBoxDecoration(FigmaRectangleNode fNode) {
     final String upperBoxDecoration = "decoration: BoxDecoration(\n";
     final String bottomBoxDecoration = "),\n";
     String genBoxDecoration = "";
@@ -56,7 +74,7 @@ public class RectangleFlutterCGI implements FlutterCGI<FigmaRectangleNode> {
     return upperBoxDecoration + genBoxDecoration + bottomBoxDecoration;
   }
 
-  public String color(FigmaRectangleNode fNode) {
+  private String color(FigmaRectangleNode fNode) {
     final String upperColor = "color: Color.fromRGBO(\n";
     final String lowerColor = "),\n";
     final String red = Math.round(fNode.getFills().get(0).getColor().getR() * 255) + ",";
@@ -67,7 +85,7 @@ public class RectangleFlutterCGI implements FlutterCGI<FigmaRectangleNode> {
     return upperColor + red + green + blue + opacity + lowerColor;
   }
 
-  public String borderRadius(FigmaRectangleNode fNode) {
+  private String borderRadius(FigmaRectangleNode fNode) {
     final String upperBorderRadius = " borderRadius: BorderRadius.only(";
     final String bottomBorderRadius = "),\n";
     String topradiusL = " topLeft: Radius.circular(" + fNode.getTopLeftRadius() + "),\n";
@@ -84,7 +102,7 @@ public class RectangleFlutterCGI implements FlutterCGI<FigmaRectangleNode> {
         + bottomBorderRadius;
   }
 
-  public String border(FigmaRectangleNode fNode) {
+  private String border(FigmaRectangleNode fNode) {
     final String upperBorder = " border: Border.all(";
     final String bottomBorder = "),\n";
     final String width = "width:" + Float.toString(fNode.getStrokeWeight()) + ",\n";

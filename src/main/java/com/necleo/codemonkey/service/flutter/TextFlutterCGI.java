@@ -1,5 +1,7 @@
 package com.necleo.codemonkey.service.flutter;
 
+import com.necleo.codemonkey.lib.types.FigmaNode;
+import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
 import com.necleo.codemonkey.lib.types.figma.FigmaTextNode;
 import lombok.extern.slf4j.Slf4j;
@@ -7,11 +9,21 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class TextFlutterCGI implements FlutterCGI<FigmaTextNode>{
+public class TextFlutterCGI implements FlutterCGI{
+
+
 
 
     @Override
-    public String generate(FigmaTextNode fNode) {
+    public String generate(FigmaNode figmaNode) {
+        if (!(figmaNode instanceof FigmaTextNode fNode)) {
+            throw new IllegalArgumentException();
+        }
+        return generat(fNode);
+    }
+
+
+    public String generat(FigmaTextNode fNode) {
         String genCode = "";
         final String upperText = "Text(\n";
         final String lowerText = "),\n";
@@ -51,5 +63,11 @@ public class TextFlutterCGI implements FlutterCGI<FigmaTextNode>{
             return fNode.getName() + "\n";
         }
        return "";
+    }
+
+
+    @Override
+    public FigmaNodeTypes getEnumMapping() {
+        return FigmaNodeTypes.TEXT;
     }
 }

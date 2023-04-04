@@ -1,10 +1,13 @@
 package com.necleo.codemonkey.service;
 
 import com.necleo.codemonkey.enums.Language;
+import com.necleo.codemonkey.factory.FigmaNodeFactory;
 import com.necleo.codemonkey.lib.types.ASTNode;
 import com.necleo.codemonkey.lib.types.FigmaNode;
-import com.necleo.codemonkey.service.flutter.FigmaNodeFactory;
+import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.service.flutter.FlutterCGI;
+import java.util.Map;
+import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -25,11 +28,10 @@ public class FlutterCodeGenImpl implements CodeGen {
   }
 
   @Override
-  public ASTNode generate(FigmaNode fNode) {
+  public ASTNode generate(FigmaNode fNode, Map<String, TagData> tagDataMap) {
     String genCode = "";
-    FlutterCGI flutterCGI = figmaNodeFactory.getNode(fNode);
-    genCode += flutterCGI.generate(fNode);
-
+    Optional<FlutterCGI> flutterCGIOptional = figmaNodeFactory.getProcessor(fNode.getType());
+    genCode += flutterCGIOptional.map(flutterCGI -> flutterCGI.generate(fNode)).orElse("");
     return ASTNode.builder().value(genCode).build();
   }
 }
