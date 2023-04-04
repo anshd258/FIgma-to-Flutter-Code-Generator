@@ -6,5 +6,6 @@ public enum FigmaNodeTypes {
   POLYGON,
   LINE,
   VECTOR,
+  TEXT,
   STAR;
 }
