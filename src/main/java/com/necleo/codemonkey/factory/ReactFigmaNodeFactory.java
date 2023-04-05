@@ -10,10 +10,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class FigmaNodeFactory extends Factory<FigmaNodeTypes, ReactCGI> {
+public class ReactFigmaNodeFactory extends Factory<FigmaNodeTypes, ReactCGI> {
 
   @Autowired
-  public FigmaNodeFactory(List<ReactCGI> beans) {
+  public ReactFigmaNodeFactory(List<ReactCGI> beans) {
     super(beans);
   }
 }

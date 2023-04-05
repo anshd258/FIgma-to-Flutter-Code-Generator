@@ -23,6 +23,7 @@ public class RectangleReactCGI implements ReactCGI {
     genCode += "\n<div style={{ \n";
     genCode += getHeight(fNode);
     genCode += getWidth(fNode);
+    genCode += getBackgroundColour(fNode);
     genCode += getBoxDecoration(fNode);
     genCode += opacity(fNode);
     genCode += getHorizontalPosition(fNode);
@@ -50,57 +51,46 @@ public class RectangleReactCGI implements ReactCGI {
     return "width: '0px',\n";
   }
 
+  public String getBackgroundColour(FigmaRectangleNode fNode) {
+    final String begin = "backgroundColor: 'rgb(";
+    final String end = ")',\n";
+    final String fNodeColourR = (fNode.getFills().get(0).getColor().getR()) + ",";
+    final String fNodeColourG = (fNode.getFills().get(0).getColor().getB()) + ",";
+    final String fNodeColourB = String.valueOf(fNode.getFills().get(0).getColor().getB());
+    return begin + fNodeColourR + fNodeColourG + fNodeColourB + end;
+  }
+
   public String getBoxDecoration(FigmaRectangleNode fNode) {
     final String upperBoxDecoration = "boxSizing: '";
     final String bottomBoxDecoration = ",\n";
     String genBoxDecoration = "";
-    if (fNode.getBottomLeftRadius() != 0
-        || fNode.getTopLeftRadius() != 0
-        || fNode.getTopRightRadius() != 0
-        || fNode.getBottomRightRadius() != 0) {
+    if (fNode.getCornerRadius() != 0) {
       genBoxDecoration = "border-box', \n border-radius: '";
       genBoxDecoration = genBoxDecoration + borderRadius(fNode) + "px',\n";
     } else genBoxDecoration = "unset',\n";
-    if (fNode.getStrokeWeight() != 0) {
+    if (fNode.getStrokeWeight() != 1) {
       genBoxDecoration += border(fNode);
     }
+
     return upperBoxDecoration + genBoxDecoration + bottomBoxDecoration;
   }
 
   public String borderRadius(FigmaRectangleNode fNode) {
-    //        final String upperBorderRadius = " borderRadius: BorderRadius.all(";
-    //        final String bottomBorderRadius = "),\n";
-    //        String topradiusL = " topLeft: Radius.circular(" + fNode.getTopLeftRadius() + "),\n";
-    //        String topradiusR =
-    //                " topRight: Radius.circular(" + Float.toString(fNode.getTopRightRadius()) +
-    // "),\n";
-    //        String bottomradiusL =
-    //                " bottomLeft:: Radius.circular(" + Float.toString(fNode.getBottomLeftRadius())
-    // + "),\n";
-    //        String bottomradiusR =
-    //                " bottomRight: Radius.circular(" +
-    // Float.toString(fNode.getBottomRightRadius()) + "),\n";
-    //        return upperBorderRadius
-    //                + topradiusL
-    //                + topradiusR
-    //                + bottomradiusL
-    //                + bottomradiusR
-    //                + bottomBorderRadius;
 
     return Float.toString(fNode.getCornerRadius());
   }
 
   public String border(FigmaRectangleNode fNode) {
-    final String fNodeColourR = (fNode.getFills().get(0).getColor().getR()) + ",";
-    final String fNodeColourG = (fNode.getFills().get(0).getColor().getB()) + ",";
-    final String fNodeColourB = String.valueOf(fNode.getFills().get(0).getColor().getB());
+    final String fNodeColourR = (fNode.getStrokes().get(0).getColor().getR()) + ",";
+    final String fNodeColourG = (fNode.getStrokes().get(0).getColor().getB()) + ",";
+    final String fNodeColourB = String.valueOf(fNode.getStrokes().get(0).getColor().getB());
 
     final String upperBorder = "border: '";
     final String width = (fNode.getStrokeWeight()) + "px ";
     final String borderType =
         fNode.getStrokes().get(0).getType().toLowerCase()
             + " "; // this id must map the type of border ig
-    final String colour = "rgb(" + fNodeColourR + fNodeColourG + fNodeColourB + ")";
+    final String colour = "rgb(" + fNodeColourR + fNodeColourG + fNodeColourB + ")'";
     return upperBorder + width + borderType + colour;
   }
 
