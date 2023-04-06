@@ -54,9 +54,9 @@ public class RectangleReactCGI implements ReactCGI {
   public String getBackgroundColour(FigmaRectangleNode fNode) {
     final String begin = "backgroundColor: 'rgb(";
     final String end = ")',\n";
-    final String fNodeColourR = (fNode.getFills().get(0).getColor().getR()) + ",";
-    final String fNodeColourG = (fNode.getFills().get(0).getColor().getB()) + ",";
-    final String fNodeColourB = String.valueOf(fNode.getFills().get(0).getColor().getB());
+    final String fNodeColourR = (255 * fNode.getFills().get(0).getColor().getR()) + ",";
+    final String fNodeColourG = (255 * fNode.getFills().get(0).getColor().getG()) + ",";
+    final String fNodeColourB = String.valueOf(255*fNode.getFills().get(0).getColor().getB());
     return begin + fNodeColourR + fNodeColourG + fNodeColourB + end;
   }
 
@@ -81,9 +81,9 @@ public class RectangleReactCGI implements ReactCGI {
   }
 
   public String border(FigmaRectangleNode fNode) {
-    final String fNodeColourR = (fNode.getStrokes().get(0).getColor().getR()) + ",";
-    final String fNodeColourG = (fNode.getStrokes().get(0).getColor().getB()) + ",";
-    final String fNodeColourB = String.valueOf(fNode.getStrokes().get(0).getColor().getB());
+    final String fNodeColourR = (255 * fNode.getStrokes().get(0).getColor().getR()) + ",";
+    final String fNodeColourG = (255 * fNode.getStrokes().get(0).getColor().getG()) + ",";
+    final String fNodeColourB = String.valueOf(255 * fNode.getStrokes().get(0).getColor().getB());
 
     final String upperBorder = "border: '";
     final String width = (fNode.getStrokeWeight()) + "px ";
