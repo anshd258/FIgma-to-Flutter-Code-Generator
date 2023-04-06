@@ -46,4 +46,9 @@ public class FigmaTextNode extends FigmaNode {
   int paragraphSpacing;
   boolean autoRename;
   String characters;
+  String fontFamily;
+  int fontWeight;
+  int fontSize;
+  PrimaryAxisAlignItems primaryAxisAlignitems;
+
 }
