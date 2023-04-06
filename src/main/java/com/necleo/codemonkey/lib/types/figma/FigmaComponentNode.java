@@ -53,6 +53,7 @@ public class FigmaComponentNode extends FigmaNode {
   CounterAxisSizingMode counterAxisSizingMode;
   PrimaryAxisAlignItems primaryAxisAlignItems;
   CounterAxisAlignItems counterAxisAlignItems;
+
   // padding properties
   int paddingLeft;
   int paddingRight;

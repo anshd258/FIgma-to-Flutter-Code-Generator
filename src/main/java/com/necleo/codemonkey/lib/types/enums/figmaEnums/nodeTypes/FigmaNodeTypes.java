@@ -7,6 +7,6 @@ public enum FigmaNodeTypes {
   LINE,
   VECTOR,
   TEXT,
-  FRAME,
+
   STAR;
 }

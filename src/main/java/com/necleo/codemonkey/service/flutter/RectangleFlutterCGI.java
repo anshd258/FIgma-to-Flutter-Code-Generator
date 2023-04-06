@@ -3,7 +3,6 @@ package com.necleo.codemonkey.service.flutter;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
-import com.necleo.codemonkey.lib.types.figma.FigmaTextNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -15,16 +14,14 @@ public class RectangleFlutterCGI implements FlutterCGI {
   public FigmaNodeTypes getEnumMapping() {
     return FigmaNodeTypes.RECTANGLE;
   }
-@Override
+
+  @Override
   public String generate(FigmaNode figmaNode) {
     if (!(figmaNode instanceof FigmaRectangleNode fNode)) {
       throw new IllegalArgumentException();
     }
     return generat(fNode);
   }
-
-
-
 
   public String generat(FigmaRectangleNode figmaNode) {
 

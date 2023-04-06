@@ -37,7 +37,6 @@ public class FigmaLayersTreeDataConsumer {
     FigmaNodeConsumerRequest figmaNodes =
         objectMapper.readValue(message.getPayload(), new TypeReference<>() {});
 
-
     Map<String, TagData> tagDataMap =
         figmaNodes.getTagData().stream()
             .collect(Collectors.toMap(TagData::getFigmaNodeId, tagData -> tagData));
