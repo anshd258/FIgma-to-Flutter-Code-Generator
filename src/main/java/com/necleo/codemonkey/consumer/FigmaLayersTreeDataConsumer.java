@@ -32,6 +32,7 @@ public class FigmaLayersTreeDataConsumer {
   //      deletionPolicy = SqsMessageDeletionPolicy.ON_SUCCESS)
   public void processMessage(Message<String> message) throws JsonProcessingException {
     log.debug("Received message {}", message);
+    System.out.println(message);
     // Process the message
     String projectId = message.getHeaders().get("ProjectId", String.class);
     FigmaNodeConsumerRequest figmaNodes =

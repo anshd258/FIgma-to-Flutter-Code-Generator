@@ -15,6 +15,7 @@ import lombok.extern.jackson.Jacksonized;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @SuperBuilder
 @Jacksonized
+@NoArgsConstructor
 public class FigmaRectangleNode extends FigmaNode {
   int opacity;
   boolean isMask;
