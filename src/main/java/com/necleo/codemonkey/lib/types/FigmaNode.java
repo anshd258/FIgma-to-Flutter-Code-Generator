@@ -9,6 +9,7 @@ import com.necleo.codemonkey.lib.types.figma.rect.Rect;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
@@ -36,6 +37,7 @@ import lombok.extern.jackson.Jacksonized;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
 @SuperBuilder
+@NoArgsConstructor
 @Jacksonized
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
