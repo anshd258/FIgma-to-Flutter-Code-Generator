@@ -11,11 +11,11 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Filters {
-    int exposure;
-    int contrast;
-    int saturation;
-    int temperature;
-    int tint;
-    int highlights;
-    int shadows;
+  int exposure;
+  int contrast;
+  int saturation;
+  int temperature;
+  int tint;
+  int highlights;
+  int shadows;
 }
