@@ -3,6 +3,7 @@ package com.necleo.codemonkey.service.flutter;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.FigmaTextNode;
+import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSolid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -34,19 +35,19 @@ public class TextFlutterCGI implements FlutterCGI {
     final String lowerTextStyle = "),\n";
     String genTextStyle = "";
     if (fNode.getFills() != null) {
-      genTextStyle += getColor(fNode);
+      final FillsSolid fills = (FillsSolid) fNode.getFills().get(0);
+      genTextStyle += getColor(fills);
     }
     return upperTextStyle + genTextStyle + lowerTextStyle;
   }
 
-  private String getColor(FigmaTextNode fNode) {
-
+  private String getColor(FillsSolid fills) {
     final String upperColor = "color: Color.fromRGBO(\n";
     final String lowerColor = "),\n";
-    final String red = Math.round(fNode.getFills().get(0).getColor().getR() * 255) + ",";
-    final String green = Math.round(fNode.getFills().get(0).getColor().getG() * 255) + ",";
-    final String blue = Math.round(fNode.getFills().get(0).getColor().getB() * 255) + ",";
-    final String opacity = Float.toString(fNode.getFills().get(0).getOpacity());
+    final String red = Math.round(fills.getColor().getR() * 255) + ",";
+    final String green = Math.round(fills.getColor().getG() * 255) + ",";
+    final String blue = Math.round(fills.getColor().getB() * 255) + ",";
+    final String opacity = Float.toString(fills.getOpacity());
 
     return upperColor + red + green + blue + opacity + lowerColor;
   }

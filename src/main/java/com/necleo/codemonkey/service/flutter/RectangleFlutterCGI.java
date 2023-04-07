@@ -3,8 +3,12 @@ package com.necleo.codemonkey.service.flutter;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
+import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsImage;
+import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSolid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import static com.necleo.codemonkey.lib.types.figma.properties.fills.enums.ScaleMode.FILL;
 
 @Service
 @Slf4j
@@ -56,9 +60,20 @@ public class RectangleFlutterCGI implements FlutterCGI {
     final String upperBoxDecoration = "decoration: BoxDecoration(\n";
     final String bottomBoxDecoration = "),\n";
     String genBoxDecoration = "";
-    if (fNode.getFills().get(0).getColor() != null && fNode.getFills().get(0).getOpacity() != 0) {
-      genBoxDecoration += color(fNode);
+
+    if (fNode.getFills().get(0).getType().equals("SOLID")) {
+      final FillsSolid fills = (FillsSolid) fNode.getFills().get(0);
+      if (fills.getColor() != null && fNode.getFills().get(0).getOpacity() != 0) {
+        genBoxDecoration += color(fills);
+      }
     }
+    System.out.println(fNode.getFills().get(0).getType());
+    if (fNode.getFills().get(0).getType().equals("IMAGE") ) {
+      final FillsImage fills = (FillsImage) fNode.getFills().get(0);
+
+        genBoxDecoration += getImage(fills);
+    }
+
     if (fNode.getBottomLeftRadius() != 0
         || fNode.getTopLeftRadius() != 0
         || fNode.getTopRightRadius() != 0
@@ -71,13 +86,37 @@ public class RectangleFlutterCGI implements FlutterCGI {
     return upperBoxDecoration + genBoxDecoration + bottomBoxDecoration;
   }
 
-  private String color(FigmaRectangleNode fNode) {
+  private String getImage(FillsImage fills) {
+    final String upperImage = " image: DecorationImage(\n";
+    final String lowerImage = "),\n";
+    String genImage = "";
+    genImage += getNetworkImage(fills);
+    genImage += getFit(fills);
+    return  upperImage + genImage + lowerImage;
+  }
+
+  private String getFit(FillsImage fills) {
+    String filltype = "";
+    if (fills.getScaleMode().equals(FILL)){
+      filltype = "fill";
+    }
+    return "fit: BoxFit."+ filltype + ",\n";
+  }
+
+  private String getNetworkImage(FillsImage fills) {
+    final String upperImage = " image: NetworkImage(\n";
+    final String lowerImage = "),\n";
+    final String imageUrl = "'"+ fills.getImageHash()+"'";
+    return upperImage + imageUrl + lowerImage;
+  }
+
+  private String color(FillsSolid fills) {
     final String upperColor = "color: Color.fromRGBO(\n";
     final String lowerColor = "),\n";
-    final String red = Math.round(fNode.getFills().get(0).getColor().getR() * 255) + ",";
-    final String green = Math.round(fNode.getFills().get(0).getColor().getG() * 255) + ",";
-    final String blue = Math.round(fNode.getFills().get(0).getColor().getB() * 255) + ",";
-    final String opacity = Float.toString(fNode.getFills().get(0).getOpacity());
+    final String red = Math.round(fills.getColor().getR() * 255) + ",";
+    final String green = Math.round(fills.getColor().getG() * 255) + ",";
+    final String blue = Math.round(fills.getColor().getB() * 255) + ",";
+    final String opacity = Float.toString(fills.getOpacity());
 
     return upperColor + red + green + blue + opacity + lowerColor;
   }

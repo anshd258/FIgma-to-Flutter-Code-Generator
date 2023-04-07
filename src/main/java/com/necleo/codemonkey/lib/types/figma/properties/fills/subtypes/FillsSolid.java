@@ -13,5 +13,5 @@ import lombok.extern.jackson.Jacksonized;
 @SuperBuilder
 @Jacksonized
 public class FillsSolid extends Fills {
-    Color color;
+  Color color;
 }
