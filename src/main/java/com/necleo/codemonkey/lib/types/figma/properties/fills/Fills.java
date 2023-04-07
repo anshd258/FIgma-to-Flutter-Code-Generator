@@ -15,6 +15,7 @@ import lombok.extern.jackson.Jacksonized;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type", visible = true)
 @JsonSubTypes({
   @JsonSubTypes.Type(value = FillsImage.class, name = "IMAGE"),
+  @JsonSubTypes.Type(value = FillsImage.class, name = "SOLID")
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
