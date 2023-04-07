@@ -51,5 +51,4 @@ public class FigmaTextNode extends FigmaNode {
   int fontSize;
   int lineHeight;
   PrimaryAxisAlignItems primaryAxisAlignitems;
-
 }
