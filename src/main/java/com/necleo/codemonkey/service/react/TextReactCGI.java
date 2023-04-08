@@ -3,8 +3,12 @@ package com.necleo.codemonkey.service.react;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.FigmaTextNode;
+import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSolid;
+import org.springframework.stereotype.Service;
+
 import java.util.Objects;
 
+@Service
 public class TextReactCGI implements ReactCGI {
     @Override
     public FigmaNodeTypes getEnumMapping() {
@@ -16,11 +20,11 @@ public class TextReactCGI implements ReactCGI {
         FigmaTextNode fNode = (FigmaTextNode) figmaNode;
         String genCode = "";
 
-        genCode += "\n<div style={{ \n";
+        genCode += "\n<p style={{ \n";
         genCode += getStyle(fNode);
         genCode += " }}>";
         genCode += getData(fNode);
-        genCode += "</div>\n";
+        genCode += "</p>\n";
         System.out.println(genCode); // end indent
 
         return genCode;
@@ -29,6 +33,7 @@ public class TextReactCGI implements ReactCGI {
 
     public String getStyle(FigmaTextNode fNode){
         String style = "";
+        final FillsSolid fills = (FillsSolid) fNode.getFills().get(0);
         // visible
         if (fNode.isVisible())
             style += "visibility: true, \n";
@@ -36,15 +41,22 @@ public class TextReactCGI implements ReactCGI {
             style += "visibility: false, \n";
         // color
         style += "color: 'rgb(" +
-                fNode.getFills().get(0).getColor().getR() + ", " +
-                fNode.getFills().get(0).getColor().getG() + ", " +
-                fNode.getFills().get(0).getColor().getB()
+                (fills.getColor().getR() * 255) + ", " +
+                (fills.getColor().getG() *255) + ", " +
+                (fills.getColor().getB() * 255)
                 + ")'\n";
         // align
         style += "left: '" + fNode.getX() + "',\n";
         style += "top: '" + fNode.getY() + "',\n";
         style += "opacity: '" + fNode.getOpacity() + "',\n";
-        style += "border: '" + fNode.getStrokes().get(0).getType().toLowerCase() + ", " + fNode.getStrokeWeight() + "px, rgb(" + fNode.getStrokes().get(0).getColor().getR() + ", " + fNode.getStrokes().get(0).getColor().getG() + ", " + fNode.getStrokes().get(0).getColor().getB() + ")',\n";
+        style += "border: '"
+                + fNode.getStrokes().get(0).getType().toLowerCase()
+                + ", "
+                + fNode.getStrokeWeight()
+                + "px, rgb(" + fNode.getStrokes().get(0).getColor().getR() * 255
+                + ", " + fNode.getStrokes().get(0).getColor().getG() * 255
+                + ", " + fNode.getStrokes().get(0).getColor().getB() * 255
+                + ")',\n";
         style += getAlignment(fNode);
         style += getFont(fNode);
 
@@ -52,9 +64,9 @@ public class TextReactCGI implements ReactCGI {
     }
 
     public String getData(FigmaTextNode fNode) {
-        if (!Objects.equals(fNode.getName(), ""))
-            return " ";
-        else
+//        if (!Objects.equals(fNode.getName(), ""))
+//            return " ";
+//        else
             return fNode.getName();
     }
 
@@ -70,7 +82,7 @@ public class TextReactCGI implements ReactCGI {
     public String getAlignment(FigmaTextNode fNode) {
         String alignment = "";
 
-        alignment += "justifyContent: '"+ fNode.getPrimaryAxisAlignitems().toString().toLowerCase() +"',\n";
+//       alignment += "justifyContent: '"+ (fNode.getPrimaryAxisAlignitems() ? fNode.getPrimaryAxisAlignitems().toString().toLowerCase()  :'' )  +"',\n";
         alignment += "lineHeight: '"+ fNode.getLineHeight() +"'\n";
         return alignment;
     }

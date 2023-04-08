@@ -12,7 +12,7 @@ import lombok.extern.jackson.Jacksonized;
 
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@SuperBuilder
+//@SuperBuilder
 @Jacksonized
 public class FigmaNodeConsumerRequest {
   List<FigmaNode> screen;

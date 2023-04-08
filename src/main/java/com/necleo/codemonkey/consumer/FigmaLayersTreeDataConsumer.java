@@ -32,30 +32,32 @@ public class FigmaLayersTreeDataConsumer {
       value = "${cloud.aws.sqs.codeGenQueueName}",
       deletionPolicy = SqsMessageDeletionPolicy.ON_SUCCESS)
   public void processMessage(Message<String> message) throws JsonProcessingException {
-    log.debug("Received message {}", message);
-    System.out.println(message);
+    log.info("Received message {}", message);
     // Process the message
     String projectId = message.getHeaders().get("ProjectId", String.class);
 
-    Map<String, Object> o = objectMapper.readValue(message.getPayload(), new TypeReference<>() {});
+    Map<String, Object> o = objectMapper.readValue(message.getPayload(), new TypeReference<>() {
+    });
 
     Map<String, Object> screen =
-        new HashMap<>(
-            Map.of(
-                "screen",
-                ((Map<String, Object>) ((List<Object>) o.get("screen")).get(0)).get("selection")));
+            new HashMap<>(
+                    Map.of(
+                            "screen",
+                            ((Map<String, Object>) ((List<Object>) o.get("screen")).get(0)).get("selection")));
 
     screen.put("tag_data", o.get("tag_data"));
 
     FigmaNodeConsumerRequest figmaNodes =
-        objectMapper.convertValue(screen, new TypeReference<>() {});
+            objectMapper.convertValue(screen, new TypeReference<>() {
+            });
 
+    Map<String, TagData> tagDataMap = new HashMap<>();
     if (!ObjectUtils.isEmpty(figmaNodes.getTagData())) {
-      Map<String, TagData> tagDataMap =
-          figmaNodes.getTagData().stream()
+      tagDataMap = figmaNodes.getTagData().stream()
               .collect(Collectors.toMap(TagData::getFigmaNodeId, tagData -> tagData));
-      codeGenService.gen(figmaNodes.getScreen().get(0), tagDataMap);
     }
+    codeGenService.gen(figmaNodes.getScreen().get(0), tagDataMap);
+
     log.info(projectId);
   }
 }
