@@ -31,18 +31,41 @@ public class TextFlutterCGI implements FlutterCGI {
   }
 
   private String getTextStyle(FigmaTextNode fNode) {
-    final String upperTextStyle = "style: const TextStyle(\n";
+    final String upperTextStyle = "style: const  GoogleFonts." + fNode.getStyle().getFontFamily()
+            +"(\n";
     final String lowerTextStyle = "),\n";
     String genTextStyle = "";
     if (fNode.getFills() != null) {
       final FillsSolid fills = (FillsSolid) fNode.getFills().get(0);
       genTextStyle += getColor(fills);
     }
+    if(fNode.getStyle() != null){
+      genTextStyle += getFontStyle(fNode);
+      genTextStyle += getFontWeight(fNode);
+      genTextStyle += getLetterSpacing(fNode);
+      genTextStyle += getLineHeight(fNode);
+    }
     return upperTextStyle + genTextStyle + lowerTextStyle;
   }
 
+  private String getLineHeight(FigmaTextNode fNode) {
+    return "height:" + fNode.getStyle().getLineHeightPx() +",\n";
+  }
+
+  private String getLetterSpacing(FigmaTextNode fNode) {
+    return " letterSpacing:" + fNode.getStyle().getLetterSpacing() +",\n";
+  }
+
+  private String getFontWeight(FigmaTextNode fNode) {
+    return "fontWeight: FontWeight.w" + fNode.getStyle().getFontWeight() +",\n";
+  }
+
+  private String getFontStyle(FigmaTextNode fNode) {
+    return "fontSize:"+fNode.getStyle().getFontSize()+",\n";
+  }
+
   private String getColor(FillsSolid fills) {
-    final String upperColor = "color: Color.fromRGBO(\n";
+    final String upperColor = "color: Color.fromRGBO(";
     final String lowerColor = "),\n";
     final String red = Math.round(fills.getColor().getR() * 255) + ",";
     final String green = Math.round(fills.getColor().getG() * 255) + ",";
@@ -54,7 +77,7 @@ public class TextFlutterCGI implements FlutterCGI {
 
   private String getText(FigmaTextNode fNode) {
     if (fNode.getName() != null) {
-      return fNode.getName() + "\n";
+      return "'"+fNode.getName()+"',\n";
     }
     return "";
   }

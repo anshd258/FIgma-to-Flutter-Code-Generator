@@ -8,5 +8,7 @@ public enum FigmaNodeTypes {
   VECTOR,
   TEXT,
 
+  FRAME,
+
   STAR;
 }

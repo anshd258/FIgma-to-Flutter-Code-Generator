@@ -1,5 +1,7 @@
 package com.necleo.codemonkey.service.flutter;
 
+import static com.necleo.codemonkey.lib.types.figma.properties.fills.enums.ScaleMode.FILL;
+
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
@@ -7,8 +9,6 @@ import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsImag
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSolid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import static com.necleo.codemonkey.lib.types.figma.properties.fills.enums.ScaleMode.FILL;
 
 @Service
 @Slf4j
@@ -68,10 +68,10 @@ public class RectangleFlutterCGI implements FlutterCGI {
       }
     }
     System.out.println(fNode.getFills().get(0).getType());
-    if (fNode.getFills().get(0).getType().equals("IMAGE") ) {
+    if (fNode.getFills().get(0).getType().equals("IMAGE")) {
       final FillsImage fills = (FillsImage) fNode.getFills().get(0);
 
-        genBoxDecoration += getImage(fills);
+      genBoxDecoration += getImage(fills);
     }
 
     if (fNode.getBottomLeftRadius() != 0
@@ -92,21 +92,21 @@ public class RectangleFlutterCGI implements FlutterCGI {
     String genImage = "";
     genImage += getNetworkImage(fills);
     genImage += getFit(fills);
-    return  upperImage + genImage + lowerImage;
+    return upperImage + genImage + lowerImage;
   }
 
   private String getFit(FillsImage fills) {
     String filltype = "";
-    if (fills.getScaleMode().equals(FILL)){
+    if (fills.getScaleMode().equals(FILL)) {
       filltype = "fill";
     }
-    return "fit: BoxFit."+ filltype + ",\n";
+    return "fit: BoxFit." + filltype + ",\n";
   }
 
   private String getNetworkImage(FillsImage fills) {
     final String upperImage = " image: NetworkImage(\n";
     final String lowerImage = "),\n";
-    final String imageUrl = "'"+ fills.getImageHash()+"'";
+    final String imageUrl = "'" + fills.getImageHash() + "'";
     return upperImage + imageUrl + lowerImage;
   }
 

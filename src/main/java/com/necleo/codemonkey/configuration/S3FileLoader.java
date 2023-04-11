@@ -1,5 +1,4 @@
 // package com.necleo.codemonkey.configuration;
-//
 // import com.amazonaws.services.s3.AmazonS3;
 // import com.amazonaws.services.s3.model.*;
 // import com.fasterxml.jackson.databind.ObjectMapper;
