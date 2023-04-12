@@ -7,7 +7,6 @@ import com.necleo.codemonkey.lib.types.figma.properties.fills.FillGeometry;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.Fills;
 import com.necleo.codemonkey.lib.types.figma.properties.strokes.StrokeGeometry;
 import com.necleo.codemonkey.lib.types.figma.properties.strokes.Strokes;
-import com.necleo.codemonkey.lib.types.figma.properties.text.Style;
 import java.util.List;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -43,6 +42,12 @@ public class FigmaTextNode extends FigmaNode {
   int paragraphSpacing;
   boolean autoRename;
   String characters;
-  Style style;
+
+  String fontFamily;
+  int fontWeight;
+
+  int fontSize;
+  int lineHeight;
+
   PrimaryAxisAlignItems primaryAxisAlignitems;
 }

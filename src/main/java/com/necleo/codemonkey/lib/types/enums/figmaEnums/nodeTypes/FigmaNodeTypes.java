@@ -9,6 +9,5 @@ public enum FigmaNodeTypes {
   TEXT,
 
   FRAME,
-
-  STAR;
+  STAR
 }

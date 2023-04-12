@@ -5,6 +5,7 @@ import com.necleo.codemonkey.lib.types.enums.figmaEnums.*;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.FillGeometry;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.Fills;
 import com.necleo.codemonkey.lib.types.figma.properties.strokes.StrokeGeometry;
+import com.necleo.codemonkey.lib.types.figma.properties.strokes.Strokes;
 import java.util.List;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -31,7 +32,7 @@ public class FigmaRectangleNode extends FigmaNode {
   // geometry related properties
   List<Fills> fills;
   String fillStyleId;
-  List<Paint> strokes;
+  List<Strokes> strokes;
   String strokeStyleId;
   int strokeWeight;
   StrokeJoin strokeJoin;

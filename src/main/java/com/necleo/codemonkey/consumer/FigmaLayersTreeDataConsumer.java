@@ -6,47 +6,61 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.necleo.codemonkey.consumer.request.FigmaNodeConsumerRequest;
 import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.service.CodeGenService;
-import com.necleo.codemonkey.service.FlutterCodeGenImpl;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import io.awspring.cloud.messaging.listener.SqsMessageDeletionPolicy;
 import io.awspring.cloud.messaging.listener.annotation.SqsListener;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 @Service
 @RequiredArgsConstructor
-@Getter
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 public class FigmaLayersTreeDataConsumer {
   ObjectMapper objectMapper;
-  FlutterCodeGenImpl flutterCodeGenImp;
+
   CodeGenService codeGenService;
 
-    @SqsListener(
-        value = "${cloud.aws.sqs.codeGenQueueName}",
-        deletionPolicy = SqsMessageDeletionPolicy.ON_SUCCESS)
+  @SqsListener(
+      value = "${cloud.aws.sqs.codeGenQueueName}",
+      deletionPolicy = SqsMessageDeletionPolicy.ON_SUCCESS)
   public void processMessage(Message<String> message) throws JsonProcessingException {
-    log.debug("Received message {}", message);
+
+    log.info("Received message {}", message);
+
     // Process the message
     String projectId = message.getHeaders().get("ProjectId", String.class);
-    FigmaNodeConsumerRequest figmaNodes =
-        objectMapper.readValue(message.getPayload(), new TypeReference<>() {});
 
-    Map<String, TagData> tagDataMap =
-        figmaNodes.getTagData().stream()
-            .collect(Collectors.toMap(TagData::getFigmaNodeId, tagData -> tagData));
-    ;
+    Map<String, Object> o = objectMapper.readValue(message.getPayload(), new TypeReference<>() {});
+
+    Map<String, Object> screen =
+        new HashMap<>(
+            Map.of(
+                "screen",
+                ((Map<String, Object>) ((List<Object>) o.get("screen")).get(0)).get("selection")));
+
+    screen.put("tag_data", o.get("tag_data"));
+
+    FigmaNodeConsumerRequest figmaNodes =
+        objectMapper.convertValue(screen, new TypeReference<>() {});
+
+    Map<String, TagData> tagDataMap = new HashMap<>();
+    if (!ObjectUtils.isEmpty(figmaNodes.getTagData())) {
+      tagDataMap =
+          figmaNodes.getTagData().stream()
+              .collect(Collectors.toMap(TagData::getFigmaNodeId, tagData -> tagData));
+    }
+
     codeGenService.gen(figmaNodes.getScreen().get(0), tagDataMap);
 
     log.info(projectId);
   }
 }
-// convert the string to java class then pass it to codegenservice

@@ -31,37 +31,36 @@ public class TextFlutterCGI implements FlutterCGI {
   }
 
   private String getTextStyle(FigmaTextNode fNode) {
-    final String upperTextStyle = "style: const  GoogleFonts." + fNode.getStyle().getFontFamily()
-            +"(\n";
+    final String upperTextStyle = "style: const  GoogleFonts." + fNode.getFontFamily() + "(\n";
     final String lowerTextStyle = "),\n";
     String genTextStyle = "";
     if (fNode.getFills() != null) {
       final FillsSolid fills = (FillsSolid) fNode.getFills().get(0);
       genTextStyle += getColor(fills);
     }
-    if(fNode.getStyle() != null){
+    if (fNode.getFontFamily() != null) {
       genTextStyle += getFontStyle(fNode);
       genTextStyle += getFontWeight(fNode);
-      genTextStyle += getLetterSpacing(fNode);
+      //      genTextStyle += getLetterSpacing(fNode);
       genTextStyle += getLineHeight(fNode);
     }
     return upperTextStyle + genTextStyle + lowerTextStyle;
   }
 
   private String getLineHeight(FigmaTextNode fNode) {
-    return "height:" + fNode.getStyle().getLineHeightPx() +",\n";
+    return "height:" + fNode.getLineHeight() + ",\n";
   }
 
-  private String getLetterSpacing(FigmaTextNode fNode) {
-    return " letterSpacing:" + fNode.getStyle().getLetterSpacing() +",\n";
-  }
+  //  private String getLetterSpacing(FigmaTextNode fNode) {
+  //    return " letterSpacing:" + fNode.getLetterSpacing() +",\n";
+  //  }
 
   private String getFontWeight(FigmaTextNode fNode) {
-    return "fontWeight: FontWeight.w" + fNode.getStyle().getFontWeight() +",\n";
+    return "fontWeight: FontWeight.w" + fNode.getFontWeight() + ",\n";
   }
 
   private String getFontStyle(FigmaTextNode fNode) {
-    return "fontSize:"+fNode.getStyle().getFontSize()+",\n";
+    return "fontSize:" + fNode.getFontSize() + ",\n";
   }
 
   private String getColor(FillsSolid fills) {
@@ -77,7 +76,7 @@ public class TextFlutterCGI implements FlutterCGI {
 
   private String getText(FigmaTextNode fNode) {
     if (fNode.getName() != null) {
-      return "'"+fNode.getName()+"',\n";
+      return "'" + fNode.getName() + "',\n";
     }
     return "";
   }
