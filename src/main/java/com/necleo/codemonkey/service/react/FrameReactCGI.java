@@ -6,7 +6,7 @@ import com.necleo.codemonkey.lib.types.figma.FigmaTextNode;
 
 public class FrameReactCGI implements ReactCGI {
   @Override
-  public FigmaNodeTypes getEnumMapping() {
+  public FigmaNodeTypes getStrategy() {
     return FigmaNodeTypes.FRAME;
   }
 

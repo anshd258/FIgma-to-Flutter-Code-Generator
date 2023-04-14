@@ -8,6 +8,7 @@ import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes
 import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsImage;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSolid;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +17,8 @@ import org.springframework.stereotype.Service;
 public class RectangleFlutterCGI implements FlutterCGI {
 
   @Override
-  public FigmaNodeMapper getEnumMapping() {
-    return new FigmaNodeMapper(FigmaNodeTypes.RECTANGLE,null);
+  public Set<FigmaNodeMapper> getStrategy() {
+    return Set.of(new FigmaNodeMapper(FigmaNodeTypes.RECTANGLE, null));
   }
 
   @Override

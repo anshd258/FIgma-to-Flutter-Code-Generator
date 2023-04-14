@@ -4,6 +4,7 @@ import com.necleo.codemonkey.factory.mapper.FigmaNodeMapper;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.FigmaVectorNode;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -13,8 +14,8 @@ public class VectorFlutterCGI implements FlutterCGI {
   RectangleFlutterCGI rectangleFlutterCGI = new RectangleFlutterCGI();
 
   @Override
-  public FigmaNodeMapper getEnumMapping() {
-    return new FigmaNodeMapper(FigmaNodeTypes.VECTOR,null);
+  public Set<FigmaNodeMapper> getStrategy() {
+    return Set.of(new FigmaNodeMapper(FigmaNodeTypes.VECTOR, null));
   }
 
   @Override

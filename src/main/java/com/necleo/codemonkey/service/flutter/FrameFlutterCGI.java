@@ -10,6 +10,7 @@ import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes
 import com.necleo.codemonkey.lib.types.figma.FigmaFrameNode;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsImage;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSolid;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +21,8 @@ public class FrameFlutterCGI implements FlutterCGI {
   TextFlutterCGI textFlutterCGI = new TextFlutterCGI();
 
   @Override
-  public FigmaNodeMapper getEnumMapping() {
-    return new FigmaNodeMapper(FigmaNodeTypes.FRAME,null);
+  public Set<FigmaNodeMapper> getStrategy() {
+    return Set.of(new FigmaNodeMapper(FigmaNodeTypes.FRAME, null));
   }
 
   @Override

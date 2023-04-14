@@ -5,12 +5,18 @@ import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.FigmaTextNode;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSolid;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
 public class TextFlutterCGI implements FlutterCGI {
+
+  @Override
+  public Set<FigmaNodeMapper> getStrategy() {
+    return Set.of(new FigmaNodeMapper(FigmaNodeTypes.TEXT, null));
+  }
 
   @Override
   public String generate(FigmaNode figmaNode) {
@@ -80,10 +86,5 @@ public class TextFlutterCGI implements FlutterCGI {
       return "'" + fNode.getName() + "',\n";
     }
     return "";
-  }
-
-  @Override
-  public FigmaNodeMapper getEnumMapping() {
-    return new FigmaNodeMapper(FigmaNodeTypes.TEXT,null);
   }
 }

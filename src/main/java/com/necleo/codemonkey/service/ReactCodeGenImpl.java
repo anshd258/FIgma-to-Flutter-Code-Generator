@@ -1,7 +1,7 @@
 package com.necleo.codemonkey.service;
 
 import com.necleo.codemonkey.enums.Language;
-import com.necleo.codemonkey.factory.ReactFigmaNodeFactory;
+import com.necleo.codemonkey.factory.ReactFigmaNodeAbstractFactory;
 import com.necleo.codemonkey.lib.types.ASTNode;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.TagData;
@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class ReactCodeGenImpl implements CodeGen {
 
-  ReactFigmaNodeFactory figmaNodeFactory;
+  ReactFigmaNodeAbstractFactory figmaNodeFactory;
 
   @Override
   public Language getLanguage() {
