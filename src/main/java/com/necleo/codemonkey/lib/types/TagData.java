@@ -3,7 +3,6 @@ package com.necleo.codemonkey.lib.types;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.TadDataType;
 import java.util.Map;
 import lombok.AccessLevel;
 import lombok.Getter;

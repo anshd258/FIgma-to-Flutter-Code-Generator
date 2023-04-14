@@ -1,6 +1,6 @@
 package com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes;
 
-public enum TadDataType {
+public enum TagDataType {
   BUTTON,
   CONTAINER,
   LINK

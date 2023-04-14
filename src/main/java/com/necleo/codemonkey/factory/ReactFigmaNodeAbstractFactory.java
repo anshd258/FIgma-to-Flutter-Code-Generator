@@ -1,5 +1,6 @@
 package com.necleo.codemonkey.factory;
 
+import com.necleo.codemonkey.factory.mapper.EnumMapper;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.service.react.ReactCGI;
 import java.util.List;
@@ -10,10 +11,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ReactFigmaNodeFactory extends Factory<FigmaNodeTypes, ReactCGI> {
+public class ReactFigmaNodeAbstractFactory extends AbstractFactory<FigmaNodeTypes, ReactCGI> {
 
   @Autowired
-  public ReactFigmaNodeFactory(List<ReactCGI> beans) {
-    super(beans);
+  public ReactFigmaNodeAbstractFactory(List<ReactCGI> beans) {
+    super(beans, new EnumMapper<>());
   }
 }

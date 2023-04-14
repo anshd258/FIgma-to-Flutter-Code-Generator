@@ -1,7 +1,7 @@
 package com.necleo.codemonkey.factory;
 
-import com.necleo.codemonkey.factory.mapper.FigmaNodeMapper;
-import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
+import com.necleo.codemonkey.factory.mapper.SetMapper;
+import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import com.necleo.codemonkey.service.flutter.FlutterCGI;
 import java.util.List;
 import lombok.AccessLevel;
@@ -11,10 +11,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class FlutterFigmaNodeFactory extends Factory<FigmaNodeMapper, FlutterCGI> {
+public class FlutterFigmaNodeAbstractFactory extends AbstractFactory<FigmaNodeMapper, FlutterCGI> {
 
   @Autowired
-  public FlutterFigmaNodeFactory(List<FlutterCGI> beans) {
-    super(beans);
+  public FlutterFigmaNodeAbstractFactory(List<FlutterCGI> beans) {
+    super(beans, new SetMapper<>());
   }
 }

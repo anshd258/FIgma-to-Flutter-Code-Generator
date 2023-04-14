@@ -1,22 +1,19 @@
 package com.necleo.codemonkey.service;
 
 import com.necleo.codemonkey.enums.Language;
-import com.necleo.codemonkey.factory.FlutterFigmaNodeFactory;
-import com.necleo.codemonkey.factory.FlutterTagDataNodeFactory;
-import com.necleo.codemonkey.factory.mapper.FigmaNodeMapper;
+import com.necleo.codemonkey.factory.FlutterFigmaNodeAbstractFactory;
+import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import com.necleo.codemonkey.lib.types.ASTNode;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.TagData;
-import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.TadDataType;
+import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.TagDataType;
 import com.necleo.codemonkey.service.flutter.FlutterCGI;
-import com.necleo.codemonkey.service.flutter.TagFlutterCGI;
 import java.util.Map;
 import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,8 +22,7 @@ import org.springframework.stereotype.Service;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class FlutterCodeGenImpl implements CodeGen {
 
-  FlutterFigmaNodeFactory flutterFigmaNodeFactory;
-  FlutterTagDataNodeFactory flutterTagDataNodeFactory;
+  FlutterFigmaNodeAbstractFactory flutterFigmaNodeFactory;
 
   @Override
   public Language getLanguage() {
@@ -35,20 +31,15 @@ public class FlutterCodeGenImpl implements CodeGen {
 
   @Override
   public ASTNode generate(FigmaNode fNode, Map<String, TagData> tagDataMap) {
-    String genCode = "";
-    if (!tagDataMap.equals(null)) {
-      Optional<TagFlutterCGI> tagFlutterCGIOptional =
-          flutterTagDataNodeFactory.getProcessor(TadDataType.BUTTON);
-      genCode +=
-          tagFlutterCGIOptional.map(tagFlutterCGI -> tagFlutterCGI.generate(fNode, tagDataMap));
-    } else {
-      String tagName  = tagDataMap.get(fNode.getId()).getTagName();
-      FigmaNodeMapper figmaNodeMapper = new FigmaNodeMapper(fNode.getType(),TadDataType.valueOf(tagName));
-      Optional<FlutterCGI> flutterCGIOptional =
-          flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
-      genCode += flutterCGIOptional.map(flutterCGI -> flutterCGI.generate(fNode)).orElse("");
-    }
 
+    String genCode = "";
+
+    String tagName =
+        Optional.ofNullable(tagDataMap.get(fNode.getId())).map(TagData::getTagName).orElse(null);
+    FigmaNodeMapper figmaNodeMapper =
+        new FigmaNodeMapper(fNode.getType(), TagDataType.valueOf(tagName.toUpperCase()));
+    Optional<FlutterCGI> flutterCGIOptional = flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
+    genCode += flutterCGIOptional.map(flutterCGI -> flutterCGI.generate(fNode)).orElse("");
     return ASTNode.builder().value(genCode).build();
   }
 }

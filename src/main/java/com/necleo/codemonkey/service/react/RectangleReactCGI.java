@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 public class RectangleReactCGI implements ReactCGI {
 
   @Override
-  public FigmaNodeTypes getEnumMapping() {
+  public FigmaNodeTypes getStrategy() {
     return FigmaNodeTypes.RECTANGLE;
   }
 

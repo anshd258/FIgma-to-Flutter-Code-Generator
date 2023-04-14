@@ -1,22 +1,23 @@
 package com.necleo.codemonkey.service.flutter;
 
-import com.necleo.codemonkey.factory.mapper.FigmaNodeMapper;
+import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
+import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
-import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.TadDataType;
-import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
-import com.necleo.codemonkey.lib.types.figma.FigmaTextNode;
+import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.TagDataType;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 
 @Service
 @Slf4j
-public class ButtonTagCGI implements FlutterCGI{
+public class ButtonTagCGI implements FlutterCGI {
 
-RectangleFlutterCGI rectangleFlutterCGI;
-TextFlutterCGI textFlutterCGI;
+
+RectangleFlutterCGI rectangleFlutterCGI = new RectangleFlutterCGI();
+TextFlutterCGI textFlutterCGI = new TextFlutterCGI();
 
 
     @Override
@@ -34,7 +35,7 @@ TextFlutterCGI textFlutterCGI;
         genCode += getChild(fNode);
 
 
-        return  genCode;
+        return upperButton + genCode + lowerButton;
     }
 
     private String getChild(FigmaNode fNode) {
@@ -53,8 +54,11 @@ TextFlutterCGI textFlutterCGI;
         return  " onTap: () {" + genFunction + "}\n";
     }
 
-    @Override
-    public FigmaNodeMapper getEnumMapping() {
-        return new FigmaNodeMapper(FigmaNodeTypes.FRAME,TadDataType.BUTTON);
-    }
+
+
+  @Override
+  public Set<FigmaNodeMapper> getStrategy() {
+    return Set.of(new FigmaNodeMapper(FigmaNodeTypes.FRAME, TagDataType.BUTTON), new FigmaNodeMapper(FigmaNodeTypes.RECTANGLE, TagDataType.BUTTON));
+  }
+
 }
