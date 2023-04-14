@@ -1,6 +1,6 @@
 package com.necleo.codemonkey.factory;
 
-import com.necleo.codemonkey.factory.domain.EnumMapper;
+import com.necleo.codemonkey.factory.mapper.EnumMapper;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.service.react.ReactCGI;
 import java.util.List;

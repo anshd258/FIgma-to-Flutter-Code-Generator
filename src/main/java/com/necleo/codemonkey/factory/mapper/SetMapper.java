@@ -1,4 +1,4 @@
-package com.necleo.codemonkey.factory.domain;
+package com.necleo.codemonkey.factory.mapper;
 
 import com.necleo.codemonkey.factory.Factory;
 import java.util.Map;

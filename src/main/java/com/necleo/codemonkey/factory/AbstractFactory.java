@@ -1,6 +1,6 @@
 package com.necleo.codemonkey.factory;
 
-import com.necleo.codemonkey.factory.domain.FactoryMapper;
+import com.necleo.codemonkey.factory.mapper.FactoryMapper;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
