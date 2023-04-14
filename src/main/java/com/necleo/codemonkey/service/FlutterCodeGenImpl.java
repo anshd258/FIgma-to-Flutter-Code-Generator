@@ -1,11 +1,14 @@
 package com.necleo.codemonkey.service;
 
 import com.necleo.codemonkey.enums.Language;
-import com.necleo.codemonkey.factory.FigmaNodeFactory;
+import com.necleo.codemonkey.factory.FlutterFigmaNodeFactory;
+import com.necleo.codemonkey.factory.FlutterTagDataNodeFactory;
 import com.necleo.codemonkey.lib.types.ASTNode;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.TagData;
+import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.TadDataType;
 import com.necleo.codemonkey.service.flutter.FlutterCGI;
+import com.necleo.codemonkey.service.flutter.TagFlutterCGI;
 import java.util.Map;
 import java.util.Optional;
 import lombok.AccessLevel;
@@ -20,7 +23,8 @@ import org.springframework.stereotype.Service;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class FlutterCodeGenImpl implements CodeGen {
 
-  FigmaNodeFactory figmaNodeFactory;
+  FlutterFigmaNodeFactory flutterFigmaNodeFactory;
+  FlutterTagDataNodeFactory flutterTagDataNodeFactory;
 
   @Override
   public Language getLanguage() {
@@ -30,8 +34,17 @@ public class FlutterCodeGenImpl implements CodeGen {
   @Override
   public ASTNode generate(FigmaNode fNode, Map<String, TagData> tagDataMap) {
     String genCode = "";
-    Optional<FlutterCGI> flutterCGIOptional = figmaNodeFactory.getProcessor(fNode.getType());
-    genCode += flutterCGIOptional.map(flutterCGI -> flutterCGI.generate(fNode)).orElse("");
+    if (!tagDataMap.equals(null)) {
+      Optional<TagFlutterCGI> tagFlutterCGIOptional =
+          flutterTagDataNodeFactory.getProcessor(TadDataType.BUTTON);
+      genCode +=
+          tagFlutterCGIOptional.map(tagFlutterCGI -> tagFlutterCGI.generate(fNode, tagDataMap));
+    } else {
+      Optional<FlutterCGI> flutterCGIOptional =
+          flutterFigmaNodeFactory.getProcessor(fNode.getType());
+      genCode += flutterCGIOptional.map(flutterCGI -> flutterCGI.generate(fNode)).orElse("");
+    }
+
     return ASTNode.builder().value(genCode).build();
   }
 }

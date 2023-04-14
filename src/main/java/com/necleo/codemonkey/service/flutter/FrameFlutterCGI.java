@@ -9,10 +9,14 @@ import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes
 import com.necleo.codemonkey.lib.types.figma.FigmaFrameNode;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsImage;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSolid;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
+@Service
+@Slf4j
 public class FrameFlutterCGI implements FlutterCGI {
-  RectangleFlutterCGI rectangleFlutterCGI;
-  TextFlutterCGI textFlutterCGI;
+  RectangleFlutterCGI rectangleFlutterCGI = new RectangleFlutterCGI();
+  TextFlutterCGI textFlutterCGI = new TextFlutterCGI();
 
   @Override
   public FigmaNodeTypes getEnumMapping() {
@@ -30,16 +34,15 @@ public class FrameFlutterCGI implements FlutterCGI {
   private String generat(FigmaFrameNode figmaNode) {
     String genCode = "";
 
-      genCode += "\nContainer( \n";
-      genCode += getHeight(figmaNode);
-      genCode += getWidth(figmaNode);
-      genCode += getBoxDecoration(figmaNode);
-      if(figmaNode.getChildren().size() >1){
-        genCode += getchild(figmaNode);
-      }
-
+    genCode += "\nContainer( \n";
+    genCode += getHeight(figmaNode);
+    genCode += getWidth(figmaNode);
+    genCode += getBoxDecoration(figmaNode);
+    if (figmaNode.getChild().size() > 1) {
       genCode += getchild(figmaNode);
+    }
 
+    genCode += getchild(figmaNode);
 
     genCode += ")\n";
     System.out.println(genCode); // end indent
@@ -47,11 +50,11 @@ public class FrameFlutterCGI implements FlutterCGI {
     return genCode;
   }
 
-  private String getchild(FigmaFrameNode figmaNode) {
-    if (figmaNode.getChildren().get(0).getType() == RECTANGLE)
-      return "child:" + rectangleFlutterCGI.generate((FigmaNode) figmaNode) + ",\n";
-    else if (figmaNode.getChildren().get(0).getType() == TEXT) {
-      return "child:" + textFlutterCGI.generate((FigmaNode) figmaNode) + ",\n";
+  private String getchild(FigmaNode figmaNode) {
+    if (figmaNode.getChild().get(0).getType() == RECTANGLE)
+      return "child:" + rectangleFlutterCGI.generate(figmaNode.getChild().get(0)) + ",\n";
+    else if (figmaNode.getChild().get(0).getType() == TEXT) {
+      return "child:" + textFlutterCGI.generate(figmaNode.getChild().get(0)) + ",\n";
     }
     return "";
   }

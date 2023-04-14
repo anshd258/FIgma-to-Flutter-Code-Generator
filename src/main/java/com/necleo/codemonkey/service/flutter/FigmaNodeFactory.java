@@ -11,7 +11,7 @@
 //
 // @Service
 // @Slf4j
-// public class FigmaNodeFactory {
+// public class FlutterFigmaNodeFactory {
 //  Map<Language, FlutterCGI> factorryMap;
 //
 //  public FlutterCGI getNode(FigmaNode fNode) {

@@ -10,10 +10,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class FigmaNodeFactory extends Factory<FigmaNodeTypes, FlutterCGI> {
+public class FlutterFigmaNodeFactory extends Factory<FigmaNodeTypes, FlutterCGI> {
 
   @Autowired
-  public FigmaNodeFactory(List<FlutterCGI> beans) {
+  public FlutterFigmaNodeFactory(List<FlutterCGI> beans) {
     super(beans);
   }
 }

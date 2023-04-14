@@ -13,6 +13,7 @@ public abstract class Factory<T extends Enum<T>, E extends IFactory<T>> {
 
   public Factory(List<E> beans) {
     factoryMap = new HashMap<>();
+
     beans.forEach(this::loadBeanToFactoryMap);
   }
 
@@ -21,7 +22,9 @@ public abstract class Factory<T extends Enum<T>, E extends IFactory<T>> {
   }
 
   protected void loadBeanToFactoryMap(E bean) {
+
     T type = bean.getEnumMapping();
+
     if (factoryMap.containsKey(type)) {
       throw new IllegalStateException(
           "Multiple implementations found for Type: "
