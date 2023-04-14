@@ -1,5 +1,6 @@
 package com.necleo.codemonkey.service.flutter;
 
+import com.necleo.codemonkey.factory.mapper.FigmaNodeMapper;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.FigmaVectorNode;
@@ -12,8 +13,8 @@ public class VectorFlutterCGI implements FlutterCGI {
   RectangleFlutterCGI rectangleFlutterCGI = new RectangleFlutterCGI();
 
   @Override
-  public FigmaNodeTypes getEnumMapping() {
-    return FigmaNodeTypes.VECTOR;
+  public FigmaNodeMapper getEnumMapping() {
+    return new FigmaNodeMapper(FigmaNodeTypes.VECTOR,null);
   }
 
   @Override

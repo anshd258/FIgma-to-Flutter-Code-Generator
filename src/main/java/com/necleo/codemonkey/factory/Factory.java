@@ -8,7 +8,7 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 
 @FieldDefaults(level = AccessLevel.PROTECTED)
-public abstract class Factory<T extends Enum<T>, E extends IFactory<T>> {
+public abstract class Factory<T , E extends IFactory<T>> {
   Map<T, E> factoryMap;
 
   public Factory(List<E> beans) {

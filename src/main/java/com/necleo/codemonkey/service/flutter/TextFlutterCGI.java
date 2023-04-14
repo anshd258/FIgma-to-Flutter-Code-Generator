@@ -1,5 +1,6 @@
 package com.necleo.codemonkey.service.flutter;
 
+import com.necleo.codemonkey.factory.mapper.FigmaNodeMapper;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.FigmaTextNode;
@@ -82,7 +83,7 @@ public class TextFlutterCGI implements FlutterCGI {
   }
 
   @Override
-  public FigmaNodeTypes getEnumMapping() {
-    return FigmaNodeTypes.TEXT;
+  public FigmaNodeMapper getEnumMapping() {
+    return new FigmaNodeMapper(FigmaNodeTypes.TEXT,null);
   }
 }

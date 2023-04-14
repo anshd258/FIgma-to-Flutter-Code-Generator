@@ -3,6 +3,7 @@ package com.necleo.codemonkey.service;
 import com.necleo.codemonkey.enums.Language;
 import com.necleo.codemonkey.factory.FlutterFigmaNodeFactory;
 import com.necleo.codemonkey.factory.FlutterTagDataNodeFactory;
+import com.necleo.codemonkey.factory.mapper.FigmaNodeMapper;
 import com.necleo.codemonkey.lib.types.ASTNode;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.TagData;
@@ -15,6 +16,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -40,8 +42,10 @@ public class FlutterCodeGenImpl implements CodeGen {
       genCode +=
           tagFlutterCGIOptional.map(tagFlutterCGI -> tagFlutterCGI.generate(fNode, tagDataMap));
     } else {
+      String tagName  = tagDataMap.get(fNode.getId()).getTagName();
+      FigmaNodeMapper figmaNodeMapper = new FigmaNodeMapper(fNode.getType(),TadDataType.valueOf(tagName));
       Optional<FlutterCGI> flutterCGIOptional =
-          flutterFigmaNodeFactory.getProcessor(fNode.getType());
+          flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
       genCode += flutterCGIOptional.map(flutterCGI -> flutterCGI.generate(fNode)).orElse("");
     }
 

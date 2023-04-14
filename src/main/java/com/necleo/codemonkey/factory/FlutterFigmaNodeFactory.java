@@ -1,5 +1,6 @@
 package com.necleo.codemonkey.factory;
 
+import com.necleo.codemonkey.factory.mapper.FigmaNodeMapper;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.service.flutter.FlutterCGI;
 import java.util.List;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class FlutterFigmaNodeFactory extends Factory<FigmaNodeTypes, FlutterCGI> {
+public class FlutterFigmaNodeFactory extends Factory<FigmaNodeMapper, FlutterCGI> {
 
   @Autowired
   public FlutterFigmaNodeFactory(List<FlutterCGI> beans) {
