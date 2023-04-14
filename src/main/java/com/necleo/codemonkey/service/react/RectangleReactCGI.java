@@ -3,6 +3,7 @@ package com.necleo.codemonkey.service.react;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
+import com.necleo.codemonkey.lib.types.figma.FigmaTextNode;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsImage;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSolid;
 import lombok.extern.slf4j.Slf4j;
@@ -17,16 +18,23 @@ public class RectangleReactCGI implements ReactCGI {
     return FigmaNodeTypes.RECTANGLE;
   }
 
-
-
   @Override
   public String generate(FigmaNode figmaNode) {
+    if (!(figmaNode instanceof FigmaRectangleNode fNode)) {
+      throw new IllegalArgumentException();
+    }
+    return generat(fNode);
+  }
+
+  public String generat(FigmaNode figmaNode) {
     FigmaRectangleNode fNode = (FigmaRectangleNode) figmaNode;
     String genCode = "";
 
     if(fNode.getFills().get(0).getType().equals("IMAGE")) {
       genCode += getImageProps(fNode);
     }
+
+//    else if ()
 
     else {
 
@@ -47,6 +55,8 @@ public class RectangleReactCGI implements ReactCGI {
 
     return genCode;
   }
+
+
 
   public String getHeight(FigmaRectangleNode fNode) {
     if (fNode.getHeight() != 0) {

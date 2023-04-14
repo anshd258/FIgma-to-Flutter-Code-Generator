@@ -4,19 +4,30 @@ import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.FigmaTextNode;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSolid;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 
 @Service
+@Slf4j
 public class TextReactCGI implements ReactCGI {
     @Override
     public FigmaNodeTypes getEnumMapping() {
         return FigmaNodeTypes.TEXT;
     }
 
+
     @Override
     public String generate(FigmaNode figmaNode) {
+        if (!(figmaNode instanceof FigmaTextNode fNode)) {
+            throw new IllegalArgumentException();
+        }
+        return generat(fNode);
+    }
+
+    public String generat(FigmaNode figmaNode) {
         FigmaTextNode fNode = (FigmaTextNode) figmaNode;
         String genCode = "";
 

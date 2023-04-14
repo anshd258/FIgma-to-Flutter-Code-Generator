@@ -44,7 +44,7 @@ import lombok.extern.jackson.Jacksonized;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class FigmaNode {
   FigmaNodeTypes type;
-  List<FigmaNode> children;
+  List<FigmaNode> child;
   String id;
   String name;
   boolean removed;
