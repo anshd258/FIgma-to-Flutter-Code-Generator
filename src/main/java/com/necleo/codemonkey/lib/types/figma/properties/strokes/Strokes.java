@@ -13,7 +13,7 @@ import lombok.experimental.FieldDefaults;
 public class Strokes {
   String type; // enum
   boolean visible;
-  int opacity;
+  double opacity;
   String BlendMode;
   Color color;
 }

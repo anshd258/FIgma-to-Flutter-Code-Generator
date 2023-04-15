@@ -2,6 +2,7 @@ package com.necleo.codemonkey.service.flutter;
 
 import static com.necleo.codemonkey.lib.types.figma.properties.fills.enums.ScaleMode.FILL;
 
+import com.necleo.codemonkey.lib.types.figma.properties.strokes.Strokes;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
@@ -87,6 +88,28 @@ public class RectangleFlutterCGI implements FlutterCGI {
     }
     return upperBoxDecoration + genBoxDecoration + bottomBoxDecoration;
   }
+  private String getStyle(Strokes strokes) {
+    return "style: BorderStyle." + strokes.getType().toString().toLowerCase() + ",\n";
+  }
+
+  private String getStrokeAlignment(FigmaRectangleNode fNode) {
+    return " strokeAlign: StrokeAlign." + fNode.getStrokeAlign().toString().toLowerCase() + ",\n";
+  }
+
+  private String getStrokeWidth(FigmaRectangleNode fNode) {
+    return "width:" + fNode.getStrokeWeight() + ",\n";
+  }
+
+  private String getColor( Strokes fills) {
+    final String upperColor = "color: Color.fromRGBO(\n";
+    final String lowerColor = "),\n";
+    final String red = Math.round(fills.getColor().getR() * 255) + ",";
+    final String green = Math.round(fills.getColor().getG() * 255) + ",";
+    final String blue = Math.round(fills.getColor().getB() * 255) + ",";
+    final String opacity = Double.toString(fills.getOpacity());
+
+    return upperColor + red + green + blue + opacity + lowerColor;
+  }
 
   private String getImage(FillsImage fills) {
     final String upperImage = " image: DecorationImage(\n";
@@ -143,7 +166,12 @@ public class RectangleFlutterCGI implements FlutterCGI {
   private String border(FigmaRectangleNode fNode) {
     final String upperBorder = " border: Border.all(";
     final String bottomBorder = "),\n";
-    final String width = "width:" + Float.toString(fNode.getStrokeWeight()) + ",\n";
-    return upperBorder + width + bottomBorder;
+     String genCode = "";
+    genCode += getStrokeAlignment(fNode);
+    genCode += getColor(fNode.getStrokes().get(0));
+    genCode += getStrokeWidth(fNode);
+
+    genCode += getStyle(fNode.getStrokes().get(0));
+    return upperBorder + genCode + bottomBorder;
   }
 }

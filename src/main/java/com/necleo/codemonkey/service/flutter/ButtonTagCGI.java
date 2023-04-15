@@ -51,7 +51,7 @@ TextFlutterCGI textFlutterCGI = new TextFlutterCGI();
 
     private String getFunction() {
         String genFunction = "";
-        return  " onTap: () {" + genFunction + "}\n";
+        return  " onTap: () {" + genFunction + "},\n";
     }
 
 
