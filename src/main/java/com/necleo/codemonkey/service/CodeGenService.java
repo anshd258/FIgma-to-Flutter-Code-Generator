@@ -35,6 +35,7 @@ public class CodeGenService {
   public String gen(FigmaNode screen, Map<String, TagData> tagDataMap) {
 
     CodeGen processor = languageFactory.getCodeGenProcessor(Language.REACT);
+
     ASTNode astNode = processor.generate(screen, tagDataMap);
     //    ASTNode astNode = astMaker().ast(screen);
     StringBuffer text = aST2Text().toText(astNode);

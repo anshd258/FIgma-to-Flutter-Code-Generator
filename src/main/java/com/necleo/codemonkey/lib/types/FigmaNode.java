@@ -36,12 +36,12 @@ import lombok.extern.jackson.Jacksonized;
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Getter
 @SuperBuilder
 @NoArgsConstructor
 @Jacksonized
 @ToString
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class FigmaNode {
   FigmaNodeTypes type;
   List<FigmaNode> child;

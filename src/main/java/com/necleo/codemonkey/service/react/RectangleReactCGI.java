@@ -3,19 +3,21 @@ package com.necleo.codemonkey.service.react;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
-import com.necleo.codemonkey.lib.types.figma.FigmaTextNode;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsImage;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSolid;
+import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.Set;
 
 @Service
 @Slf4j
 public class RectangleReactCGI implements ReactCGI {
 
   @Override
-  public FigmaNodeTypes getEnumMapping() {
-    return FigmaNodeTypes.RECTANGLE;
+  public Set<FigmaNodeMapper> getStrategy() {
+    return Set.of(new FigmaNodeMapper(FigmaNodeTypes.RECTANGLE, null));
   }
 
   @Override
@@ -30,24 +32,13 @@ public class RectangleReactCGI implements ReactCGI {
     FigmaRectangleNode fNode = (FigmaRectangleNode) figmaNode;
     String genCode = "";
 
-    if(fNode.getFills().get(0).getType().equals("IMAGE")) {
+    if (fNode.getFills().get(0).getType().equals("IMAGE")) {
       genCode += getImageProps(fNode);
     }
-
-//    else if ()
-
     else {
 
       genCode += "\n<div style={{ \n";
-      genCode += getHeight(fNode);
-      genCode += getWidth(fNode);
-      genCode += getBackgroundColour(fNode);
-      genCode += getBoxDecoration(fNode);
-      genCode += getOpacity(fNode);
-      genCode += getHorizontalPosition(fNode);
-      genCode += getVerticalPosition(fNode);
-      genCode += getVisibility(fNode);
-
+      genCode += getRectangleStyles(figmaNode);
       genCode += " }}>";
       genCode += "</div>\n";
     }
@@ -56,6 +47,20 @@ public class RectangleReactCGI implements ReactCGI {
     return genCode;
   }
 
+  public String getRectangleStyles(FigmaNode figmaNode) {
+    String rectStyles = "";
+    FigmaRectangleNode fNode = (FigmaRectangleNode) figmaNode;
+    rectStyles += getHeight(fNode);
+    rectStyles += getWidth(fNode);
+    rectStyles += getBackgroundColour(fNode);
+    rectStyles += getBoxDecoration(fNode);
+    rectStyles += getOpacity(fNode);
+    rectStyles += getHorizontalPosition(fNode);
+    rectStyles += getVerticalPosition(fNode);
+    rectStyles += getVisibility(fNode);
+
+    return rectStyles;
+  }
 
 
   public String getHeight(FigmaRectangleNode fNode) {
@@ -78,7 +83,7 @@ public class RectangleReactCGI implements ReactCGI {
     final String end = ")',\n";
     final String fNodeColourR = (255 * fills.getColor().getR()) + ",";
     final String fNodeColourG = (255 * fills.getColor().getG()) + ",";
-    final String fNodeColourB = String.valueOf(255* fills.getColor().getB());
+    final String fNodeColourB = String.valueOf(255 * fills.getColor().getB());
     return begin + fNodeColourR + fNodeColourG + fNodeColourB + end;
   }
 
@@ -86,12 +91,17 @@ public class RectangleReactCGI implements ReactCGI {
     return "<Image style={{" + getImageStyles(fNode) + "}" + getBackgroundImage(fNode) + "} />\n";
   }
 
-  public String getImageStyles(FigmaRectangleNode fNode){
+  public String getImageStyles(FigmaRectangleNode fNode) {
     String imgStyles = "";
     final FillsImage fillsImage = (FillsImage) fNode.getFills().get(0);
 
     // alignments
-    imgStyles += getHorizontalPosition(fNode) + getVerticalPosition(fNode) + getHeight(fNode) + getWidth(fNode) + getOpacity(fNode);
+    imgStyles +=
+        getHorizontalPosition(fNode)
+            + getVerticalPosition(fNode)
+            + getHeight(fNode)
+            + getWidth(fNode)
+            + getOpacity(fNode);
 
     // decorations
     imgStyles += getBoxDecoration(fNode);
@@ -105,30 +115,23 @@ public class RectangleReactCGI implements ReactCGI {
     return imgStyles;
   }
 
-  public String getBackgroundImage(FigmaRectangleNode fNode){
+  public String getBackgroundImage(FigmaRectangleNode fNode) {
     final FillsImage fillsImage = (FillsImage) fNode.getFills().get(0);
 
     final String imageHash = fillsImage.getImageHash();
-    return "source={{uri: '"+ imageHash + "'}}, \n";
+    return "source={{uri: '" + imageHash + "'}}, \n";
   }
 
   public String getImgResize(FillsImage fillsImage) {
     String resizeMode = "";
-    if (fillsImage.getScaleMode().equals("FILL"))
-      resizeMode = "cover";
-    else if(fillsImage.getScaleMode().equals("FIT"))
-      resizeMode = "contain";
-    else if(fillsImage.getScaleMode().equals("TITLE"))
-      resizeMode = "center";
-    else if(fillsImage.getScaleMode().equals("STRETCH"))
-      resizeMode = "stretch";
-    else
-      resizeMode = "repeat";
+    if (fillsImage.getScaleMode().equals("FILL")) resizeMode = "cover";
+    else if (fillsImage.getScaleMode().equals("FIT")) resizeMode = "contain";
+    else if (fillsImage.getScaleMode().equals("TITLE")) resizeMode = "center";
+    else if (fillsImage.getScaleMode().equals("STRETCH")) resizeMode = "stretch";
+    else resizeMode = "repeat";
 
     return "resizeMode: '" + resizeMode + "',\n";
   }
-
-
 
   public String getBoxDecoration(FigmaRectangleNode fNode) {
     final String upperBoxDecoration = "boxSizing: '";

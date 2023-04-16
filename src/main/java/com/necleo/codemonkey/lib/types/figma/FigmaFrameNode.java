@@ -40,7 +40,7 @@ public class FigmaFrameNode extends FigmaNode {
   StrokeJoin strokeJoin;
   StrokeAlign strokeAlign;
   List<String> dashPattern;
-  List<String> strokeGeometry;
+  List<Object> strokeGeometry;
   StrokeCap strokeCap;
   int strokeMitterLimit;
   List<FillGeometry> FillGeometry;

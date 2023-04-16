@@ -29,6 +29,6 @@ public class Fills {
 
   public String type;
   public boolean visible;
-  public int opacity;
+  public float opacity;
   public String BlendMode;
 }

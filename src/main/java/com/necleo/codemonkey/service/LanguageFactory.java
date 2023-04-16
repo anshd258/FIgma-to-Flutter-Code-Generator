@@ -23,8 +23,7 @@ public class LanguageFactory {
   public CodeGen getCodeGenProcessor(Language type) {
     CodeGen processor = codeGenMap.get(type);
     if (processor == null) {
-      throw new IllegalArgumentException(
-          "No implementation found for LanguageFactory: " + type);
+      throw new IllegalArgumentException("No implementation found for LanguageFactory: " + type);
     }
     return processor;
   }
