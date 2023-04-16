@@ -9,9 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.Set;
 @Service
 @Slf4j
-
-public class VideoTagCGI implements ReactCGI {
-
+public class YoutubeTagCGI implements ReactCGI {
     RectangleReactCGI rectangleReactCGI;
 
     FrameReactCGI frameReactCGI;
@@ -23,20 +21,16 @@ public class VideoTagCGI implements ReactCGI {
     }
 
     private String generat(FigmaNode fNode) {
-        final String genCode = "<video controls" + getStyles(fNode) +">" + getVideoSources(fNode) +"<video>\n";
+        final String genCode = "<iframe \n\tallowFullScreen title='Youtube Player'" + getStyles(fNode) +">" + getSrc(fNode) +"<video>\n";
         System.out.println(genCode);
         return genCode ;
     }
 
-    private String getVideoSources(FigmaNode fNode) {
+    private String getSrc(FigmaNode fNode) {
         // while sources array != 0
         // map them ->
-        String sources = "";
-        // while starts
-        String sourceSrc = " ";
-        String sourceType = "video/mp4";
-        sources += "<source src='" + sourceSrc + "' type='" + sourceType + "' />\n";
-        return sources;
+        String src = "";
+        return src;
     }
 
 
@@ -53,6 +47,6 @@ public class VideoTagCGI implements ReactCGI {
 
     @Override
     public Set<FigmaNodeMapper> getStrategy() {
-        return Set.of(new FigmaNodeMapper(FigmaNodeTypes.FRAME, TagDataType.VIDEO), new FigmaNodeMapper(FigmaNodeTypes.RECTANGLE, TagDataType.VIDEO));
+        return Set.of(new FigmaNodeMapper(FigmaNodeTypes.FRAME, TagDataType.YOUTUBE), new FigmaNodeMapper(FigmaNodeTypes.RECTANGLE, TagDataType.YOUTUBE));
     }
 }
