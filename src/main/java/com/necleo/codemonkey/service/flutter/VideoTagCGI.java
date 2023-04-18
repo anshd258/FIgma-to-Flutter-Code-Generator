@@ -1,6 +1,7 @@
 package com.necleo.codemonkey.service.flutter;
 
 import com.necleo.codemonkey.lib.types.FigmaNode;
+import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.TagDataType;
 import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
@@ -18,15 +19,15 @@ public class VideoTagCGI implements FlutterCGI{
     }
 
     @Override
-    public String generate(FigmaNode figmaNode) {
+    public String generate(FigmaNode figmaNode, TagData tagData) {
         if (!(figmaNode instanceof FigmaRectangleNode fNode)) {
             throw new IllegalArgumentException();
         }
-        return generat(fNode);
+        return generat(fNode,tagData);
     }
 
-    private String generat(FigmaRectangleNode fNode) {
-        String initState = getInitState("test.com");
+    private String generat(FigmaRectangleNode fNode,TagData tagData) {
+        String initState = getInitState(tagData.getTagData().getProps().getUrl());
         String disposeState =  getDispose();
         String genCode = getPlayer(fNode);
         return initState + disposeState + genCode;
@@ -74,6 +75,10 @@ public class VideoTagCGI implements FlutterCGI{
         final String lowerInitState = "),\n" +
                 "    );\n" +
                 "  }\n\n";
-        return  upperInitState+ "'"+url+"'" + lowerInitState;
+         String uri = "";
+        if(url != null){
+            uri +=  "'"+url+"'";
+        }
+        return  upperInitState+ uri + lowerInitState;
     }
 }

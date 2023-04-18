@@ -39,7 +39,7 @@ public class FlutterCodeGenImpl implements CodeGen {
     FigmaNodeMapper figmaNodeMapper =
         new FigmaNodeMapper(fNode.getType(), TagDataType.valueOf(tagName.toUpperCase()));
     Optional<FlutterCGI> flutterCGIOptional = flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
-    genCode += flutterCGIOptional.map(flutterCGI -> flutterCGI.generate(fNode)).orElse("");
+    genCode += flutterCGIOptional.map(flutterCGI -> flutterCGI.generate(fNode,tagDataMap.get(fNode.getId()))).orElse("");
     return ASTNode.builder().value(genCode).build();
   }
 }

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Map;
+
+import com.necleo.codemonkey.lib.types.Tagdata.Tag;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,5 +30,5 @@ public class TagData {
   String figmaNodeId;
 
   @JsonProperty("tag_data")
-  Map<String, Object> tagData;
+  Tag tagData;
 }

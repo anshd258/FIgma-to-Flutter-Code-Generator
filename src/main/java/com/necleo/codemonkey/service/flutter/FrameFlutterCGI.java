@@ -4,6 +4,7 @@ import static com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNo
 import static com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes.TEXT;
 import static com.necleo.codemonkey.lib.types.figma.properties.fills.enums.ScaleMode.FILL;
 
+import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
@@ -26,25 +27,26 @@ public class FrameFlutterCGI implements FlutterCGI {
   }
 
   @Override
-  public String generate(FigmaNode figmaNode) {
+  public String generate(FigmaNode figmaNode, TagData tagData) {
     if (!(figmaNode instanceof FigmaFrameNode fNode)) {
       throw new IllegalArgumentException();
     }
-    return generat(fNode);
+    return generat(fNode,tagData);
   }
 
-  private String generat(FigmaFrameNode figmaNode) {
+  private String generat(FigmaFrameNode figmaNode, TagData tagData) {
     String genCode = "";
 
     genCode += "\nContainer( \n";
     genCode += getHeight(figmaNode);
     genCode += getWidth(figmaNode);
+    genCode += getPadding(figmaNode);
     genCode += getBoxDecoration(figmaNode);
     if (figmaNode.getChild().size() > 1) {
-      genCode += getchild(figmaNode);
+      genCode += getchild(figmaNode,tagData);
     }
 
-    genCode += getchild(figmaNode);
+    genCode += getchild(figmaNode,tagData);
 
     genCode += ")\n";
     System.out.println(genCode); // end indent
@@ -52,11 +54,22 @@ public class FrameFlutterCGI implements FlutterCGI {
     return genCode;
   }
 
-  private String getchild(FigmaNode figmaNode) {
+  private String getPadding(FigmaFrameNode figmaNode) {
+    final String upperPadding = " padding: EdgeInsets.only(\n";
+    final String lowerPadding = "),\n";
+    String leftPaing = "left:" + figmaNode.getPaddingLeft() + ",";
+    String rigt = "right:" + figmaNode.getPaddingRight() + ",";
+    String top = "top:" + figmaNode.getPaddingTop() + ",";
+    String bottom = "bottom:" + figmaNode.getPaddingBottom() + ",";
+    return  upperPadding + leftPaing + rigt + top + bottom + lowerPadding;
+
+  }
+
+  private String getchild(FigmaNode figmaNode,TagData tagData) {
     if (figmaNode.getChild().get(0).getType() == RECTANGLE)
-      return "child:" + rectangleFlutterCGI.generate(figmaNode.getChild().get(0)) + ",\n";
+      return "child:" + rectangleFlutterCGI.generate(figmaNode.getChild().get(0),tagData) + ",\n";
     else if (figmaNode.getChild().get(0).getType() == TEXT) {
-      return "child:" + textFlutterCGI.generate(figmaNode.getChild().get(0)) + ",\n";
+      return "child:" + textFlutterCGI.generate(figmaNode.getChild().get(0),tagData) + ",\n";
     }
     return "";
   }

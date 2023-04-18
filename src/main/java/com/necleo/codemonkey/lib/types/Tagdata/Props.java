@@ -18,4 +18,5 @@ public class Props {
     String page;
     String linkType;
     String pageUrl;
+    String url;
 }

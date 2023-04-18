@@ -1,5 +1,6 @@
 package com.necleo.codemonkey.service.flutter;
 
+import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
@@ -19,19 +20,19 @@ public class VectorFlutterCGI implements FlutterCGI {
   }
 
   @Override
-  public String generate(FigmaNode figmaNode) {
+  public String generate(FigmaNode figmaNode, TagData tagData) {
     if (!(figmaNode instanceof FigmaVectorNode fNode)) {
       throw new IllegalArgumentException();
     }
-    return generat((FigmaVectorNode) figmaNode);
+    return generat((FigmaVectorNode) figmaNode,tagData);
   }
 
-  private String generat(FigmaVectorNode figmaNode) {
+  private String generat(FigmaVectorNode figmaNode, TagData tagData) {
     final String upperVector = "ClipPath(\n";
     final String bottomVector = ")\n";
     String genCode = "";
     genCode += "clipper: MyClipper(),\n";
-    genCode += "child:" + rectangleFlutterCGI.generate((FigmaNode) figmaNode) + ",\n";
+    genCode += "child:" + rectangleFlutterCGI.generate((FigmaNode) figmaNode,tagData) + ",\n";
 
     return genCode + "\n" + getClipperPath(figmaNode);
   }

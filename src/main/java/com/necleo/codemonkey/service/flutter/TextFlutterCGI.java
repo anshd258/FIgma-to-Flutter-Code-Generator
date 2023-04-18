@@ -1,5 +1,6 @@
 package com.necleo.codemonkey.service.flutter;
 
+import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
@@ -19,7 +20,7 @@ public class TextFlutterCGI implements FlutterCGI {
   }
 
   @Override
-  public String generate(FigmaNode figmaNode) {
+  public String generate(FigmaNode figmaNode, TagData tagData) {
     if (!(figmaNode instanceof FigmaTextNode fNode)) {
       throw new IllegalArgumentException();
     }

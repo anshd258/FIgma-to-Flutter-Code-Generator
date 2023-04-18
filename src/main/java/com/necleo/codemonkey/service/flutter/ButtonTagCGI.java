@@ -1,5 +1,6 @@
 package com.necleo.codemonkey.service.flutter;
 
+import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import com.necleo.codemonkey.lib.types.FigmaNode;
@@ -18,33 +19,36 @@ public class ButtonTagCGI implements FlutterCGI {
 
 RectangleFlutterCGI rectangleFlutterCGI = new RectangleFlutterCGI();
 TextFlutterCGI textFlutterCGI = new TextFlutterCGI();
+FrameFlutterCGI frameFlutterCGI = new FrameFlutterCGI();
 
 
     @Override
-    public String generate(FigmaNode figmaNode) {
+    public String generate(FigmaNode figmaNode, TagData tagData) {
 
-        return generat(figmaNode);
+        return generat(figmaNode,tagData);
     }
 
-    private String generat(FigmaNode fNode) {
+    private String generat(FigmaNode fNode, TagData tagData) {
         final String upperButton = "GestureDetector(\n";
 
         final String lowerButton = "),\n";
         String genCode = "";
         genCode += getFunction();
-        genCode += getChild(fNode);
+        genCode += getChild(fNode,tagData);
 
 
         return upperButton + genCode + lowerButton;
     }
 
-    private String getChild(FigmaNode fNode) {
+    private String getChild(FigmaNode fNode, TagData tagData) {
         String genChild = "";
         if (fNode.getType().equals(FigmaNodeTypes.RECTANGLE)){
             genChild += rectangleFlutterCGI.generat((FigmaRectangleNode) fNode);
         } else if (fNode.getType().equals(FigmaNodeTypes.TEXT)) {
-            genChild += textFlutterCGI.generate(fNode);
+            genChild += textFlutterCGI.generate(fNode,tagData);
 
+        } else if (fNode.getType().equals(FigmaNodeTypes.FRAME)) {
+            genChild += frameFlutterCGI.generate(fNode,tagData);
         }
         return "child:" + genChild + ",\n";
     }
