@@ -12,9 +12,9 @@ import java.util.Set;
 
 public class InputReactTagCGI implements ReactCGI {
 
-    RectangleReactCGI rectangleReactCGI;
+    RectangleReactCGI rectangleReactCGI = new RectangleReactCGI();
 
-    FrameReactCGI frameReactCGI;
+    FrameReactCGI frameReactCGI = new FrameReactCGI();
 
     @Override
     public String generate(FigmaNode figmaNode) {

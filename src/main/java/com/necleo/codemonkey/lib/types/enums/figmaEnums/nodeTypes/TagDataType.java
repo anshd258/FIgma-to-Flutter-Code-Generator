@@ -13,6 +13,12 @@ public enum TagDataType {
   FILE,
   TEXTAREA,
   DROPDOWN,
-  YOUTUBE
+  YOUTUBE,
+  SWITCH,
+  RADIO,
+  IFRAME,
+  SLIDER,
+  GOOGLEMAPS,
+  IMAGE
 
 }

@@ -88,7 +88,7 @@ public class RectangleReactCGI implements ReactCGI {
   }
 
   public String getImageProps(FigmaRectangleNode fNode) {
-    return "<Image style={{" + getImageStyles(fNode) + "}" + getBackgroundImage(fNode) + "} />\n";
+    return "<img style={{" + getImageStyles(fNode) + "}}" + getBackgroundImage(fNode) + " />\n";
   }
 
   public String getImageStyles(FigmaRectangleNode fNode) {
@@ -119,7 +119,7 @@ public class RectangleReactCGI implements ReactCGI {
     final FillsImage fillsImage = (FillsImage) fNode.getFills().get(0);
 
     final String imageHash = fillsImage.getImageHash();
-    return "source={{uri: '" + imageHash + "'}}, \n";
+    return "src={{uri: '" + imageHash + "'}} \n";
   }
 
   public String getImgResize(FillsImage fillsImage) {
@@ -138,7 +138,7 @@ public class RectangleReactCGI implements ReactCGI {
     final String bottomBoxDecoration = ",\n";
     String genBoxDecoration = "";
     if (fNode.getCornerRadius() != 0) {
-      genBoxDecoration = "border-box', \n border-radius: '";
+      genBoxDecoration = "border-box', \n borderRadius: '";
       genBoxDecoration = genBoxDecoration + borderRadius(fNode) + "px',\n";
     } else genBoxDecoration = "unset'";
     if (fNode.getStrokeWeight() != 1) {

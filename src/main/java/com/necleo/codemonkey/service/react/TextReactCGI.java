@@ -36,11 +36,11 @@ public class TextReactCGI implements ReactCGI {
   public String generat(FigmaNode figmaNode) {
     FigmaTextNode fNode = (FigmaTextNode) figmaNode;
     String genCode = "";
-    genCode += "\n<p style={{ \n";
+    genCode += "\n<div style={{ \n";
     genCode += getStyle(fNode);
     genCode += " }}>";
     genCode += getData(fNode);
-    genCode += "</p>\n";
+    genCode += "</div>\n";
     System.out.println(genCode); // end indent
 
     return genCode;
@@ -60,23 +60,25 @@ public class TextReactCGI implements ReactCGI {
             + (fills.getColor().getG() * 255)
             + ", "
             + (fills.getColor().getB() * 255)
-            + ")'\n";
+            + ")',\n";
     // align
     style += "left: '" + fNode.getX() + "',\n";
     style += "top: '" + fNode.getY() + "',\n";
     style += "opacity: '" + fNode.getOpacity() + "',\n";
-    style +=
-        "border: '"
-            + fNode.getStrokes().get(0).getType().toLowerCase()
-            + ", "
-            + fNode.getStrokeWeight()
-            + "px, rgb("
-            + fNode.getStrokes().get(0).getColor().getR() * 255
-            + ", "
-            + fNode.getStrokes().get(0).getColor().getG() * 255
-            + ", "
-            + fNode.getStrokes().get(0).getColor().getB() * 255
-            + ")',\n";
+    if (fNode.getStrokes().size() != 0) {
+      style +=
+              "border: '"
+                      + fNode.getStrokes().get(0).getType().toLowerCase()
+                      + ", "
+                      + fNode.getStrokeWeight()
+                      + "px, rgb("
+                      + fNode.getStrokes().get(0).getColor().getR() * 255
+                      + ", "
+                      + fNode.getStrokes().get(0).getColor().getG() * 255
+                      + ", "
+                      + fNode.getStrokes().get(0).getColor().getB() * 255
+                      + ")',\n";
+    }
     style += getAlignment(fNode);
     style += getFont(fNode);
 
@@ -104,7 +106,7 @@ public class TextReactCGI implements ReactCGI {
 
     //       alignment += "justifyContent: '"+ (fNode.getPrimaryAxisAlignitems() ?
     // fNode.getPrimaryAxisAlignitems().toString().toLowerCase()  :'' )  +"',\n";
-    alignment += "lineHeight: '" + fNode.getLineHeight() + "'\n";
+    alignment += "lineHeight: '" + "auto" + "',\n";
     return alignment;
   }
 }

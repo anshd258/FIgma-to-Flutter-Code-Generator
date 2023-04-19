@@ -11,6 +11,7 @@ import com.necleo.codemonkey.service.react.ReactCGI;
 import java.util.Map;
 import java.util.Optional;
 
+import com.necleo.codemonkey.service.react.ReactTaggedDataCGI;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
