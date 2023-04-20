@@ -7,6 +7,9 @@ public enum TagDataType {
   INPUT,
   VIDEO,
   YOUTUBE,
-  FILE
+  FILE,
+  SLIDER,
+  CHECKBOX,
+  SWITCH
 
 }
