@@ -15,7 +15,7 @@ public class YoutubeTagCGI implements ReactCGI {
     FrameReactCGI frameReactCGI = new FrameReactCGI();
 
     @Override
-    public String generate(FigmaNode figmaNode) {
+    public String generate(FigmaNode figmaNode, Set<String> importsFunctions) {
 
         return generat(figmaNode);
     }

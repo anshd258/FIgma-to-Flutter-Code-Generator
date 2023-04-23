@@ -9,26 +9,29 @@ import org.springframework.stereotype.Service;
 import java.util.Set;
 @Service
 @Slf4j
-
-public class InputReactTagCGI implements ReactCGI {
-
+public class CheckBoxTagCGI implements ReactCGI {
     RectangleReactCGI rectangleReactCGI = new RectangleReactCGI();
-
-    FrameReactCGI frameReactCGI = new FrameReactCGI();
 
     @Override
     public String generate(FigmaNode figmaNode, Set<String> importsFunctions) {
 
-        return generat(figmaNode);
+        return generat(figmaNode, importsFunctions);
     }
 
-    private String generat(FigmaNode fNode) {
+    private String generat(FigmaNode fNode,  Set<String> importsFunctions) {
+        final String State = """
+                const [check, setChecked] = React.useState(false)
+                const handleChange = () => {
+                    setChecked(!check);
+                  };""";
+
+        importsFunctions.add(State);
         final String upperLink = "<label>" + getLabel(fNode) +"<input\n";
         final String lowerLink = "/></label>\n";
         // if input type = submit - return submitInput
-        String submitInput = "<input type='submit' " + getStyles(fNode) + getSubmitValue(fNode) + "/>\n";
         String genCode = "";
         genCode += getInputName(fNode);
+        genCode += getInputType(fNode, "checkbox");
         genCode += getStyles(fNode);
         System.out.println(genCode); // end indent
 
@@ -40,8 +43,8 @@ public class InputReactTagCGI implements ReactCGI {
         return "name='test'\n";
     }
 
-    private String getSubmitValue(FigmaNode fNode) {
-        return "Submit";
+    public String getInputType(FigmaNode figmaNode, String type){
+        return "type='" + type + "'\n" + "checked={check}\n" + "onChange={handleChange}";
     }
 
     private String getLabel(FigmaNode fNode) {
@@ -53,18 +56,12 @@ public class InputReactTagCGI implements ReactCGI {
 
         if (fNode.getType().equals(FigmaNodeTypes.RECTANGLE)){
             styles += rectangleReactCGI.getRectangleStyles(fNode);
-        } else if (fNode.getType().equals(FigmaNodeTypes.FRAME)) {
-            styles += frameReactCGI.getStyles(fNode);
         }
         return styles + "}}";
     }
 
-    public String getData(FigmaNode fNode){
-        return fNode.getName();
-    }
-
     @Override
     public Set<FigmaNodeMapper> getStrategy() {
-        return Set.of(new FigmaNodeMapper(FigmaNodeTypes.FRAME, TagDataType.INPUT), new FigmaNodeMapper(FigmaNodeTypes.RECTANGLE, TagDataType.INPUT));
+        return Set.of(new FigmaNodeMapper(FigmaNodeTypes.FRAME, TagDataType.CHECKBOX), new FigmaNodeMapper(FigmaNodeTypes.RECTANGLE, TagDataType.CHECKBOX));
     }
 }

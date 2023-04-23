@@ -1,5 +1,4 @@
 package com.necleo.codemonkey.service.react;
-
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.TagDataType;
@@ -10,25 +9,20 @@ import org.springframework.stereotype.Service;
 import java.util.Set;
 @Service
 @Slf4j
-public class ImageTagCGI implements ReactCGI {
-    RectangleReactCGI rectangleReactCGI = new RectangleReactCGI();
-
+public class SwitchTagCGI implements ReactCGI{
     @Override
     public String generate(FigmaNode figmaNode, Set<String> importsFunctions) {
 
         return generat(figmaNode);
     }
 
-    public String generat(FigmaNode fNode){
-        String genCode = "";
-        if (fNode.getType().equals(FigmaNodeTypes.RECTANGLE)){
-            genCode += rectangleReactCGI.generat(fNode);
-        }
-        return genCode;
+    private String generat(FigmaNode figmaNode) {
+        return "";
     }
 
     @Override
     public Set<FigmaNodeMapper> getStrategy() {
-        return Set.of(new FigmaNodeMapper(FigmaNodeTypes.RECTANGLE, TagDataType.IMAGE));
+        return Set.of(new FigmaNodeMapper(FigmaNodeTypes.RECTANGLE, TagDataType.SWITCH));
     }
+
 }

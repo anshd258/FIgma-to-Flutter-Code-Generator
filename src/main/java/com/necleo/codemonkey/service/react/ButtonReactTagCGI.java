@@ -3,8 +3,6 @@ package com.necleo.codemonkey.service.react;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.TagDataType;
-import com.necleo.codemonkey.lib.types.figma.FigmaFrameNode;
-import com.necleo.codemonkey.lib.types.figma.FigmaTextNode;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,15 +20,15 @@ public class ButtonReactTagCGI implements ReactCGI {
 
 
     @Override
-    public String generate(FigmaNode figmaNode) {
+    public String generate(FigmaNode figmaNode, Set<String> importsFunctions) {
 
-        return generat(figmaNode);
+        return generat(figmaNode, importsFunctions);
     }
 
-    private String generat(FigmaNode fNode) {
+    private String generat(FigmaNode fNode,  Set<String> importsFunctions) {
         final String upperButton = "<button\n";
 
-        final String lowerButton = "> "+ getData(fNode) +" </button>\n";
+        final String lowerButton = "> "+ getData(fNode, importsFunctions) +" </button>\n";
         String genCode = "";
         genCode += getClickFunction(fNode);
 //        genCode += getChild(fNode);
@@ -40,12 +38,12 @@ public class ButtonReactTagCGI implements ReactCGI {
         return upperButton + genCode + lowerButton;
     }
 
-    public String getData(FigmaNode fNode){
+    public String getData(FigmaNode fNode,  Set<String> importsFunctions){
         String child = "";
         if (fNode.getChild().get(0).getType().equals(FigmaNodeTypes.TEXT)) {
 //            FigmaTextNode figmaTextNode = (FigmaTextNode) fNode.getChild().get(0);
 //            child += figmaTextNode.getCharacters();
-            child += textReactCGI.generate(fNode.getChild().get(0));
+            child += textReactCGI.generate(fNode.getChild().get(0), importsFunctions);
         }
         return child;
     }

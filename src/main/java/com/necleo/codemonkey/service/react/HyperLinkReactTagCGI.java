@@ -18,7 +18,7 @@ public class HyperLinkReactTagCGI implements ReactCGI{
 
 
     @Override
-    public String generate(FigmaNode figmaNode) {
+    public String generate(FigmaNode figmaNode, Set<String> importsFunctions) {
 
         return generat(figmaNode);
     }

@@ -2,10 +2,7 @@ package com.necleo.codemonkey.service.react;
 
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
-import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
 import com.necleo.codemonkey.lib.types.figma.FigmaFrameNode;
-import com.necleo.codemonkey.lib.types.figma.FigmaTextNode;
-import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsImage;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSolid;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +20,7 @@ public class FrameReactCGI implements ReactCGI{
 
 
     @Override
-    public String generate(FigmaNode figmaNode) {
+    public String generate(FigmaNode figmaNode, Set<String> importsFunctions) {
         FigmaFrameNode fNode = (FigmaFrameNode) figmaNode;
         String genCode = "";
 
@@ -83,11 +80,12 @@ public class FrameReactCGI implements ReactCGI{
     public String getChild(FigmaFrameNode fNode){
         String childData = "";
         String childType = fNode.getChild().get(0).getName();
+        Set<String> ImportsFunctions = null;
         if (childType.equals("TEXT"))
-            childData += textReactCGI.generate((FigmaNode) fNode);
+            childData += textReactCGI.generate((FigmaNode) fNode, ImportsFunctions);
 
         else if (childType.equals("RECTANGLE"))
-            childData += rectangleReactCGI.generate((FigmaNode) fNode);
+            childData += rectangleReactCGI.generate((FigmaNode) fNode, ImportsFunctions);
 
         return childData;
     }

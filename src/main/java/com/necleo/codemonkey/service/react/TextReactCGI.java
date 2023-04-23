@@ -21,7 +21,7 @@ public class TextReactCGI implements ReactCGI {
 
 
     @Override
-    public String generate(FigmaNode figmaNode) {
+    public String generate(FigmaNode figmaNode, Set<String> importsFunctions) {
         if (!(figmaNode instanceof FigmaTextNode fNode)) {
             throw new IllegalArgumentException();
         }

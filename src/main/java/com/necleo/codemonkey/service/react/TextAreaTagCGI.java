@@ -2,7 +2,6 @@ package com.necleo.codemonkey.service.react;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.TagDataType;
-import com.necleo.codemonkey.lib.types.figma.FigmaTextNode;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -11,8 +10,12 @@ import java.util.Set;
 @Service
 @Slf4j
 public class TextAreaTagCGI implements ReactCGI{
+
+    RectangleReactCGI rectangleReactCGI = new RectangleReactCGI();
+    FrameReactCGI frameReactCGI = new FrameReactCGI();
+
     @Override
-    public String generate(FigmaNode figmaNode) {
+    public String generate(FigmaNode figmaNode, Set<String> importsFunctions) {
 
         return generat(figmaNode);
     }
@@ -25,7 +28,7 @@ public class TextAreaTagCGI implements ReactCGI{
 
     private String getPlaceholder(FigmaNode figmaNode) {
         String placeholder = "";
-        placeholder += "test textarea";
+        placeholder += "placeholder='test textarea'";
         return placeholder;
     }
 
@@ -39,7 +42,13 @@ public class TextAreaTagCGI implements ReactCGI{
         String styles = "style={{";
         styles += "minHeight: " + figmaNode.getHeight() + ",\n";
         styles += "maxWidth: "+figmaNode.getWidth() + ",\n";
-        styles += "resize: 'none'";
+        styles += "resize: 'none',\n";
+        if (figmaNode.getType().equals(FigmaNodeTypes.RECTANGLE)){
+            styles += rectangleReactCGI.getRectangleStyles(figmaNode);
+        }
+        else {
+            styles += frameReactCGI.getStyles(figmaNode);
+        }
         styles += "}}";
         return styles;
     }
@@ -51,6 +60,6 @@ public class TextAreaTagCGI implements ReactCGI{
 
     @Override
     public Set<FigmaNodeMapper> getStrategy() {
-        return Set.of(new FigmaNodeMapper(FigmaNodeTypes.TEXT, TagDataType.TEXTAREA));
+        return Set.of(new FigmaNodeMapper(FigmaNodeTypes.RECTANGLE, TagDataType.TEXTAREA), new FigmaNodeMapper(FigmaNodeTypes.FRAME, TagDataType.TEXTAREA));
     }
 }

@@ -21,7 +21,7 @@ public class RectangleReactCGI implements ReactCGI {
   }
 
   @Override
-  public String generate(FigmaNode figmaNode) {
+  public String generate(FigmaNode figmaNode, Set<String> importsFunctions) {
     if (!(figmaNode instanceof FigmaRectangleNode fNode)) {
       throw new IllegalArgumentException();
     }
@@ -134,18 +134,32 @@ public class RectangleReactCGI implements ReactCGI {
   }
 
   public String getBoxDecoration(FigmaRectangleNode fNode) {
+//    final String upperBoxDecoration = "boxSizing: '";
+//    final String bottomBoxDecoration = ",\n";
+//    String genBoxDecoration = "";
+//    if (fNode.getCornerRadius() != 0) {
+//      genBoxDecoration = "border-box', \n borderRadius: '";
+//      genBoxDecoration = genBoxDecoration + borderRadius(fNode) + "px',\n";
+//    } else genBoxDecoration = "unset'";
+//    if (fNode.getStrokeWeight() != 1) {
+//      genBoxDecoration += border(fNode);
+//    }
+//
+//    return upperBoxDecoration + genBoxDecoration + bottomBoxDecoration;
+
+
+
     final String upperBoxDecoration = "boxSizing: '";
-    final String bottomBoxDecoration = ",\n";
     String genBoxDecoration = "";
     if (fNode.getCornerRadius() != 0) {
       genBoxDecoration = "border-box', \n borderRadius: '";
       genBoxDecoration = genBoxDecoration + borderRadius(fNode) + "px',\n";
-    } else genBoxDecoration = "unset'";
+    } else genBoxDecoration = "unset',\n";
     if (fNode.getStrokeWeight() != 1) {
-      genBoxDecoration += border(fNode);
+      genBoxDecoration += border(fNode) + ",\n";
     }
 
-    return upperBoxDecoration + genBoxDecoration + bottomBoxDecoration;
+    return upperBoxDecoration + genBoxDecoration;
   }
 
   public String borderRadius(FigmaRectangleNode fNode) {

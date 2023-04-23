@@ -2,7 +2,6 @@ package com.necleo.codemonkey.service.react;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.TagDataType;
-import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,36 +15,44 @@ public class DropDownTagCGI implements ReactCGI{
     FrameReactCGI frameReactCGI = new FrameReactCGI();
 
     @Override
-    public String generate(FigmaNode figmaNode) {
+    public String generate(FigmaNode figmaNode, Set<String> importsFunctions) {
 
         return generat(figmaNode);
     }
 
     private String generat(FigmaNode fNode) {
         // this will go outside the return Block
-        final String StateDropDown = """
-                const [open, setOpen] = React.useState(false);
-                const handleOpen = () => {
-                    setOpen(!open);
+        String StateDropDown = """
+                const [value, setValue] = useState('');
+                                
+                  const handleChange""";
+//        StateDropDown += counter from map;
+
+        StateDropDown += """
+                     = (e) => {
+                    setValue(e.target.value);
                   };""";
-        final String genCode = "<button onClick={handleOpen}" + getStyles(fNode) +">" + getChildDropDown(fNode) +"</button>\n";
+        final String genCode = "<select value={value} onChange={handleChange}\n" +
+                 getStyles(fNode) +">" + getChildDropDown(fNode) +"</select>\n";
         System.out.println(genCode);
         return genCode ;
     }
 
     private String getChildDropDown(FigmaNode fNode) {
-        String menu = "";
-        String generatedMenu = rectangleReactCGI.generate(fNode);
-        menu += "{open ? " + generatedMenu + ": "+ generatedMenu.replaceAll("visibility: true", "visibility: false") +"}";
+        String menu = "<option value=\"Orange\">Orange</option>\n" +
+                "        <option value=\"Radish\">Radish</option>\n" +
+                "        <option value=\"Cherry\">Cherry</option>";
+//        String generatedMenu = rectangleReactCGI.generate(fNode);
+//        menu += "{open ? " + generatedMenu + ": "+ generatedMenu.replaceAll("visibility: true", "visibility: false") +"}";
         return menu;
     }
 
 
     private String getStyles(FigmaNode fNode) {
-        String styles = "styles={{";
+        String styles = "style={{";
 
         if (fNode.getType().equals(FigmaNodeTypes.RECTANGLE)){
-            styles += rectangleReactCGI.getImageStyles((FigmaRectangleNode) fNode);
+            styles += rectangleReactCGI.getRectangleStyles(fNode);
         }
         return styles + "}}";
     }
