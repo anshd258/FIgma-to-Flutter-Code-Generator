@@ -1,14 +1,15 @@
 package com.necleo.codemonkey.service.react;
 
 import com.necleo.codemonkey.lib.types.FigmaNode;
+import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.FigmaTextNode;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSolid;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
+import java.util.Map;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.Set;
 
 @Service
 @Slf4j
@@ -16,22 +17,22 @@ public class TextReactCGI implements ReactCGI {
   @Override
   public Set<FigmaNodeMapper> getStrategy() {
 
-      return Set.of(new FigmaNodeMapper(FigmaNodeTypes.TEXT, null));
+    return Set.of(new FigmaNodeMapper(FigmaNodeTypes.TEXT, null));
   }
 
-
-    @Override
-    public String generate(FigmaNode figmaNode, Set<String> importsFunctions) {
-        if (!(figmaNode instanceof FigmaTextNode fNode)) {
-            throw new IllegalArgumentException();
-        }
-        return generat(fNode);
+  @Override
+  public String generate(
+      FigmaNode figmaNode, Map<String, TagData> tagDataMap, Set<String> importsFunctions) {
+    if (!(figmaNode instanceof FigmaTextNode fNode)) {
+      throw new IllegalArgumentException();
     }
+    return generat(fNode);
+  }
 
-//    public String generat(FigmaNode figmaNode) {
-//        FigmaTextNode fNode = (FigmaTextNode) figmaNode;
-//        String genCode = "";
-//    }
+  //    public String generat(FigmaNode figmaNode) {
+  //        FigmaTextNode fNode = (FigmaTextNode) figmaNode;
+  //        String genCode = "";
+  //    }
 
   public String generat(FigmaNode figmaNode) {
     FigmaTextNode fNode = (FigmaTextNode) figmaNode;
@@ -67,17 +68,17 @@ public class TextReactCGI implements ReactCGI {
     style += "opacity: '" + fNode.getOpacity() + "',\n";
     if (fNode.getStrokes().size() != 0) {
       style +=
-              "border: '"
-                      + fNode.getStrokes().get(0).getType().toLowerCase()
-                      + ", "
-                      + fNode.getStrokeWeight()
-                      + "px, rgb("
-                      + fNode.getStrokes().get(0).getColor().getR() * 255
-                      + ", "
-                      + fNode.getStrokes().get(0).getColor().getG() * 255
-                      + ", "
-                      + fNode.getStrokes().get(0).getColor().getB() * 255
-                      + ")',\n";
+          "border: '"
+              + fNode.getStrokes().get(0).getType().toLowerCase()
+              + ", "
+              + fNode.getStrokeWeight()
+              + "px, rgb("
+              + fNode.getStrokes().get(0).getColor().getR() * 255
+              + ", "
+              + fNode.getStrokes().get(0).getColor().getG() * 255
+              + ", "
+              + fNode.getStrokes().get(0).getColor().getB() * 255
+              + ")',\n";
     }
     style += getAlignment(fNode);
     style += getFont(fNode);

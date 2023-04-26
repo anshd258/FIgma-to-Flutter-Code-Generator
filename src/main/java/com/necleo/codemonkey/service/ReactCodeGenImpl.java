@@ -6,16 +6,12 @@ import com.necleo.codemonkey.lib.FileImportMapperReact.GenFileFunctions;
 import com.necleo.codemonkey.lib.types.ASTNode;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.TagData;
-import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.TagDataType;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import com.necleo.codemonkey.service.react.ReactCGI;
-
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
-import com.necleo.codemonkey.service.react.ReactTaggedDataCGI;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -40,15 +36,15 @@ public class ReactCodeGenImpl implements CodeGen {
   @Override
   public ASTNode generate(FigmaNode fNode, Map<String, TagData> tagDataMap) {
     String genCode = "";
-    Set<String> ImportsFunctions = new HashSet<>();
+    Set<String> importFunctions = new HashSet<>();
 
-    String tagName =
-            Optional.ofNullable(tagDataMap.get(fNode.getId())).map(TagData::getTagName).orElse(null);
-    FigmaNodeMapper figmaNodeMapper =
-            new FigmaNodeMapper(fNode.getType(), TagDataType.valueOf(tagName.toUpperCase()));
-    Optional<ReactCGI> reactCGIOptional = figmaNodeFactory.getProcessor(figmaNodeMapper);
-    genCode += reactCGIOptional.map(reactCGI -> reactCGI.generate(fNode, ImportsFunctions)).orElseThrow();
-    String finalFile = genFileFunctions.genFile(ImportsFunctions, genCode);
+    Optional<ReactCGI> reactCGIOptional =
+        figmaNodeFactory.getProcessor(FigmaNodeMapper.of(fNode, tagDataMap));
+    genCode +=
+        reactCGIOptional
+            .map(reactCGI -> reactCGI.generate(fNode, tagDataMap, importFunctions))
+            .orElseThrow();
+    String finalFile = genFileFunctions.genFile(importFunctions, genCode);
     System.out.println(finalFile);
     return ASTNode.builder().value(genCode).build();
   }

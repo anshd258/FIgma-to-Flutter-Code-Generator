@@ -1,6 +1,6 @@
 package com.necleo.codemonkey.lib.types.figma.properties;
 
 public class LineHeight {
-    String unit;
-    double value;
+  String unit;
+  double value;
 }

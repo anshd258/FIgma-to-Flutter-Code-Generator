@@ -4,12 +4,12 @@ import static com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNo
 import static com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes.TEXT;
 import static com.necleo.codemonkey.lib.types.figma.properties.fills.enums.ScaleMode.FILL;
 
-import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.FigmaFrameNode;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsImage;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSolid;
+import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

@@ -20,5 +20,4 @@ public enum TagDataType {
   SLIDER,
   GOOGLEMAPS,
   IMAGE
-
 }

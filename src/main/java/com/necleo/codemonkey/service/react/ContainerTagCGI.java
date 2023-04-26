@@ -1,37 +1,42 @@
 package com.necleo.codemonkey.service.react;
+
+import com.necleo.codemonkey.factory.ReactFigmaNodeAbstractFactory;
 import com.necleo.codemonkey.lib.types.FigmaNode;
+import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.TagDataType;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
+import java.util.Map;
+import java.util.Set;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
 @Service
 @Slf4j
-public class ContainerTagCGI implements ReactCGI{
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@RequiredArgsConstructor
+public class ContainerTagCGI implements ReactCGI {
 
-    RectangleReactCGI rectangleReactCGI = new RectangleReactCGI();
-    FrameReactCGI frameReactCGI = new FrameReactCGI();
+  @Lazy ReactFigmaNodeAbstractFactory figmaNodeFactory;
 
-    @Override
-    public String generate(FigmaNode figmaNode, Set<String> importsFunctions) {
+  @Override
+  public String generate(
+      FigmaNode figmaNode, Map<String, TagData> tagDataMap, Set<String> importsFunctions) {
 
-        return generat(figmaNode);
-    }
+    ReactCGI reactCGI =
+        figmaNodeFactory.getProcessor(FigmaNodeMapper.of(figmaNode, tagDataMap)).orElseThrow();
 
-    public String generat(FigmaNode fNode){
-        Set<String> ImportsFunctions = null;
-        if (fNode.getType().equals(FigmaNodeTypes.RECTANGLE)){
-            return rectangleReactCGI.generate(fNode, ImportsFunctions);
-        } else if (fNode.getType().equals(FigmaNodeTypes.FRAME)){
-            return frameReactCGI.generate(fNode, ImportsFunctions);
-        }
-        return frameReactCGI.generate(fNode, ImportsFunctions);
-    }
+    return reactCGI.generate(figmaNode, tagDataMap, importsFunctions);
+  }
 
-    @Override
-    public Set<FigmaNodeMapper> getStrategy() {
-        return Set.of(new FigmaNodeMapper(FigmaNodeTypes.FRAME, TagDataType.CONTAINER), new FigmaNodeMapper(FigmaNodeTypes.RECTANGLE, TagDataType.CONTAINER));
-    }
+  @Override
+  public Set<FigmaNodeMapper> getStrategy() {
+    return Set.of(
+        new FigmaNodeMapper(FigmaNodeTypes.FRAME, TagDataType.CONTAINER),
+        new FigmaNodeMapper(FigmaNodeTypes.RECTANGLE, TagDataType.CONTAINER));
+  }
 }

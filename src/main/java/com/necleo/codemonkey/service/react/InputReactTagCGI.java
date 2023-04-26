@@ -1,70 +1,75 @@
 package com.necleo.codemonkey.service.react;
+
 import com.necleo.codemonkey.lib.types.FigmaNode;
+import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.TagDataType;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
+import java.util.Map;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
 @Service
 @Slf4j
-
 public class InputReactTagCGI implements ReactCGI {
 
-    RectangleReactCGI rectangleReactCGI = new RectangleReactCGI();
+  RectangleReactCGI rectangleReactCGI = new RectangleReactCGI();
 
-    FrameReactCGI frameReactCGI = new FrameReactCGI();
+  FrameReactCGI frameReactCGI = new FrameReactCGI();
 
-    @Override
-    public String generate(FigmaNode figmaNode, Set<String> importsFunctions) {
+  @Override
+  public String generate(
+      FigmaNode figmaNode, Map<String, TagData> tagDataMap, Set<String> importsFunctions) {
 
-        return generat(figmaNode);
+    return generat(figmaNode);
+  }
+
+  private String generat(FigmaNode fNode) {
+    final String upperLink = "<label>" + getLabel(fNode) + "<input\n";
+    final String lowerLink = "/></label>\n";
+    // if input type = submit - return submitInput
+    String submitInput =
+        "<input type='submit' " + getStyles(fNode) + getSubmitValue(fNode) + "/>\n";
+    String genCode = "";
+    genCode += getInputName(fNode);
+    genCode += getStyles(fNode);
+    System.out.println(genCode); // end indent
+
+    return upperLink + genCode + lowerLink;
+  }
+
+  private String getInputName(FigmaNode fNode) {
+    return "name='test'\n";
+  }
+
+  private String getSubmitValue(FigmaNode fNode) {
+    return "Submit";
+  }
+
+  private String getLabel(FigmaNode fNode) {
+    return fNode.getName();
+  }
+
+  private String getStyles(FigmaNode fNode) {
+    String styles = "style={{";
+
+    if (fNode.getType().equals(FigmaNodeTypes.RECTANGLE)) {
+      styles += rectangleReactCGI.getRectangleStyles(fNode);
+    } else if (fNode.getType().equals(FigmaNodeTypes.FRAME)) {
+      styles += frameReactCGI.getStyles(fNode);
     }
+    return styles + "}}";
+  }
 
-    private String generat(FigmaNode fNode) {
-        final String upperLink = "<label>" + getLabel(fNode) +"<input\n";
-        final String lowerLink = "/></label>\n";
-        // if input type = submit - return submitInput
-        String submitInput = "<input type='submit' " + getStyles(fNode) + getSubmitValue(fNode) + "/>\n";
-        String genCode = "";
-        genCode += getInputName(fNode);
-        genCode += getStyles(fNode);
-        System.out.println(genCode); // end indent
+  public String getData(FigmaNode fNode) {
+    return fNode.getName();
+  }
 
-
-        return upperLink + genCode + lowerLink;
-    }
-
-    private String getInputName(FigmaNode fNode) {
-        return "name='test'\n";
-    }
-
-    private String getSubmitValue(FigmaNode fNode) {
-        return "Submit";
-    }
-
-    private String getLabel(FigmaNode fNode) {
-        return fNode.getName();
-    }
-
-    private String getStyles(FigmaNode fNode) {
-        String styles = "style={{";
-
-        if (fNode.getType().equals(FigmaNodeTypes.RECTANGLE)){
-            styles += rectangleReactCGI.getRectangleStyles(fNode);
-        } else if (fNode.getType().equals(FigmaNodeTypes.FRAME)) {
-            styles += frameReactCGI.getStyles(fNode);
-        }
-        return styles + "}}";
-    }
-
-    public String getData(FigmaNode fNode){
-        return fNode.getName();
-    }
-
-    @Override
-    public Set<FigmaNodeMapper> getStrategy() {
-        return Set.of(new FigmaNodeMapper(FigmaNodeTypes.FRAME, TagDataType.INPUT), new FigmaNodeMapper(FigmaNodeTypes.RECTANGLE, TagDataType.INPUT));
-    }
+  @Override
+  public Set<FigmaNodeMapper> getStrategy() {
+    return Set.of(
+        new FigmaNodeMapper(FigmaNodeTypes.FRAME, TagDataType.INPUT),
+        new FigmaNodeMapper(FigmaNodeTypes.RECTANGLE, TagDataType.INPUT));
+  }
 }

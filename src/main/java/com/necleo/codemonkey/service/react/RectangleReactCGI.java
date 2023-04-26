@@ -1,15 +1,16 @@
 package com.necleo.codemonkey.service.react;
 
 import com.necleo.codemonkey.lib.types.FigmaNode;
+import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsImage;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSolid;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
+import java.util.Map;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.Set;
 
 @Service
 @Slf4j
@@ -21,7 +22,8 @@ public class RectangleReactCGI implements ReactCGI {
   }
 
   @Override
-  public String generate(FigmaNode figmaNode, Set<String> importsFunctions) {
+  public String generate(
+      FigmaNode figmaNode, Map<String, TagData> tagDataMap, Set<String> importsFunctions) {
     if (!(figmaNode instanceof FigmaRectangleNode fNode)) {
       throw new IllegalArgumentException();
     }
@@ -34,8 +36,7 @@ public class RectangleReactCGI implements ReactCGI {
 
     if (fNode.getFills().get(0).getType().equals("IMAGE")) {
       genCode += getImageProps(fNode);
-    }
-    else {
+    } else {
 
       genCode += "\n<div style={{ \n";
       genCode += getRectangleStyles(figmaNode);
@@ -61,7 +62,6 @@ public class RectangleReactCGI implements ReactCGI {
 
     return rectStyles;
   }
-
 
   public String getHeight(FigmaRectangleNode fNode) {
     if (fNode.getHeight() != 0) {
@@ -134,20 +134,18 @@ public class RectangleReactCGI implements ReactCGI {
   }
 
   public String getBoxDecoration(FigmaRectangleNode fNode) {
-//    final String upperBoxDecoration = "boxSizing: '";
-//    final String bottomBoxDecoration = ",\n";
-//    String genBoxDecoration = "";
-//    if (fNode.getCornerRadius() != 0) {
-//      genBoxDecoration = "border-box', \n borderRadius: '";
-//      genBoxDecoration = genBoxDecoration + borderRadius(fNode) + "px',\n";
-//    } else genBoxDecoration = "unset'";
-//    if (fNode.getStrokeWeight() != 1) {
-//      genBoxDecoration += border(fNode);
-//    }
-//
-//    return upperBoxDecoration + genBoxDecoration + bottomBoxDecoration;
-
-
+    //    final String upperBoxDecoration = "boxSizing: '";
+    //    final String bottomBoxDecoration = ",\n";
+    //    String genBoxDecoration = "";
+    //    if (fNode.getCornerRadius() != 0) {
+    //      genBoxDecoration = "border-box', \n borderRadius: '";
+    //      genBoxDecoration = genBoxDecoration + borderRadius(fNode) + "px',\n";
+    //    } else genBoxDecoration = "unset'";
+    //    if (fNode.getStrokeWeight() != 1) {
+    //      genBoxDecoration += border(fNode);
+    //    }
+    //
+    //    return upperBoxDecoration + genBoxDecoration + bottomBoxDecoration;
 
     final String upperBoxDecoration = "boxSizing: '";
     String genBoxDecoration = "";

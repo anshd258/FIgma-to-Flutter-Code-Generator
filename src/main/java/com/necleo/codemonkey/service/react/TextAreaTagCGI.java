@@ -1,65 +1,74 @@
 package com.necleo.codemonkey.service.react;
+
 import com.necleo.codemonkey.lib.types.FigmaNode;
+import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.TagDataType;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
+import java.util.Map;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
 @Service
 @Slf4j
-public class TextAreaTagCGI implements ReactCGI{
+public class TextAreaTagCGI implements ReactCGI {
 
-    RectangleReactCGI rectangleReactCGI = new RectangleReactCGI();
-    FrameReactCGI frameReactCGI = new FrameReactCGI();
+  RectangleReactCGI rectangleReactCGI = new RectangleReactCGI();
+  FrameReactCGI frameReactCGI = new FrameReactCGI();
 
-    @Override
-    public String generate(FigmaNode figmaNode, Set<String> importsFunctions) {
+  @Override
+  public String generate(
+      FigmaNode figmaNode, Map<String, TagData> tagDataMap, Set<String> importsFunctions) {
 
-        return generat(figmaNode);
+    return generat(figmaNode);
+  }
+
+  private String generat(FigmaNode figmaNode) {
+    String genCode = "";
+    genCode +=
+        "<textarea "
+            + genStyles(figmaNode)
+            + getRowsCols(figmaNode)
+            + getName(figmaNode)
+            + getPlaceholder(figmaNode)
+            + " />";
+    return genCode;
+  }
+
+  private String getPlaceholder(FigmaNode figmaNode) {
+    String placeholder = "";
+    placeholder += "placeholder='test textarea'";
+    return placeholder;
+  }
+
+  private String getRowsCols(FigmaNode figmaNode) {
+    if (figmaNode.getHeight() != 0 || figmaNode.getWidth() != 0) return "\n";
+    return "\n";
+  }
+
+  private String genStyles(FigmaNode figmaNode) {
+    String styles = "style={{";
+    styles += "minHeight: " + figmaNode.getHeight() + ",\n";
+    styles += "maxWidth: " + figmaNode.getWidth() + ",\n";
+    styles += "resize: 'none',\n";
+    if (figmaNode.getType().equals(FigmaNodeTypes.RECTANGLE)) {
+      styles += rectangleReactCGI.getRectangleStyles(figmaNode);
+    } else {
+      styles += frameReactCGI.getStyles(figmaNode);
     }
+    styles += "}}";
+    return styles;
+  }
 
-    private String generat(FigmaNode figmaNode) {
-        String genCode = "";
-        genCode += "<textarea " + genStyles(figmaNode) + getRowsCols(figmaNode) + getName(figmaNode) + getPlaceholder(figmaNode) + " />";
-        return genCode;
-    }
+  private String getName(FigmaNode figmaNode) {
+    return "name='" + figmaNode.getName() + "'\n";
+  }
 
-    private String getPlaceholder(FigmaNode figmaNode) {
-        String placeholder = "";
-        placeholder += "placeholder='test textarea'";
-        return placeholder;
-    }
-
-    private String getRowsCols(FigmaNode figmaNode) {
-        if (figmaNode.getHeight() != 0 || figmaNode.getWidth() != 0)
-            return "\n";
-        return "\n";
-    }
-
-    private String genStyles(FigmaNode figmaNode) {
-        String styles = "style={{";
-        styles += "minHeight: " + figmaNode.getHeight() + ",\n";
-        styles += "maxWidth: "+figmaNode.getWidth() + ",\n";
-        styles += "resize: 'none',\n";
-        if (figmaNode.getType().equals(FigmaNodeTypes.RECTANGLE)){
-            styles += rectangleReactCGI.getRectangleStyles(figmaNode);
-        }
-        else {
-            styles += frameReactCGI.getStyles(figmaNode);
-        }
-        styles += "}}";
-        return styles;
-    }
-
-    private String getName(FigmaNode figmaNode){
-        return "name='" + figmaNode.getName() + "'\n";
-    }
-
-
-    @Override
-    public Set<FigmaNodeMapper> getStrategy() {
-        return Set.of(new FigmaNodeMapper(FigmaNodeTypes.RECTANGLE, TagDataType.TEXTAREA), new FigmaNodeMapper(FigmaNodeTypes.FRAME, TagDataType.TEXTAREA));
-    }
+  @Override
+  public Set<FigmaNodeMapper> getStrategy() {
+    return Set.of(
+        new FigmaNodeMapper(FigmaNodeTypes.RECTANGLE, TagDataType.TEXTAREA),
+        new FigmaNodeMapper(FigmaNodeTypes.FRAME, TagDataType.TEXTAREA));
+  }
 }
