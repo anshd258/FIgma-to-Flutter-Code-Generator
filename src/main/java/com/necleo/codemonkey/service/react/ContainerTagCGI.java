@@ -24,9 +24,10 @@ public class ContainerTagCGI implements ReactCGI{
         Set<String> ImportsFunctions = null;
         if (fNode.getType().equals(FigmaNodeTypes.RECTANGLE)){
             return rectangleReactCGI.generate(fNode, ImportsFunctions);
-        } else {
+        } else if (fNode.getType().equals(FigmaNodeTypes.FRAME)){
             return frameReactCGI.generate(fNode, ImportsFunctions);
         }
+        return frameReactCGI.generate(fNode, ImportsFunctions);
     }
 
     @Override

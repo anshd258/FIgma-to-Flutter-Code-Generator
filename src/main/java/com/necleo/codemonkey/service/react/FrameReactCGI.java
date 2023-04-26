@@ -80,12 +80,15 @@ public class FrameReactCGI implements ReactCGI{
     public String getChild(FigmaFrameNode fNode){
         String childData = "";
         String childType = fNode.getChild().get(0).getName();
-        Set<String> ImportsFunctions = null;
+//        Set<String> ImportsFunctions = null;
         if (childType.equals("TEXT"))
-            childData += textReactCGI.generate((FigmaNode) fNode, ImportsFunctions);
+            childData += textReactCGI.generate((FigmaNode) fNode, null);
 
-        else if (childType.equals("RECTANGLE"))
-            childData += rectangleReactCGI.generate((FigmaNode) fNode, ImportsFunctions);
+        else if (childType.equals("RECTANGLE") || childType.equals("IMAGE"))
+            childData += rectangleReactCGI.generate((FigmaNode) fNode, null);
+
+        else if(childType.equals("FRAME"))
+            childData += generate((FigmaNode) fNode, null);
 
         return childData;
     }
