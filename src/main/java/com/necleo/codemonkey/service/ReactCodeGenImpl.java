@@ -45,7 +45,7 @@ public class ReactCodeGenImpl implements CodeGen {
             .map(reactCGI -> reactCGI.generate(fNode, tagDataMap, importFunctions))
             .orElseThrow();
     String finalFile = genFileFunctions.genFile(importFunctions, genCode);
-    System.out.println(finalFile);
+    log.info(finalFile);
     return ASTNode.builder().value(genCode).build();
   }
 }
