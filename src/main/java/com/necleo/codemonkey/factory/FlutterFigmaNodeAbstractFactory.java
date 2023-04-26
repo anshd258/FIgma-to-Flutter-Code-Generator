@@ -7,13 +7,14 @@ import java.util.List;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 @Component
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class FlutterFigmaNodeAbstractFactory extends AbstractFactory<FigmaNodeMapper, FlutterCGI> {
 
-  @Autowired
+
   public FlutterFigmaNodeAbstractFactory(List<FlutterCGI> beans) {
     super(beans, new SetMapper<>());
   }

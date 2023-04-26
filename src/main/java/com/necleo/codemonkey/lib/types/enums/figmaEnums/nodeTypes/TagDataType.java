@@ -11,5 +11,4 @@ public enum TagDataType {
   SLIDER,
   CHECKBOX,
   SWITCH
-
 }

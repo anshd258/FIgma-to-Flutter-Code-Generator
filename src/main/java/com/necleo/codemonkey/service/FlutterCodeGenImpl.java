@@ -2,11 +2,10 @@ package com.necleo.codemonkey.service;
 
 import com.necleo.codemonkey.enums.Language;
 import com.necleo.codemonkey.factory.FlutterFigmaNodeAbstractFactory;
-import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import com.necleo.codemonkey.lib.types.ASTNode;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.TagData;
-import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.TagDataType;
+import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import com.necleo.codemonkey.service.flutter.FlutterCGI;
 import java.util.Map;
 import java.util.Optional;
@@ -36,10 +35,12 @@ public class FlutterCodeGenImpl implements CodeGen {
 
     String tagName =
         Optional.ofNullable(tagDataMap.get(fNode.getId())).map(TagData::getTagName).orElse(null);
-    FigmaNodeMapper figmaNodeMapper =
-        new FigmaNodeMapper(fNode.getType(), TagDataType.valueOf(tagName.toUpperCase()));
+    FigmaNodeMapper figmaNodeMapper = new FigmaNodeMapper(fNode.getType(), null);
     Optional<FlutterCGI> flutterCGIOptional = flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
-    genCode += flutterCGIOptional.map(flutterCGI -> flutterCGI.generate(fNode,tagDataMap.get(fNode.getId()))).orElse("");
+    genCode +=
+        flutterCGIOptional
+            .map(flutterCGI -> flutterCGI.generate(fNode, tagDataMap.get(fNode.getId())))
+            .orElse("");
     return ASTNode.builder().value(genCode).build();
   }
 }

@@ -2,14 +2,14 @@ package com.necleo.codemonkey.service.flutter;
 
 import static com.necleo.codemonkey.lib.types.figma.properties.fills.enums.ScaleMode.FILL;
 
-import com.necleo.codemonkey.lib.types.TagData;
-import com.necleo.codemonkey.lib.types.figma.properties.strokes.Strokes;
-import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import com.necleo.codemonkey.lib.types.FigmaNode;
+import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsImage;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSolid;
+import com.necleo.codemonkey.lib.types.figma.properties.strokes.Strokes;
+import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -84,11 +84,12 @@ public class RectangleFlutterCGI implements FlutterCGI {
         || fNode.getBottomRightRadius() != 0) {
       genBoxDecoration += borderRadius(fNode);
     }
-    if (fNode.getStrokeWeight() != 0) {
-      genBoxDecoration += border(fNode);
-    }
+//    if (fNode.getStrokeWeight() != 0) {
+//      genBoxDecoration += border(fNode);
+//    }
     return upperBoxDecoration + genBoxDecoration + bottomBoxDecoration;
   }
+
   private String getStyle(Strokes strokes) {
     return "style: BorderStyle." + strokes.getType().toString().toLowerCase() + ",\n";
   }
@@ -101,7 +102,7 @@ public class RectangleFlutterCGI implements FlutterCGI {
     return "width:" + fNode.getStrokeWeight() + ",\n";
   }
 
-  private String getColor( Strokes fills) {
+  private String getColor(Strokes fills) {
     final String upperColor = "color: Color.fromRGBO(\n";
     final String lowerColor = "),\n";
     final String red = Math.round(fills.getColor().getR() * 255) + ",";
@@ -167,7 +168,7 @@ public class RectangleFlutterCGI implements FlutterCGI {
   private String border(FigmaRectangleNode fNode) {
     final String upperBorder = " border: Border.all(";
     final String bottomBorder = "),\n";
-     String genCode = "";
+    String genCode = "";
     genCode += getStrokeAlignment(fNode);
     genCode += getColor(fNode.getStrokes().get(0));
     genCode += getStrokeWidth(fNode);

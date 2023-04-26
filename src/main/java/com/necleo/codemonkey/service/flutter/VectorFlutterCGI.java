@@ -1,10 +1,10 @@
 package com.necleo.codemonkey.service.flutter;
 
-import com.necleo.codemonkey.lib.types.TagData;
-import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import com.necleo.codemonkey.lib.types.FigmaNode;
+import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.FigmaVectorNode;
+import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ public class VectorFlutterCGI implements FlutterCGI {
     if (!(figmaNode instanceof FigmaVectorNode fNode)) {
       throw new IllegalArgumentException();
     }
-    return generat((FigmaVectorNode) figmaNode,tagData);
+    return generat((FigmaVectorNode) figmaNode, tagData);
   }
 
   private String generat(FigmaVectorNode figmaNode, TagData tagData) {
@@ -32,7 +32,7 @@ public class VectorFlutterCGI implements FlutterCGI {
     final String bottomVector = ")\n";
     String genCode = "";
     genCode += "clipper: MyClipper(),\n";
-    genCode += "child:" + rectangleFlutterCGI.generate((FigmaNode) figmaNode,tagData) + ",\n";
+    genCode += "child:" + rectangleFlutterCGI.generate((FigmaNode) figmaNode, tagData) + ",\n";
 
     return genCode + "\n" + getClipperPath(figmaNode);
   }

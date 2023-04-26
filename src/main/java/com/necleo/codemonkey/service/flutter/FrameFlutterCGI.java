@@ -1,25 +1,34 @@
 package com.necleo.codemonkey.service.flutter;
 
-import static com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes.RECTANGLE;
-import static com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes.TEXT;
 import static com.necleo.codemonkey.lib.types.figma.properties.fills.enums.ScaleMode.FILL;
 
-import com.necleo.codemonkey.lib.types.TagData;
-import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
+import com.necleo.codemonkey.factory.FlutterFigmaNodeAbstractFactory;
 import com.necleo.codemonkey.lib.types.FigmaNode;
+import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.FigmaFrameNode;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsImage;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSolid;
+import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
+import java.util.Optional;
 import java.util.Set;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
+
+
 public class FrameFlutterCGI implements FlutterCGI {
-  RectangleFlutterCGI rectangleFlutterCGI = new RectangleFlutterCGI();
-  TextFlutterCGI textFlutterCGI = new TextFlutterCGI();
+  @Setter
+          @Lazy@Autowired
+  FlutterFigmaNodeAbstractFactory flutterFigmaNodeFactory;
 
   @Override
   public Set<FigmaNodeMapper> getStrategy() {
@@ -31,7 +40,7 @@ public class FrameFlutterCGI implements FlutterCGI {
     if (!(figmaNode instanceof FigmaFrameNode fNode)) {
       throw new IllegalArgumentException();
     }
-    return generat(fNode,tagData);
+    return generat(fNode, tagData);
   }
 
   private String generat(FigmaFrameNode figmaNode, TagData tagData) {
@@ -41,12 +50,11 @@ public class FrameFlutterCGI implements FlutterCGI {
     genCode += getHeight(figmaNode);
     genCode += getWidth(figmaNode);
     genCode += getPadding(figmaNode);
-    genCode += getBoxDecoration(figmaNode);
-    if (figmaNode.getChild().size() > 1) {
-      genCode += getchild(figmaNode,tagData);
-    }
+    //    if(!(figmaNode.getFills().equals(null))){
+    //    genCode += getBoxDecoration(figmaNode);}
 
-    genCode += getchild(figmaNode,tagData);
+
+    genCode += "child:" + getchild(figmaNode, tagData) + ",\n";
 
     genCode += ")\n";
     System.out.println(genCode); // end indent
@@ -61,17 +69,127 @@ public class FrameFlutterCGI implements FlutterCGI {
     String rigt = "right:" + figmaNode.getPaddingRight() + ",";
     String top = "top:" + figmaNode.getPaddingTop() + ",";
     String bottom = "bottom:" + figmaNode.getPaddingBottom() + ",";
-    return  upperPadding + leftPaing + rigt + top + bottom + lowerPadding;
-
+    return upperPadding + leftPaing + rigt + top + bottom + lowerPadding;
   }
 
-  private String getchild(FigmaNode figmaNode,TagData tagData) {
-    if (figmaNode.getChild().get(0).getType() == RECTANGLE)
-      return "child:" + rectangleFlutterCGI.generate(figmaNode.getChild().get(0),tagData) + ",\n";
-    else if (figmaNode.getChild().get(0).getType() == TEXT) {
-      return "child:" + textFlutterCGI.generate(figmaNode.getChild().get(0),tagData) + ",\n";
+  private String getchild(FigmaFrameNode figmaNode, TagData tagData) {
+    String genCode = "";
+
+    if (figmaNode.getLayoutMode().equals("NONE")) {
+      final String upperStack = "Stack(\n";
+      final String lowerStack = "),";
+      genCode += "children:[\n";
+
+      for (int i = (figmaNode.getChild().size()-1); i >= 0; i--) {
+        String genChild = "";
+        String gen = "";
+        FigmaNodeMapper figmaNodeMapper =
+            new FigmaNodeMapper(figmaNode.getChild().get(i).getType(), null);
+        Optional<FlutterCGI> flutterCGIOptional =
+            flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
+        if (i == (figmaNode.getChild().size()-1)) {
+          int finalI = i;
+          genChild +=
+              flutterCGIOptional
+                  .map(flutterCGI -> flutterCGI.generate(figmaNode.getChild().get(finalI), null))
+                  .orElse("");
+        } else {
+          int finalI = i;
+          genChild +=
+              flutterCGIOptional
+                  .map(flutterCGI -> flutterCGI.generate(figmaNode.getChild().get(finalI), null))
+                  .orElse("");
+          gen = getPosition(genChild, figmaNode.getChild().get(finalI));
+        }
+        genCode += gen;
+      }
+      genCode += "],\n";
+
+      return upperStack + genCode + lowerStack;
+
+    } else if (figmaNode.getLayoutMode().equals("HORIZONTAL")) {
+      final String upperRow = "Row(\n";
+      final String lowerRow = "),\n";
+      genCode += "children:[\n";
+
+      for (int i = 0; i < figmaNode.getChild().size(); i++) {
+        String genChild = "";
+        String gen = "";
+        FigmaNodeMapper figmaNodeMapper =
+            new FigmaNodeMapper(figmaNode.getChild().get(i).getType(), null);
+        Optional<FlutterCGI> flutterCGIOptional =
+            flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
+        if (i == (figmaNode.getChild().size()-1)) {
+          int finalI = i;
+          genChild +=
+              flutterCGIOptional
+                  .map(flutterCGI -> flutterCGI.generate(figmaNode.getChild().get(finalI), null))
+                  .orElse("");
+          genCode += genChild;
+        } else {
+          int finalI = i;
+          genChild +=
+              flutterCGIOptional
+                  .map(flutterCGI -> flutterCGI.generate(figmaNode.getChild().get(finalI), null))
+                  .orElse("");
+          gen += getSpacing(figmaNode);
+          genCode += genChild;
+          genCode += gen;
+        }
+      }
+      genCode += "],\n";
+      return upperRow + genCode + lowerRow;
+    } else if (figmaNode.getLayoutMode().name().equals("VERTICAL")) {
+      final String upperColumn = "Column(\n";
+      final String lowerColumn = "),\n";
+      genCode += "children:[\n";
+
+      for (int i = 0; i < figmaNode.getChild().size(); i++) {
+        String genChild = "";
+        String gen = "";
+        FigmaNodeMapper figmaNodeMapper =
+            new FigmaNodeMapper(figmaNode.getChild().get(i).getType(), null);
+        Optional<FlutterCGI> flutterCGIOptional =
+            flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
+        if (i == (figmaNode.getChild().size()-1)) {
+          int finalI = i;
+          genChild +=
+              flutterCGIOptional
+                  .map(flutterCGI -> flutterCGI.generate(figmaNode.getChild().get(finalI), null))
+                  .orElse("");
+          genCode += genChild;
+        } else {
+          int finalI = i;
+          genChild +=
+              flutterCGIOptional
+                  .map(flutterCGI -> flutterCGI.generate(figmaNode.getChild().get(finalI), null))
+                  .orElse("");
+          gen += getSpacing(figmaNode);
+          genCode += genChild;
+          genCode += gen;
+        }
+      }
+      genCode += "],\n";
+      return upperColumn + genCode + lowerColumn;
     }
+
     return "";
+  }
+
+  private String getSpacing(FigmaFrameNode figmaNode) {
+    if (figmaNode.getLayoutMode().equals("HORIZONTAL")) {
+      return "SizedBox(width:" + figmaNode.getItemSpacing() + ",),";
+    } else {
+      return "SizedBox(height:" + figmaNode.getItemSpacing() + ",),";
+    }
+  }
+
+  private String getPosition(String genCode, FigmaNode figmaNode) {
+    final String upperPosition = "  Positioned(\n";
+    final String lowerPosition = "),\n";
+    String top = "top:" + figmaNode.getY() + ",\n";
+    String left = "left:" + figmaNode.getX() + ",\n";
+    return upperPosition + genCode + lowerPosition;
   }
 
   private String getHeight(FigmaFrameNode fNode) {

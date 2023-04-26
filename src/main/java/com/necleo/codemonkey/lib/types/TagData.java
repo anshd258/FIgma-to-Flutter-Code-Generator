@@ -3,8 +3,6 @@ package com.necleo.codemonkey.lib.types;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.Map;
-
 import com.necleo.codemonkey.lib.types.Tagdata.Tag;
 import lombok.AccessLevel;
 import lombok.Getter;

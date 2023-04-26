@@ -61,6 +61,7 @@ public class FigmaFrameNode extends FigmaNode {
   int itemSpacing;
   boolean itemReverseZIndex;
   boolean strokesIncludedInLayout;
+
   // layoutGrids - need to check
   String gridStyleId;
   boolean clipsContent;
