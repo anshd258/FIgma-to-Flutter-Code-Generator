@@ -10,9 +10,8 @@ import lombok.extern.jackson.Jacksonized;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 @Jacksonized
-public class Color {
-  double r;
-  double g;
-  double b;
-  double a;
+public class GradientStops {
+    Color color;
+
+    int position;
 }

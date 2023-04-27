@@ -6,11 +6,15 @@ import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
+import com.necleo.codemonkey.lib.types.figma.properties.fills.Color;
+import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsGradient;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsImage;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSolid;
 import com.necleo.codemonkey.lib.types.figma.properties.strokes.Strokes;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import java.util.Set;
+import java.util.stream.Collectors;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -40,7 +44,7 @@ public class RectangleFlutterCGI implements FlutterCGI {
     genCode += getWidth(figmaNode);
     genCode += getBoxDecoration(figmaNode);
 
-    genCode += ")\n";
+    genCode += "),\n";
     System.out.println(genCode); // end indent
 
     return genCode;
@@ -68,7 +72,7 @@ public class RectangleFlutterCGI implements FlutterCGI {
     if (fNode.getFills().get(0).getType().equals("SOLID")) {
       final FillsSolid fills = (FillsSolid) fNode.getFills().get(0);
       if (fills.getColor() != null && fNode.getFills().get(0).getOpacity() != 0) {
-        genBoxDecoration += color(fills);
+        genBoxDecoration += "color:" + color(fills) + ",\n";
       }
     }
     System.out.println(fNode.getFills().get(0).getType());
@@ -76,6 +80,10 @@ public class RectangleFlutterCGI implements FlutterCGI {
       final FillsImage fills = (FillsImage) fNode.getFills().get(0);
 
       genBoxDecoration += getImage(fills);
+    }
+    if(fNode.getFills().get(0).getType().equals("GRADIENT_LINEAR")){
+      final FillsGradient fills = (FillsGradient) fNode.getFills().get(0);
+      genBoxDecoration += getGradient(fills);
     }
 
     if (fNode.getBottomLeftRadius() != 0
@@ -90,6 +98,15 @@ public class RectangleFlutterCGI implements FlutterCGI {
     return upperBoxDecoration + genBoxDecoration + bottomBoxDecoration;
   }
 
+  private String getGradient(FillsGradient fills) {
+    final String upperLinearGradient = "gradient: LinearGradient(\n";
+    final String lowerLinearGradient = " ),\n";
+    String gencCode = "";
+    gencCode += "color:[\n" + fills.getGradientStops().stream().map(gradientStops -> getGradientColor(gradientStops.getColor())) + "],\n";
+   gencCode += "  stops: [ \n"  + fills.getGradientStops().stream().map(gradientStops -> gradientStops.getPosition() + ",") + "],\n";
+  return upperLinearGradient + gencCode + lowerLinearGradient;
+  }
+
   private String getStyle(Strokes strokes) {
     return "style: BorderStyle." + strokes.getType().toString().toLowerCase() + ",\n";
   }
@@ -101,7 +118,16 @@ public class RectangleFlutterCGI implements FlutterCGI {
   private String getStrokeWidth(FigmaRectangleNode fNode) {
     return "width:" + fNode.getStrokeWeight() + ",\n";
   }
+  private String getGradientColor(Color fills) {
+    final String upperColor = " Color.fromRGBO(\n";
+    final String lowerColor = ")\n";
+    final String red = Math.round(fills.getR() * 255) + ",";
+    final String green = Math.round(fills.getG() * 255) + ",";
+    final String blue = Math.round(fills.getB() * 255) + ",";
+    final String opacity = Double.toString(fills.getA());
 
+    return upperColor + red + green + blue + opacity + lowerColor;
+  }
   private String getColor(Strokes fills) {
     final String upperColor = "color: Color.fromRGBO(\n";
     final String lowerColor = "),\n";
@@ -138,8 +164,8 @@ public class RectangleFlutterCGI implements FlutterCGI {
   }
 
   private String color(FillsSolid fills) {
-    final String upperColor = "color: Color.fromRGBO(\n";
-    final String lowerColor = "),\n";
+    final String upperColor = "Color.fromRGBO(\n";
+    final String lowerColor = ")\n";
     final String red = Math.round(fills.getColor().getR() * 255) + ",";
     final String green = Math.round(fills.getColor().getG() * 255) + ",";
     final String blue = Math.round(fills.getColor().getB() * 255) + ",";

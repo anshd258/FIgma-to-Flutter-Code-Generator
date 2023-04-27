@@ -1,4 +1,4 @@
-package com.necleo.codemonkey.lib.types.figma.properties.fills;
+package com.necleo.codemonkey.lib.types.figma.properties.text;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -10,9 +10,7 @@ import lombok.extern.jackson.Jacksonized;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 @Jacksonized
-public class Color {
-  double r;
-  double g;
-  double b;
-  double a;
+public class LineHeight {
+   String unit;
+    int value;
 }

@@ -5,13 +5,20 @@ import static com.necleo.codemonkey.lib.types.figma.properties.fills.enums.Scale
 import com.necleo.codemonkey.factory.FlutterFigmaNodeAbstractFactory;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.TagData;
+import com.necleo.codemonkey.lib.types.enums.figmaEnums.CounterAxisAlignItems;
+import com.necleo.codemonkey.lib.types.enums.figmaEnums.LayoutMode;
+import com.necleo.codemonkey.lib.types.enums.figmaEnums.PrimaryAxisAlignItems;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.FigmaFrameNode;
+import com.necleo.codemonkey.lib.types.figma.properties.fills.Color;
+import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsGradient;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsImage;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSolid;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -23,11 +30,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-
+@RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 
 public class FrameFlutterCGI implements FlutterCGI {
-  @Setter
-          @Lazy@Autowired
+@Lazy
+
   FlutterFigmaNodeAbstractFactory flutterFigmaNodeFactory;
 
   @Override
@@ -50,11 +58,12 @@ public class FrameFlutterCGI implements FlutterCGI {
     genCode += getHeight(figmaNode);
     genCode += getWidth(figmaNode);
     genCode += getPadding(figmaNode);
-    //    if(!(figmaNode.getFills().equals(null))){
-    //    genCode += getBoxDecoration(figmaNode);}
+        if(!(figmaNode.getFills().isEmpty())){
+        genCode += getBoxDecoration(figmaNode);
+        }
 
 
-    genCode += "child:" + getchild(figmaNode, tagData) + ",\n";
+    genCode += "child:" + getchild(figmaNode, tagData) + "\n";
 
     genCode += ")\n";
     System.out.println(genCode); // end indent
@@ -75,7 +84,7 @@ public class FrameFlutterCGI implements FlutterCGI {
   private String getchild(FigmaFrameNode figmaNode, TagData tagData) {
     String genCode = "";
 
-    if (figmaNode.getLayoutMode().equals("NONE")) {
+    if (figmaNode.getLayoutMode().name().equals("NONE")) {
       final String upperStack = "Stack(\n";
       final String lowerStack = "),";
       genCode += "children:[\n";
@@ -107,9 +116,12 @@ public class FrameFlutterCGI implements FlutterCGI {
 
       return upperStack + genCode + lowerStack;
 
-    } else if (figmaNode.getLayoutMode().equals("HORIZONTAL")) {
+    } else if (figmaNode.getLayoutMode().name().equals("HORIZONTAL")) {
       final String upperRow = "Row(\n";
       final String lowerRow = "),\n";
+      genCode += getMainAxisAlignment(figmaNode.getPrimaryAxisAlignItems());
+      genCode += getCrossAxisAlignment(figmaNode.getCounterAxisAlignItems());
+
       genCode += "children:[\n";
 
       for (int i = 0; i < figmaNode.getChild().size(); i++) {
@@ -142,6 +154,9 @@ public class FrameFlutterCGI implements FlutterCGI {
     } else if (figmaNode.getLayoutMode().name().equals("VERTICAL")) {
       final String upperColumn = "Column(\n";
       final String lowerColumn = "),\n";
+      genCode += getMainAxisAlignment(figmaNode.getPrimaryAxisAlignItems());
+      genCode += getCrossAxisAlignment(figmaNode.getCounterAxisAlignItems());
+
       genCode += "children:[\n";
 
       for (int i = 0; i < figmaNode.getChild().size(); i++) {
@@ -176,8 +191,60 @@ public class FrameFlutterCGI implements FlutterCGI {
     return "";
   }
 
+//  private String getMainAxisSize(LayoutMode layoutMode) {
+//
+//    if (layoutMode.g == 1) {
+//      return  "\nmainAxisSize: MainAxisSize.max,";
+//    } else {
+//      return "\nmainAxisSize: MainAxisSize.min,";
+//    }
+//  }
+
+  private String getMainAxisAlignment(PrimaryAxisAlignItems primaryAxisAlignItems) {
+
+    String mainAlignType = null;
+    switch (primaryAxisAlignItems) {
+      case MIN:
+        mainAlignType = "start";
+        break;
+      case CENTER:
+        mainAlignType = "center";
+        break;
+      case MAX:
+        mainAlignType = "end";
+        break;
+      case SPACE_BETWEEN:
+        mainAlignType = "spaceBetween";
+        break;
+    }
+    if (mainAlignType.equals(null)){
+      return "";
+    }else
+    return "\n mainAxisAlignment: MainAxisAlignment." + mainAlignType + ",";
+  }
+  private String getCrossAxisAlignment(CounterAxisAlignItems counterAxisAlignItems) {
+
+    String mainAlignType = null;
+    switch (counterAxisAlignItems) {
+      case MIN:
+        mainAlignType = "start";
+        break;
+      case CENTER:
+        mainAlignType = "center";
+        break;
+      case MAX:
+        mainAlignType = "end";
+        break;
+
+    }
+    if (mainAlignType.equals(null)){
+      return "";
+    }else
+      return "\n crossAxisAlignment: CrossAxisAlignment." + mainAlignType + ",";
+  }
+
   private String getSpacing(FigmaFrameNode figmaNode) {
-    if (figmaNode.getLayoutMode().equals("HORIZONTAL")) {
+    if (figmaNode.getLayoutMode().name().equals("HORIZONTAL")) {
       return "SizedBox(width:" + figmaNode.getItemSpacing() + ",),";
     } else {
       return "SizedBox(height:" + figmaNode.getItemSpacing() + ",),";
@@ -214,7 +281,7 @@ public class FrameFlutterCGI implements FlutterCGI {
     if (fNode.getFills().get(0).getType().equals("SOLID")) {
       final FillsSolid fills = (FillsSolid) fNode.getFills().get(0);
       if (fills.getColor() != null && fNode.getFills().get(0).getOpacity() != 0) {
-        genBoxDecoration += color(fills);
+        genBoxDecoration += "color:" + color(fills) + ",\n";
       }
     }
     System.out.println(fNode.getFills().get(0).getType());
@@ -223,19 +290,40 @@ public class FrameFlutterCGI implements FlutterCGI {
 
       genBoxDecoration += getImage(fills);
     }
+    if(fNode.getFills().get(0).getType().equals("GRADIENT_LINEAR")){
+      final FillsGradient fills = (FillsGradient) fNode.getFills().get(0);
+      genBoxDecoration += getGradient(fills);
+    }
 
     if (fNode.getBottomLeftRadius() != 0
-        || fNode.getTopLeftRadius() != 0
-        || fNode.getTopRightRadius() != 0
-        || fNode.getBottomRightRadius() != 0) {
+            || fNode.getTopLeftRadius() != 0
+            || fNode.getTopRightRadius() != 0
+            || fNode.getBottomRightRadius() != 0) {
       genBoxDecoration += borderRadius(fNode);
     }
-    if (fNode.getStrokeWeight() != 0) {
+    if (!(fNode.getStrokes().isEmpty())) {
       genBoxDecoration += border(fNode);
     }
     return upperBoxDecoration + genBoxDecoration + bottomBoxDecoration;
   }
+  private String getGradient(FillsGradient fills) {
+    final String upperLinearGradient = "gradient: LinearGradient(\n";
+    final String lowerLinearGradient = " ),\n";
+    String gencCode = "";
+    gencCode += "colors:[\n" + fills.getGradientStops().stream().map(gradientStops -> getGradientColor(gradientStops.getColor())+",\n").collect(Collectors.joining()) + "],\n";
+    gencCode += "  stops: [ \n"  + fills.getGradientStops().stream().map(gradientStops -> gradientStops.getPosition() + ",").collect(Collectors.joining()) + "],\n";
+    return upperLinearGradient + gencCode + lowerLinearGradient;
+  }
+  private String getGradientColor(Color fills) {
+    final String upperColor = " Color.fromRGBO(\n";
+    final String lowerColor = ")\n";
+    final String red = Math.round(fills.getR() * 255) + ",";
+    final String green = Math.round(fills.getG() * 255) + ",";
+    final String blue = Math.round(fills.getB() * 255) + ",";
+    final String opacity = Double.toString(fills.getA());
 
+    return upperColor + red + green + blue + opacity + lowerColor;
+  }
   private String getImage(FillsImage fills) {
     final String upperImage = " image: DecorationImage(\n";
     final String lowerImage = "),\n";
@@ -261,8 +349,8 @@ public class FrameFlutterCGI implements FlutterCGI {
   }
 
   private String color(FillsSolid fills) {
-    final String upperColor = "color: Color.fromRGBO(\n";
-    final String lowerColor = "),\n";
+    final String upperColor = "Color.fromRGBO(\n";
+    final String lowerColor = ")\n";
     final String red = Math.round(fills.getColor().getR() * 255) + ",";
     final String green = Math.round(fills.getColor().getG() * 255) + ",";
     final String blue = Math.round(fills.getColor().getB() * 255) + ",";

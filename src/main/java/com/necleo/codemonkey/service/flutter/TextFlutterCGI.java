@@ -31,15 +31,15 @@ public class TextFlutterCGI implements FlutterCGI {
     String genCode = "";
     final String upperText = "Text(\n";
     final String lowerText = "),\n";
-    genCode += upperText;
+
     genCode += getText(fNode);
     genCode += getTextStyle(fNode);
 
-    return genCode;
+    return upperText + genCode + lowerText;
   }
 
   private String getTextStyle(FigmaTextNode fNode) {
-    final String upperTextStyle = "style: const  GoogleFonts." + fNode.getFontFamily() + "(\n";
+    final String upperTextStyle = "style: GoogleFonts." + "inter" + "(\n";
     final String lowerTextStyle = "),\n";
     String genTextStyle = "";
     if (fNode.getFills() != null) {
