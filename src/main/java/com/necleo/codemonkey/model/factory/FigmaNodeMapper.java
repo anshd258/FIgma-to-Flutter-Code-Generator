@@ -18,4 +18,9 @@ public record FigmaNodeMapper(FigmaNodeTypes figmaNodeTypes, TagDataType tagData
             .orElse(null);
     return new FigmaNodeMapper(fNode.getType(), tagDataType);
   }
+
+  public static FigmaNodeMapper of(FigmaNode fNode) {
+
+    return new FigmaNodeMapper(fNode.getType(), null);
+  }
 }

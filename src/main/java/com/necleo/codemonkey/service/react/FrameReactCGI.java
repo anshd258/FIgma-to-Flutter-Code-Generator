@@ -20,21 +20,37 @@ public class FrameReactCGI implements ReactCGI {
 
   @Override
   public String generate(
-      FigmaNode figmaNode, Map<String, TagData> tagDataMap, Set<String> importsFunctions) {
+          FigmaNode figmaNode, FigmaNode parentNode, Map<String, TagData> tagDataMap, Set<String> importsFunctions) {
     FigmaFrameNode fNode = (FigmaFrameNode) figmaNode;
     String genCode = "";
 
     genCode += "\n<div className='container' style={{ \n";
+    if (parentNode != null) {
+      genCode += getParentSpecialStyles((FigmaFrameNode) parentNode);
+    }
     genCode += getStyles(figmaNode);
     genCode += " }}>";
 
     for (FigmaNode childNode : fNode.getChild()) {
-      genCode += getChild(childNode);
+      genCode += getChild(childNode, figmaNode);
     }
     genCode += "</div>\n";
     System.out.println(genCode); // end indent
 
     return genCode;
+  }
+
+  private String getParentSpecialStyles(FigmaFrameNode parentNode) {
+    String parentStyles = "";
+    if (parentNode.getLayoutMode().equals("HORIZONTAL")) {
+      parentStyles += "flexDirection: 'row',\n";
+    } else if (parentNode.getLayoutMode().equals("HORIZONTAL")) {
+      parentStyles += "flexDirection: 'column',\n";
+    }
+    else {
+      parentStyles += "\n";
+    }
+    return parentStyles;
   }
 
   public String getStyles(FigmaNode figmaNode) {
@@ -76,15 +92,16 @@ public class FrameReactCGI implements ReactCGI {
     return padding;
   }
 
-  public String getChild(FigmaNode fNode) {
+  public String getChild(FigmaNode fNode, FigmaNode parentNode) {
 
     FigmaNodeTypes childType = fNode.getType();
+    Map<String, TagData> tagDataMap = null;
     if (childType == FigmaNodeTypes.TEXT) {
-      return textReactCGI.generate(fNode, tagDataMap, null);
+      return textReactCGI.generate(fNode, parentNode, tagDataMap, null);
     } else if (FigmaNodeTypes.RECTANGLE == (childType)) {
-      return rectangleReactCGI.generate(fNode, tagDataMap, null);
+      return rectangleReactCGI.generate(fNode, parentNode, tagDataMap, null);
     } else if (childType == (FigmaNodeTypes.FRAME)) {
-      return generate(fNode, tagDataMap, null);
+      return generate(fNode, parentNode, tagDataMap, null);
     }
     return "";
   }
@@ -150,7 +167,7 @@ public class FrameReactCGI implements ReactCGI {
   }
 
   public String getHorizontalPosition(FigmaFrameNode fNode) {
-    return ("right: '" + (fNode.getX()) + "px',\n ");
+    return ("left: '" + (fNode.getX()) + "px',\n ");
   }
 
   public String getVerticalPosition(FigmaFrameNode fNode) {

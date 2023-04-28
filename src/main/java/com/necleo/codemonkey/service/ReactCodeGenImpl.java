@@ -42,7 +42,7 @@ public class ReactCodeGenImpl implements CodeGen {
         figmaNodeFactory.getProcessor(FigmaNodeMapper.of(fNode, tagDataMap));
     genCode +=
         reactCGIOptional
-            .map(reactCGI -> reactCGI.generate(fNode, tagDataMap, importFunctions))
+            .map(reactCGI -> reactCGI.generate(fNode, null, tagDataMap, importFunctions))
             .orElseThrow();
     String finalFile = genFileFunctions.genFile(importFunctions, genCode);
     log.info(finalFile);

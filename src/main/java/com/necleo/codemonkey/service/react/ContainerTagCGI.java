@@ -25,12 +25,12 @@ public class ContainerTagCGI implements ReactCGI {
 
   @Override
   public String generate(
-      FigmaNode figmaNode, Map<String, TagData> tagDataMap, Set<String> importsFunctions) {
+          FigmaNode figmaNode, FigmaNode parentNode, Map<String, TagData> tagDataMap, Set<String> importsFunctions) {
 
     ReactCGI reactCGI =
-        figmaNodeFactory.getProcessor(FigmaNodeMapper.of(figmaNode, tagDataMap)).orElseThrow();
+        figmaNodeFactory.getProcessor(FigmaNodeMapper.of(figmaNode)).orElseThrow();
 
-    return reactCGI.generate(figmaNode, tagDataMap, importsFunctions);
+    return reactCGI.generate(figmaNode, parentNode, tagDataMap, importsFunctions);
   }
 
   @Override

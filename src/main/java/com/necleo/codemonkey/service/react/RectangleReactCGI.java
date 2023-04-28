@@ -1,5 +1,8 @@
 package com.necleo.codemonkey.service.react;
 
+import com.amazonaws.services.dynamodbv2.xspec.S;
+import com.necleo.codemonkey.configuration.S3FileLoader;
+import com.necleo.codemonkey.consumer.FigmaLayersTreeDataConsumer;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
@@ -16,6 +19,10 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class RectangleReactCGI implements ReactCGI {
 
+  S3FileLoader s3FileLoader;
+
+  String projectId = FigmaLayersTreeDataConsumer.FinalProjectId;
+
   @Override
   public Set<FigmaNodeMapper> getStrategy() {
     return Set.of(new FigmaNodeMapper(FigmaNodeTypes.RECTANGLE, null));
@@ -23,7 +30,7 @@ public class RectangleReactCGI implements ReactCGI {
 
   @Override
   public String generate(
-      FigmaNode figmaNode, Map<String, TagData> tagDataMap, Set<String> importsFunctions) {
+          FigmaNode figmaNode, FigmaNode node, Map<String, TagData> tagDataMap, Set<String> importsFunctions) {
     if (!(figmaNode instanceof FigmaRectangleNode fNode)) {
       throw new IllegalArgumentException();
     }
@@ -117,9 +124,8 @@ public class RectangleReactCGI implements ReactCGI {
 
   public String getBackgroundImage(FigmaRectangleNode fNode) {
     final FillsImage fillsImage = (FillsImage) fNode.getFills().get(0);
-
     final String imageHash = fillsImage.getImageHash();
-    return "src={{uri: '" + imageHash + "'}} \n";
+    return "src={{uri: '" + s3FileLoader.getImageUrl(imageHash, projectId).toString() + "'}} \n";
   }
 
   public String getImgResize(FillsImage fillsImage) {
@@ -180,7 +186,7 @@ public class RectangleReactCGI implements ReactCGI {
   }
 
   public String getHorizontalPosition(FigmaRectangleNode fNode) {
-    return ("right: '" + (fNode.getX()) + "px',\n ");
+    return ("left: '" + (fNode.getX()) + "px',\n ");
   }
 
   public String getVerticalPosition(FigmaRectangleNode fNode) {

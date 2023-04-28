@@ -8,9 +8,9 @@ import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.service.CodeGenService;
 import io.awspring.cloud.messaging.listener.SqsMessageDeletionPolicy;
 import io.awspring.cloud.messaging.listener.annotation.SqsListener;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.lang.reflect.Array;
+import java.util.*;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +28,7 @@ public class FigmaLayersTreeDataConsumer {
   ObjectMapper objectMapper;
 
   CodeGenService codeGenService;
+  public static String FinalProjectId;
 
   @SqsListener(
       value = "${cloud.aws.sqs.codeGenQueueName}",
@@ -60,7 +61,7 @@ public class FigmaLayersTreeDataConsumer {
     }
 
     codeGenService.gen(figmaNodes.getScreen().get(0), tagDataMap);
-
+    FinalProjectId = projectId;
     log.info(projectId);
   }
 }
