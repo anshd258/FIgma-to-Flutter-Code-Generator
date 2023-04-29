@@ -2,6 +2,7 @@ package com.necleo.codemonkey.service.flutter;
 
 import static com.necleo.codemonkey.lib.types.figma.properties.fills.enums.ScaleMode.FILL;
 
+import com.necleo.codemonkey.configuration.S3FileLoader;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
@@ -16,11 +17,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
 public class RectangleFlutterCGI implements FlutterCGI {
+  @Lazy
+  S3FileLoader s3FileLoader ;
 
   @Override
   public Set<FigmaNodeMapper> getStrategy() {
@@ -79,7 +83,7 @@ public class RectangleFlutterCGI implements FlutterCGI {
     if (fNode.getFills().get(0).getType().equals("IMAGE")) {
       final FillsImage fills = (FillsImage) fNode.getFills().get(0);
 
-      genBoxDecoration += getImage(fills);
+      genBoxDecoration += getImage(fills,fNode);
     }
     if(fNode.getFills().get(0).getType().equals("GRADIENT_LINEAR")){
       final FillsGradient fills = (FillsGradient) fNode.getFills().get(0);
@@ -139,11 +143,11 @@ public class RectangleFlutterCGI implements FlutterCGI {
     return upperColor + red + green + blue + opacity + lowerColor;
   }
 
-  private String getImage(FillsImage fills) {
+  private String getImage(FillsImage fills,FigmaRectangleNode figmaRectangleNode ) {
     final String upperImage = " image: DecorationImage(\n";
     final String lowerImage = "),\n";
     String genImage = "";
-    genImage += getNetworkImage(fills);
+    genImage += getNetworkImage(fills,figmaRectangleNode);
     genImage += getFit(fills);
     return upperImage + genImage + lowerImage;
   }
@@ -156,10 +160,10 @@ public class RectangleFlutterCGI implements FlutterCGI {
     return "fit: BoxFit." + filltype + ",\n";
   }
 
-  private String getNetworkImage(FillsImage fills) {
+  private String getNetworkImage(FillsImage fills,FigmaRectangleNode figmaRectangleNode) {
     final String upperImage = " image: NetworkImage(\n";
     final String lowerImage = "),\n";
-    final String imageUrl = "'" + fills.getImageHash() + "'";
+    final String imageUrl = "'" + s3FileLoader.getImageLink(fills.getImageHash(),figmaRectangleNode.getId()) + "'";
     return upperImage + imageUrl + lowerImage;
   }
 
