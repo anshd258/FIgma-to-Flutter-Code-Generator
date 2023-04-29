@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class InputTagCGI implements FlutterCGI {
+public class InputTagFlutterCGI implements FlutterCGI {
   @Override
   public Set<FigmaNodeMapper> getStrategy() {
     return Set.of(new FigmaNodeMapper(FigmaNodeTypes.RECTANGLE, TagDataType.INPUT));

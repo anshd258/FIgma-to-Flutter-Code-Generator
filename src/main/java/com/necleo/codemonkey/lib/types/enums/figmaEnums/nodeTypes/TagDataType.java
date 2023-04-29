@@ -3,12 +3,21 @@ package com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes;
 public enum TagDataType {
   BUTTON,
   CONTAINER,
-  LINK,
   INPUT,
-  VIDEO,
-  YOUTUBE,
-  FILE,
-  SLIDER,
+  LINK,
+
+  FORM,
   CHECKBOX,
-  SWITCH
+  VIDEO,
+  AUDIO,
+  FILE,
+  TEXTAREA,
+  DROPDOWN,
+  YOUTUBE,
+  SWITCH,
+  RADIO,
+  IFRAME,
+  SLIDER,
+  GOOGLEMAPS,
+  IMAGE
 }

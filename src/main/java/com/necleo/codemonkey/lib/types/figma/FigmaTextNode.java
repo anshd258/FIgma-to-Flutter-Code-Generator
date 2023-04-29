@@ -3,13 +3,14 @@ package com.necleo.codemonkey.lib.types.figma;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.*;
 import com.necleo.codemonkey.lib.types.enums.text.TextAutoResize;
+import com.necleo.codemonkey.lib.types.figma.properties.LineHeight;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.FillGeometry;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.Fills;
 import com.necleo.codemonkey.lib.types.figma.properties.strokes.StrokeGeometry;
 import com.necleo.codemonkey.lib.types.figma.properties.strokes.Strokes;
 import java.util.List;
 
-import com.necleo.codemonkey.lib.types.figma.properties.text.LineHeight;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;

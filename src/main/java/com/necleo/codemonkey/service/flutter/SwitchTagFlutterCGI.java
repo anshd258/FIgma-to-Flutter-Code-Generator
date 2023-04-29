@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class SwitchTagCGI implements FlutterCGI {
+public class SwitchTagFlutterCGI implements FlutterCGI {
   @Override
   public Set<FigmaNodeMapper> getStrategy() {
     return Set.of(new FigmaNodeMapper(FigmaNodeTypes.RECTANGLE, TagDataType.SWITCH));

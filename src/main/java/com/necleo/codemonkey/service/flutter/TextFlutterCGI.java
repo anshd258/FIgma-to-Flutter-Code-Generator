@@ -16,6 +16,7 @@ public class TextFlutterCGI implements FlutterCGI {
 
   @Override
   public Set<FigmaNodeMapper> getStrategy() {
+
     return Set.of(new FigmaNodeMapper(FigmaNodeTypes.TEXT, null));
   }
 

@@ -1,10 +1,17 @@
 package com.necleo.codemonkey.service.react;
 
+import com.amazonaws.services.dynamodbv2.xspec.S;
+import com.necleo.codemonkey.configuration.S3FileLoader;
+import com.necleo.codemonkey.consumer.FigmaLayersTreeDataConsumer;
 import com.necleo.codemonkey.lib.types.FigmaNode;
+import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsImage;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSolid;
+import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
+import java.util.Map;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -12,13 +19,25 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class RectangleReactCGI implements ReactCGI {
 
+  S3FileLoader s3FileLoader;
+
+  String projectId = FigmaLayersTreeDataConsumer.FinalProjectId;
+
   @Override
-  public FigmaNodeTypes getStrategy() {
-    return FigmaNodeTypes.RECTANGLE;
+  public Set<FigmaNodeMapper> getStrategy() {
+    return Set.of(new FigmaNodeMapper(FigmaNodeTypes.RECTANGLE, null));
   }
 
   @Override
-  public String generate(FigmaNode figmaNode) {
+  public String generate(
+          FigmaNode figmaNode, FigmaNode node, Map<String, TagData> tagDataMap, Set<String> importsFunctions) {
+    if (!(figmaNode instanceof FigmaRectangleNode fNode)) {
+      throw new IllegalArgumentException();
+    }
+    return generat(fNode);
+  }
+
+  public String generat(FigmaNode figmaNode) {
     FigmaRectangleNode fNode = (FigmaRectangleNode) figmaNode;
     String genCode = "";
 
@@ -27,21 +46,28 @@ public class RectangleReactCGI implements ReactCGI {
     } else {
 
       genCode += "\n<div style={{ \n";
-      genCode += getHeight(fNode);
-      genCode += getWidth(fNode);
-      genCode += getBackgroundColour(fNode);
-      genCode += getBoxDecoration(fNode);
-      genCode += getOpacity(fNode);
-      genCode += getHorizontalPosition(fNode);
-      genCode += getVerticalPosition(fNode);
-      genCode += getVisibility(fNode);
-
+      genCode += getRectangleStyles(figmaNode);
       genCode += " }}>";
       genCode += "</div>\n";
     }
     System.out.println(genCode); // end indent
 
     return genCode;
+  }
+
+  public String getRectangleStyles(FigmaNode figmaNode) {
+    String rectStyles = "";
+    FigmaRectangleNode fNode = (FigmaRectangleNode) figmaNode;
+    rectStyles += getHeight(fNode);
+    rectStyles += getWidth(fNode);
+    rectStyles += getBackgroundColour(fNode);
+    rectStyles += getBoxDecoration(fNode);
+    rectStyles += getOpacity(fNode);
+    rectStyles += getHorizontalPosition(fNode);
+    rectStyles += getVerticalPosition(fNode);
+    rectStyles += getVisibility(fNode);
+
+    return rectStyles;
   }
 
   public String getHeight(FigmaRectangleNode fNode) {
@@ -69,7 +95,7 @@ public class RectangleReactCGI implements ReactCGI {
   }
 
   public String getImageProps(FigmaRectangleNode fNode) {
-    return "<Image style={{" + getImageStyles(fNode) + "}" + getBackgroundImage(fNode) + "} />\n";
+    return "<img style={{" + getImageStyles(fNode) + "}}" + getBackgroundImage(fNode) + " />\n";
   }
 
   public String getImageStyles(FigmaRectangleNode fNode) {
@@ -98,9 +124,8 @@ public class RectangleReactCGI implements ReactCGI {
 
   public String getBackgroundImage(FigmaRectangleNode fNode) {
     final FillsImage fillsImage = (FillsImage) fNode.getFills().get(0);
-
     final String imageHash = fillsImage.getImageHash();
-    return "source={{uri: '" + imageHash + "'}}, \n";
+    return "src={{uri: '" + s3FileLoader.getImageLink(imageHash, projectId).toString() + "'}} \n";
   }
 
   public String getImgResize(FillsImage fillsImage) {
@@ -115,18 +140,30 @@ public class RectangleReactCGI implements ReactCGI {
   }
 
   public String getBoxDecoration(FigmaRectangleNode fNode) {
+    //    final String upperBoxDecoration = "boxSizing: '";
+    //    final String bottomBoxDecoration = ",\n";
+    //    String genBoxDecoration = "";
+    //    if (fNode.getCornerRadius() != 0) {
+    //      genBoxDecoration = "border-box', \n borderRadius: '";
+    //      genBoxDecoration = genBoxDecoration + borderRadius(fNode) + "px',\n";
+    //    } else genBoxDecoration = "unset'";
+    //    if (fNode.getStrokeWeight() != 1) {
+    //      genBoxDecoration += border(fNode);
+    //    }
+    //
+    //    return upperBoxDecoration + genBoxDecoration + bottomBoxDecoration;
+
     final String upperBoxDecoration = "boxSizing: '";
-    final String bottomBoxDecoration = ",\n";
     String genBoxDecoration = "";
     if (fNode.getCornerRadius() != 0) {
-      genBoxDecoration = "border-box', \n border-radius: '";
+      genBoxDecoration = "border-box', \n borderRadius: '";
       genBoxDecoration = genBoxDecoration + borderRadius(fNode) + "px',\n";
-    } else genBoxDecoration = "unset'";
+    } else genBoxDecoration = "unset',\n";
     if (fNode.getStrokeWeight() != 1) {
-      genBoxDecoration += border(fNode);
+      genBoxDecoration += border(fNode) + ",\n";
     }
 
-    return upperBoxDecoration + genBoxDecoration + bottomBoxDecoration;
+    return upperBoxDecoration + genBoxDecoration;
   }
 
   public String borderRadius(FigmaRectangleNode fNode) {
@@ -149,7 +186,7 @@ public class RectangleReactCGI implements ReactCGI {
   }
 
   public String getHorizontalPosition(FigmaRectangleNode fNode) {
-    return ("right: '" + (fNode.getX()) + "px',\n ");
+    return ("left: '" + (fNode.getX()) + "px',\n ");
   }
 
   public String getVerticalPosition(FigmaRectangleNode fNode) {

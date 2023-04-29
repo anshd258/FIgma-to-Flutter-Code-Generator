@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class FileTagCGI implements FlutterCGI {
+public class FileTagFlutterCGI implements FlutterCGI {
   RectangleFlutterCGI rectangleFlutterCGI = new RectangleFlutterCGI();
 
   @Override

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class VideoTagCGI implements FlutterCGI {
+public class VideoTagFlutterCGI implements FlutterCGI {
   @Override
   public Set<FigmaNodeMapper> getStrategy() {
     return Set.of(

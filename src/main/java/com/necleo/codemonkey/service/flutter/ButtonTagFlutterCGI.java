@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 // @RequiredArgsConstructor
 // @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class ButtonTagCGI implements FlutterCGI {
+public class ButtonTagFlutterCGI implements FlutterCGI {
 
   //  FlutterFigmaNodeAbstractFactory flutterFigmaNodeFactory;
 
