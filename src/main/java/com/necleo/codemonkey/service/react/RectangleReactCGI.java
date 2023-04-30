@@ -1,8 +1,6 @@
 package com.necleo.codemonkey.service.react;
 
-import com.amazonaws.services.dynamodbv2.xspec.S;
 import com.necleo.codemonkey.configuration.S3FileLoader;
-import com.necleo.codemonkey.consumer.FigmaLayersTreeDataConsumer;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
@@ -21,7 +19,7 @@ public class RectangleReactCGI implements ReactCGI {
 
   S3FileLoader s3FileLoader;
 
-  String projectId = FigmaLayersTreeDataConsumer.FinalProjectId;
+  String projectId = "FigmaLayersTreeDataConsumer.FinalProjectId";
 
   @Override
   public Set<FigmaNodeMapper> getStrategy() {
