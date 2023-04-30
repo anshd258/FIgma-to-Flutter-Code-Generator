@@ -102,6 +102,8 @@ public class FrameFlutterCGI implements FlutterCGI {
               flutterCGIOptional
                   .map(flutterCGI -> flutterCGI.generate(figmaNode.getChild().get(finalI), null))
                   .orElse("");
+          gen = getPosition(genChild, figmaNode.getChild().get(finalI));
+          genCode += gen;
         } else {
           int finalI = i;
           genChild +=
@@ -109,8 +111,9 @@ public class FrameFlutterCGI implements FlutterCGI {
                   .map(flutterCGI -> flutterCGI.generate(figmaNode.getChild().get(finalI), null))
                   .orElse("");
           gen = getPosition(genChild, figmaNode.getChild().get(finalI));
+          genCode += gen;
         }
-        genCode += gen;
+
       }
       genCode += "],\n";
 
@@ -252,11 +255,11 @@ public class FrameFlutterCGI implements FlutterCGI {
   }
 
   private String getPosition(String genCode, FigmaNode figmaNode) {
-    final String upperPosition = "  Positioned(\n";
+    final String upperPosition = "  Positioned(child:\n";
     final String lowerPosition = "),\n";
     String top = "top:" + figmaNode.getY() + ",\n";
     String left = "left:" + figmaNode.getX() + ",\n";
-    return upperPosition + genCode + lowerPosition;
+    return upperPosition + genCode + top + left + lowerPosition;
   }
 
   private String getHeight(FigmaFrameNode fNode) {

@@ -32,8 +32,8 @@ public class FigmaLayersTreeDataConsumer {
   S3FileLoader s3FileLoader;
 
   @SqsListener(
-      value = "${cloud.aws.sqs.codeGenQueueName}",
-      deletionPolicy = SqsMessageDeletionPolicy.ON_SUCCESS)
+          value = "${cloud.aws.sqs.codeGenQueueName}",
+          deletionPolicy = SqsMessageDeletionPolicy.ON_SUCCESS)
   @SneakyThrows
   public void processMessage(Message<String> message) {
 
@@ -55,8 +55,16 @@ public class FigmaLayersTreeDataConsumer {
 
     Map<String, Object> o = objectMapper.readValue(jsonData, new TypeReference<>() {});
 
+    Map<String, Object> screen =
+            new HashMap<>(
+                    Map.of(
+                            "screen",
+                            ((Map<String, Object>) ((List<Object>) o.get("screen")).get(0)).get("selection")));
+
+    screen.put("tag_data", o.get("tag_data"));
+
     FigmaNodeConsumerRequest figmaNodes =
-            objectMapper.convertValue(o, new TypeReference<>() {});
+            objectMapper.convertValue(screen, new TypeReference<>() {});
 
     Map<String, TagData> tagDataMap = new HashMap<>();
     if (!ObjectUtils.isEmpty(figmaNodes.getTagData())) {

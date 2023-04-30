@@ -23,8 +23,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class RectangleFlutterCGI implements FlutterCGI {
-  @Lazy
-  S3FileLoader s3FileLoader ;
+
 
   @Override
   public Set<FigmaNodeMapper> getStrategy() {
@@ -163,7 +162,7 @@ public class RectangleFlutterCGI implements FlutterCGI {
   private String getNetworkImage(FillsImage fills,FigmaRectangleNode figmaRectangleNode) {
     final String upperImage = " image: NetworkImage(\n";
     final String lowerImage = "),\n";
-    final String imageUrl = "'" + s3FileLoader.getImageLink(fills.getImageHash(),figmaRectangleNode.getId()) + "'";
+    final String imageUrl = "'" +"" + "'";
     return upperImage + imageUrl + lowerImage;
   }
 
