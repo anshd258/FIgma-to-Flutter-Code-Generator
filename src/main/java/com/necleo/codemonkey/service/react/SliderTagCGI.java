@@ -15,7 +15,10 @@ import org.springframework.stereotype.Service;
 public class SliderTagCGI implements ReactCGI {
   @Override
   public String generate(
-          FigmaNode figmaNode, FigmaNode node, Map<String, TagData> tagDataMap, Set<String> importsFunctions) {
+      FigmaNode figmaNode,
+      FigmaNode node,
+      Map<String, TagData> tagDataMap,
+      Set<String> importsFunctions) {
 
     return generat(figmaNode);
   }

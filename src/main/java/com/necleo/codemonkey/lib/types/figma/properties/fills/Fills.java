@@ -18,7 +18,7 @@ import lombok.extern.jackson.Jacksonized;
 @JsonSubTypes({
   @JsonSubTypes.Type(value = FillsImage.class, name = "IMAGE"),
   @JsonSubTypes.Type(value = FillsSolid.class, name = "SOLID"),
-        @JsonSubTypes.Type(value = FillsGradient.class, name = "GRADIENT_LINEAR")
+  @JsonSubTypes.Type(value = FillsGradient.class, name = "GRADIENT_LINEAR")
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)

@@ -11,7 +11,7 @@ import lombok.extern.jackson.Jacksonized;
 @Builder
 @Jacksonized
 public class GradientStops {
-    Color color;
+  Color color;
 
-    int position;
+  int position;
 }

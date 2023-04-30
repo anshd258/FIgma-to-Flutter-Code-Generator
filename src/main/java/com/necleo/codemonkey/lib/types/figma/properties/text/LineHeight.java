@@ -11,6 +11,6 @@ import lombok.extern.jackson.Jacksonized;
 @Builder
 @Jacksonized
 public class LineHeight {
-   String unit;
-    int value;
+  String unit;
+  int value;
 }

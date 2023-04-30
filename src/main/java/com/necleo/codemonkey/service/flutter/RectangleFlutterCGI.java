@@ -1,5 +1,6 @@
 package com.necleo.codemonkey.service.flutter;
 
+import static com.necleo.codemonkey.constant.MDCKey.X_PROJECT_ID;
 import static com.necleo.codemonkey.lib.types.figma.properties.fills.enums.ScaleMode.FILL;
 
 import com.necleo.codemonkey.configuration.S3FileLoader;
@@ -13,17 +14,22 @@ import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsImag
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSolid;
 import com.necleo.codemonkey.lib.types.figma.properties.strokes.Strokes;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
+import java.net.URL;
 import java.util.Set;
-import java.util.stream.Collectors;
-
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Lazy;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class RectangleFlutterCGI implements FlutterCGI {
 
+  S3FileLoader s3FileLoader;
 
   @Override
   public Set<FigmaNodeMapper> getStrategy() {
@@ -82,9 +88,9 @@ public class RectangleFlutterCGI implements FlutterCGI {
     if (fNode.getFills().get(0).getType().equals("IMAGE")) {
       final FillsImage fills = (FillsImage) fNode.getFills().get(0);
 
-      genBoxDecoration += getImage(fills,fNode);
+      genBoxDecoration += getImage(fills, fNode);
     }
-    if(fNode.getFills().get(0).getType().equals("GRADIENT_LINEAR")){
+    if (fNode.getFills().get(0).getType().equals("GRADIENT_LINEAR")) {
       final FillsGradient fills = (FillsGradient) fNode.getFills().get(0);
       genBoxDecoration += getGradient(fills);
     }
@@ -95,9 +101,9 @@ public class RectangleFlutterCGI implements FlutterCGI {
         || fNode.getBottomRightRadius() != 0) {
       genBoxDecoration += borderRadius(fNode);
     }
-//    if (fNode.getStrokeWeight() != 0) {
-//      genBoxDecoration += border(fNode);
-//    }
+    //    if (fNode.getStrokeWeight() != 0) {
+    //      genBoxDecoration += border(fNode);
+    //    }
     return upperBoxDecoration + genBoxDecoration + bottomBoxDecoration;
   }
 
@@ -105,9 +111,17 @@ public class RectangleFlutterCGI implements FlutterCGI {
     final String upperLinearGradient = "gradient: LinearGradient(\n";
     final String lowerLinearGradient = " ),\n";
     String gencCode = "";
-    gencCode += "color:[\n" + fills.getGradientStops().stream().map(gradientStops -> getGradientColor(gradientStops.getColor())) + "],\n";
-   gencCode += "  stops: [ \n"  + fills.getGradientStops().stream().map(gradientStops -> gradientStops.getPosition() + ",") + "],\n";
-  return upperLinearGradient + gencCode + lowerLinearGradient;
+    gencCode +=
+        "color:[\n"
+            + fills.getGradientStops().stream()
+                .map(gradientStops -> getGradientColor(gradientStops.getColor()))
+            + "],\n";
+    gencCode +=
+        "  stops: [ \n"
+            + fills.getGradientStops().stream()
+                .map(gradientStops -> gradientStops.getPosition() + ",")
+            + "],\n";
+    return upperLinearGradient + gencCode + lowerLinearGradient;
   }
 
   private String getStyle(Strokes strokes) {
@@ -121,6 +135,7 @@ public class RectangleFlutterCGI implements FlutterCGI {
   private String getStrokeWidth(FigmaRectangleNode fNode) {
     return "width:" + fNode.getStrokeWeight() + ",\n";
   }
+
   private String getGradientColor(Color fills) {
     final String upperColor = " Color.fromRGBO(\n";
     final String lowerColor = ")\n";
@@ -131,6 +146,7 @@ public class RectangleFlutterCGI implements FlutterCGI {
 
     return upperColor + red + green + blue + opacity + lowerColor;
   }
+
   private String getColor(Strokes fills) {
     final String upperColor = "color: Color.fromRGBO(\n";
     final String lowerColor = "),\n";
@@ -142,11 +158,11 @@ public class RectangleFlutterCGI implements FlutterCGI {
     return upperColor + red + green + blue + opacity + lowerColor;
   }
 
-  private String getImage(FillsImage fills,FigmaRectangleNode figmaRectangleNode ) {
+  private String getImage(FillsImage fills, FigmaRectangleNode figmaRectangleNode) {
     final String upperImage = " image: DecorationImage(\n";
     final String lowerImage = "),\n";
     String genImage = "";
-    genImage += getNetworkImage(fills,figmaRectangleNode);
+    genImage += getNetworkImage(fills, figmaRectangleNode);
     genImage += getFit(fills);
     return upperImage + genImage + lowerImage;
   }
@@ -159,10 +175,14 @@ public class RectangleFlutterCGI implements FlutterCGI {
     return "fit: BoxFit." + filltype + ",\n";
   }
 
-  private String getNetworkImage(FillsImage fills,FigmaRectangleNode figmaRectangleNode) {
+  private String getNetworkImage(FillsImage fills, FigmaRectangleNode figmaRectangleNode) {
+    String imageHash = fills.getImageHash();
+    String projectId = MDC.get(X_PROJECT_ID);
+
+    URL s3ImageUrl = s3FileLoader.getImageUrl(imageHash, projectId);
     final String upperImage = " image: NetworkImage(\n";
     final String lowerImage = "),\n";
-    final String imageUrl = "'" +"" + "'";
+    final String imageUrl = "'" + s3ImageUrl.getPath() + "'";
     return upperImage + imageUrl + lowerImage;
   }
 

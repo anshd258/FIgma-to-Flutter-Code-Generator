@@ -6,7 +6,6 @@ import com.necleo.codemonkey.factory.FlutterFigmaNodeAbstractFactory;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.CounterAxisAlignItems;
-import com.necleo.codemonkey.lib.types.enums.figmaEnums.LayoutMode;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.PrimaryAxisAlignItems;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.FigmaFrameNode;
@@ -18,13 +17,10 @@ import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -32,11 +28,8 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-
 public class FrameFlutterCGI implements FlutterCGI {
-@Lazy
-
-  FlutterFigmaNodeAbstractFactory flutterFigmaNodeFactory;
+  @Lazy FlutterFigmaNodeAbstractFactory flutterFigmaNodeFactory;
 
   @Override
   public Set<FigmaNodeMapper> getStrategy() {
@@ -58,10 +51,9 @@ public class FrameFlutterCGI implements FlutterCGI {
     genCode += getHeight(figmaNode);
     genCode += getWidth(figmaNode);
     genCode += getPadding(figmaNode);
-        if(!(figmaNode.getFills().isEmpty())){
-        genCode += getBoxDecoration(figmaNode);
-        }
-
+    if (!(figmaNode.getFills().isEmpty())) {
+      genCode += getBoxDecoration(figmaNode);
+    }
 
     genCode += "child:" + getchild(figmaNode, tagData) + "\n";
 
@@ -89,14 +81,14 @@ public class FrameFlutterCGI implements FlutterCGI {
       final String lowerStack = "),";
       genCode += "children:[\n";
 
-      for (int i = (figmaNode.getChild().size()-1); i >= 0; i--) {
+      for (int i = (figmaNode.getChild().size() - 1); i >= 0; i--) {
         String genChild = "";
         String gen = "";
         FigmaNodeMapper figmaNodeMapper =
             new FigmaNodeMapper(figmaNode.getChild().get(i).getType(), null);
         Optional<FlutterCGI> flutterCGIOptional =
             flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
-        if (i == (figmaNode.getChild().size()-1)) {
+        if (i == (figmaNode.getChild().size() - 1)) {
           int finalI = i;
           genChild +=
               flutterCGIOptional
@@ -113,7 +105,6 @@ public class FrameFlutterCGI implements FlutterCGI {
           gen = getPosition(genChild, figmaNode.getChild().get(finalI));
           genCode += gen;
         }
-
       }
       genCode += "],\n";
 
@@ -134,7 +125,7 @@ public class FrameFlutterCGI implements FlutterCGI {
             new FigmaNodeMapper(figmaNode.getChild().get(i).getType(), null);
         Optional<FlutterCGI> flutterCGIOptional =
             flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
-        if (i == (figmaNode.getChild().size()-1)) {
+        if (i == (figmaNode.getChild().size() - 1)) {
           int finalI = i;
           genChild +=
               flutterCGIOptional
@@ -169,7 +160,7 @@ public class FrameFlutterCGI implements FlutterCGI {
             new FigmaNodeMapper(figmaNode.getChild().get(i).getType(), null);
         Optional<FlutterCGI> flutterCGIOptional =
             flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
-        if (i == (figmaNode.getChild().size()-1)) {
+        if (i == (figmaNode.getChild().size() - 1)) {
           int finalI = i;
           genChild +=
               flutterCGIOptional
@@ -194,14 +185,14 @@ public class FrameFlutterCGI implements FlutterCGI {
     return "";
   }
 
-//  private String getMainAxisSize(LayoutMode layoutMode) {
-//
-//    if (layoutMode.g == 1) {
-//      return  "\nmainAxisSize: MainAxisSize.max,";
-//    } else {
-//      return "\nmainAxisSize: MainAxisSize.min,";
-//    }
-//  }
+  //  private String getMainAxisSize(LayoutMode layoutMode) {
+  //
+  //    if (layoutMode.g == 1) {
+  //      return  "\nmainAxisSize: MainAxisSize.max,";
+  //    } else {
+  //      return "\nmainAxisSize: MainAxisSize.min,";
+  //    }
+  //  }
 
   private String getMainAxisAlignment(PrimaryAxisAlignItems primaryAxisAlignItems) {
 
@@ -220,11 +211,11 @@ public class FrameFlutterCGI implements FlutterCGI {
         mainAlignType = "spaceBetween";
         break;
     }
-    if (mainAlignType.equals(null)){
+    if (mainAlignType.equals(null)) {
       return "";
-    }else
-    return "\n mainAxisAlignment: MainAxisAlignment." + mainAlignType + ",";
+    } else return "\n mainAxisAlignment: MainAxisAlignment." + mainAlignType + ",";
   }
+
   private String getCrossAxisAlignment(CounterAxisAlignItems counterAxisAlignItems) {
 
     String mainAlignType = null;
@@ -238,12 +229,10 @@ public class FrameFlutterCGI implements FlutterCGI {
       case MAX:
         mainAlignType = "end";
         break;
-
     }
-    if (mainAlignType.equals(null)){
+    if (mainAlignType.equals(null)) {
       return "";
-    }else
-      return "\n crossAxisAlignment: CrossAxisAlignment." + mainAlignType + ",";
+    } else return "\n crossAxisAlignment: CrossAxisAlignment." + mainAlignType + ",";
   }
 
   private String getSpacing(FigmaFrameNode figmaNode) {
@@ -293,15 +282,15 @@ public class FrameFlutterCGI implements FlutterCGI {
 
       genBoxDecoration += getImage(fills);
     }
-    if(fNode.getFills().get(0).getType().equals("GRADIENT_LINEAR")){
+    if (fNode.getFills().get(0).getType().equals("GRADIENT_LINEAR")) {
       final FillsGradient fills = (FillsGradient) fNode.getFills().get(0);
       genBoxDecoration += getGradient(fills);
     }
 
     if (fNode.getBottomLeftRadius() != 0
-            || fNode.getTopLeftRadius() != 0
-            || fNode.getTopRightRadius() != 0
-            || fNode.getBottomRightRadius() != 0) {
+        || fNode.getTopLeftRadius() != 0
+        || fNode.getTopRightRadius() != 0
+        || fNode.getBottomRightRadius() != 0) {
       genBoxDecoration += borderRadius(fNode);
     }
     if (!(fNode.getStrokes().isEmpty())) {
@@ -309,14 +298,26 @@ public class FrameFlutterCGI implements FlutterCGI {
     }
     return upperBoxDecoration + genBoxDecoration + bottomBoxDecoration;
   }
+
   private String getGradient(FillsGradient fills) {
     final String upperLinearGradient = "gradient: LinearGradient(\n";
     final String lowerLinearGradient = " ),\n";
     String gencCode = "";
-    gencCode += "colors:[\n" + fills.getGradientStops().stream().map(gradientStops -> getGradientColor(gradientStops.getColor())+",\n").collect(Collectors.joining()) + "],\n";
-    gencCode += "  stops: [ \n"  + fills.getGradientStops().stream().map(gradientStops -> gradientStops.getPosition() + ",").collect(Collectors.joining()) + "],\n";
+    gencCode +=
+        "colors:[\n"
+            + fills.getGradientStops().stream()
+                .map(gradientStops -> getGradientColor(gradientStops.getColor()) + ",\n")
+                .collect(Collectors.joining())
+            + "],\n";
+    gencCode +=
+        "  stops: [ \n"
+            + fills.getGradientStops().stream()
+                .map(gradientStops -> gradientStops.getPosition() + ",")
+                .collect(Collectors.joining())
+            + "],\n";
     return upperLinearGradient + gencCode + lowerLinearGradient;
   }
+
   private String getGradientColor(Color fills) {
     final String upperColor = " Color.fromRGBO(\n";
     final String lowerColor = ")\n";
@@ -327,6 +328,7 @@ public class FrameFlutterCGI implements FlutterCGI {
 
     return upperColor + red + green + blue + opacity + lowerColor;
   }
+
   private String getImage(FillsImage fills) {
     final String upperImage = " image: DecorationImage(\n";
     final String lowerImage = "),\n";

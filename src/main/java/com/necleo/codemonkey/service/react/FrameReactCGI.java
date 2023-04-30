@@ -20,7 +20,10 @@ public class FrameReactCGI implements ReactCGI {
 
   @Override
   public String generate(
-          FigmaNode figmaNode, FigmaNode parentNode, Map<String, TagData> tagDataMap, Set<String> importsFunctions) {
+      FigmaNode figmaNode,
+      FigmaNode parentNode,
+      Map<String, TagData> tagDataMap,
+      Set<String> importsFunctions) {
     FigmaFrameNode fNode = (FigmaFrameNode) figmaNode;
     String genCode = "";
 
@@ -46,8 +49,7 @@ public class FrameReactCGI implements ReactCGI {
       parentStyles += "flexDirection: 'row',\n";
     } else if (parentNode.getLayoutMode().equals("HORIZONTAL")) {
       parentStyles += "flexDirection: 'column',\n";
-    }
-    else {
+    } else {
       parentStyles += "\n";
     }
     return parentStyles;

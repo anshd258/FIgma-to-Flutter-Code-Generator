@@ -19,7 +19,10 @@ public class SwitchTagCGI implements ReactCGI {
 
   @Override
   public String generate(
-          FigmaNode figmaNode, FigmaNode node, Map<String, TagData> tagDataMap, Set<String> importsFunctions) {
+      FigmaNode figmaNode,
+      FigmaNode node,
+      Map<String, TagData> tagDataMap,
+      Set<String> importsFunctions) {
 
     return generat(figmaNode, importsFunctions);
   }

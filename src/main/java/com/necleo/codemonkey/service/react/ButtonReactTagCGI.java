@@ -21,12 +21,16 @@ public class ButtonReactTagCGI implements ReactCGI {
 
   @Override
   public String generate(
-          FigmaNode figmaNode, FigmaNode node, Map<String, TagData> tagDataMap, Set<String> importsFunctions) {
+      FigmaNode figmaNode,
+      FigmaNode node,
+      Map<String, TagData> tagDataMap,
+      Set<String> importsFunctions) {
 
     return generat(figmaNode, importsFunctions, tagDataMap);
   }
 
-  private String generat(FigmaNode fNode, Set<String> importsFunctions, Map<String, TagData> tagDataMap) {
+  private String generat(
+      FigmaNode fNode, Set<String> importsFunctions, Map<String, TagData> tagDataMap) {
     final String upperButton = "<button\n";
 
     final String lowerButton = "> " + getData(fNode, importsFunctions, tagDataMap) + " </button>\n";
@@ -39,7 +43,8 @@ public class ButtonReactTagCGI implements ReactCGI {
     return upperButton + genCode + lowerButton;
   }
 
-  public String getData(FigmaNode fNode, Set<String> importsFunctions, Map<String, TagData> tagDataMap) {
+  public String getData(
+      FigmaNode fNode, Set<String> importsFunctions, Map<String, TagData> tagDataMap) {
     String child = "";
     if (fNode.getChild().get(0).getType().equals(FigmaNodeTypes.TEXT)) {
       //            FigmaTextNode figmaTextNode = (FigmaTextNode) fNode.getChild().get(0);

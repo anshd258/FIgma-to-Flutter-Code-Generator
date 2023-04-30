@@ -8,5 +8,9 @@ import java.util.Map;
 import java.util.Set;
 
 public interface ReactCGI extends Factory<Set<FigmaNodeMapper>> {
-  String generate(FigmaNode fNode, FigmaNode node, Map<String, TagData> tagDataMap, Set<String> importsFunctions);
+  String generate(
+      FigmaNode fNode,
+      FigmaNode node,
+      Map<String, TagData> tagDataMap,
+      Set<String> importsFunctions);
 }

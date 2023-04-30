@@ -9,8 +9,6 @@ import com.necleo.codemonkey.lib.types.figma.properties.fills.Fills;
 import com.necleo.codemonkey.lib.types.figma.properties.strokes.StrokeGeometry;
 import com.necleo.codemonkey.lib.types.figma.properties.strokes.Strokes;
 import java.util.List;
-
-
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
