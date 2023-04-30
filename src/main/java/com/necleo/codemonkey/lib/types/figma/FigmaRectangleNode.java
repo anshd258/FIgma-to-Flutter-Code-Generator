@@ -21,7 +21,7 @@ public class FigmaRectangleNode extends FigmaNode {
   int opacity;
   boolean isMask;
   List<Effect> effects;
-  String effectsStyleId;
+  String effectStyleId;
   // Corner Related Properties
   int cornerRadius;
   int cornerSmoothing;
@@ -40,8 +40,8 @@ public class FigmaRectangleNode extends FigmaNode {
   List<String> dashPattern;
   List<StrokeGeometry> strokeGeometry;
   StrokeCap strokeCap;
-  int strokeMitterLimit;
-  List<FillGeometry> FillGeometry;
+  int strokeMiterLimit;
+  List<FillGeometry> fillGeometry;
   int strokeTopWeight;
   int strokeBottomWeight;
   int strokeLeftWeight;
