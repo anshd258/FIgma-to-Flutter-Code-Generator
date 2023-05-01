@@ -62,7 +62,6 @@ public class FigmaLayersTreeDataConsumer {
                             ((Map<String, Object>) ((List<Object>) o.get("screen")).get(0)).get("selection")));
 
     screen.put("tag_data", o.get("tag_data"));
-
     FigmaNodeConsumerRequest figmaNodes =
             objectMapper.convertValue(screen, new TypeReference<>() {});
 

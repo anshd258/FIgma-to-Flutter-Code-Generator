@@ -10,16 +10,22 @@ import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSoli
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import java.util.Map;
 import java.util.Set;
+
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class RectangleReactCGI implements ReactCGI {
 
-  S3FileLoader s3FileLoader;
 
-  String projectId = "FigmaLayersTreeDataConsumer.FinalProjectId";
+  S3FileLoader s3FileLoader;
 
   @Override
   public Set<FigmaNodeMapper> getStrategy() {
@@ -123,7 +129,7 @@ public class RectangleReactCGI implements ReactCGI {
   public String getBackgroundImage(FigmaRectangleNode fNode) {
     final FillsImage fillsImage = (FillsImage) fNode.getFills().get(0);
     final String imageHash = fillsImage.getImageHash();
-    return "src={{uri: '" + s3FileLoader.getImageUrl(imageHash, projectId).toString() + "'}} \n";
+    return "src={{uri: '" + s3FileLoader.getImageUrl(imageHash) + "'}} \n";
   }
 
   public String getImgResize(FillsImage fillsImage) {

@@ -7,16 +7,22 @@ import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.TagDataType;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import java.util.Map;
 import java.util.Set;
+
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ButtonReactTagCGI implements ReactCGI {
 
-  RectangleReactCGI rectangleReactCGI = new RectangleReactCGI();
-  TextReactCGI textReactCGI = new TextReactCGI();
-  FrameReactCGI frameReactCGI = new FrameReactCGI();
+  RectangleReactCGI rectangleReactCGI;
+  TextReactCGI textReactCGI;
+  FrameReactCGI frameReactCGI;
   //    FigmaNodeMapper figmaNodeMapper = new FigmaNodeMapper();
 
   @Override

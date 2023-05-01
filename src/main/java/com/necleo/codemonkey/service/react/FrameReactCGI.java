@@ -8,15 +8,21 @@ import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSoli
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import java.util.Map;
 import java.util.Set;
+
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class FrameReactCGI implements ReactCGI {
 
-  RectangleReactCGI rectangleReactCGI = new RectangleReactCGI();
-  TextReactCGI textReactCGI = new TextReactCGI();
+  RectangleReactCGI rectangleReactCGI;
+  TextReactCGI textReactCGI;
 
   @Override
   public String generate(
