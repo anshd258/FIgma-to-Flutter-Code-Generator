@@ -55,15 +55,8 @@ public class FigmaLayersTreeDataConsumer {
 
     Map<String, Object> o = objectMapper.readValue(jsonData, new TypeReference<>() {});
 
-    Map<String, Object> screen =
-            new HashMap<>(
-                    Map.of(
-                            "screen",
-                            ((Map<String, Object>) ((List<Object>) o.get("screen")).get(0)).get("selection")));
-
-    screen.put("tag_data", o.get("tag_data"));
     FigmaNodeConsumerRequest figmaNodes =
-            objectMapper.convertValue(screen, new TypeReference<>() {});
+            objectMapper.convertValue(o, new TypeReference<>() {});
 
     Map<String, TagData> tagDataMap = new HashMap<>();
     if (!ObjectUtils.isEmpty(figmaNodes.getTagData())) {
