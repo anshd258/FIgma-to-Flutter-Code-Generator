@@ -83,7 +83,7 @@ public class FrameFlutterCGI implements FlutterCGI {
       final String lowerStack = "),";
       genCode += "children:[\n";
 
-      for (int i = 0; i <= figmaNode.getChild().toArray().length -1; i--) {
+      for (int i = 0; i <= figmaNode.getChild().toArray().length -1; i++) {
         String genChild = "";
         String gen = "";
         FigmaNodeMapper figmaNodeMapper =
