@@ -38,20 +38,8 @@
 
   AmazonS3 s3Client;
 
-  public static String FinalProjectId;
-
-  private String extractProjectId(String s) {
-   int startIndex = s.indexOf("project/") + 8;
-   int endIndex = s.indexOf("/", startIndex);
-   if (startIndex >= 0 && endIndex >= 0) {
-    return s.substring(startIndex, endIndex);
-   } else {
-    return null;
-   }
-  }
 
   public String getJsonData(String bucketName, String key) throws IOException {
-   FinalProjectId = extractProjectId(key);
    S3Object obj = s3Client.getObject(bucketName, key);
 //   String res = IOUtils.toString(obj.getObjectContent());
    String res;
@@ -60,36 +48,13 @@
    } finally {
     IOUtils.closeQuietly(obj.getObjectContent(), null);
    }
-//   String res = getValAsString(obj.getObjectContent());
 
    return res;
   }
 
-  private String getValAsString(InputStream is) throws IOException {
-   if (is == null)
-    return "";
-   StringBuilder sb = new StringBuilder();
-   try (is) {
-    BufferedReader reader = new BufferedReader(
-            new InputStreamReader(is, StringUtils.UTF8));
-    String line;
-    while ((line = reader.readLine()) != null) {
-     sb.append(line);
-    }
-   } catch (IOException e) {
-    throw new RuntimeException(e);
-   }
-   return sb.toString();
-  }
-
-  public String getProjectId(){
-   return FinalProjectId;
-  }
-
-
-  public String getImageUrl(String imgHash){
-      log.info(FinalProjectId);
-      String bucketUrl = "project/"+FinalProjectId+"/asset/"+imgHash;
+  public String getImageUrl(String imgHash, String projectId){
+      log.info(projectId);
+      String bucketUrl = "project/"+projectId+"/asset/"+imgHash;
       return s3Client.generatePresignedUrl(bucketName, bucketUrl, Date.from(Instant.now().plusSeconds(10))).toString();
   }
 

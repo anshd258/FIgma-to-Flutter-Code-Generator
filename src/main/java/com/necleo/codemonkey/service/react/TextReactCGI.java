@@ -63,8 +63,8 @@ public class TextReactCGI implements ReactCGI {
             + (fills.getColor().getB() * 255)
             + ")',\n";
     // align
-    style += "left: '" + fNode.getX() + "',\n";
-    style += "top: '" + fNode.getY() + "',\n";
+    style += "left: '" + fNode.getX() + "px',\n";
+    style += "top: '" + fNode.getY() + "px',\n";
     style += "opacity: '" + fNode.getOpacity() + "',\n";
     if (fNode.getStrokes().size() != 0) {
       style +=
@@ -82,8 +82,14 @@ public class TextReactCGI implements ReactCGI {
     }
     style += getAlignment(fNode);
     style += getFont(fNode);
+    style += getWidthHeight(fNode);
+    style += "position: 'absolute',\n";
 
     return style;
+  }
+
+  private String getWidthHeight(FigmaTextNode fNode) {
+    return "width: '" + fNode.getWidth() + "px',\n" + "height: '" + fNode.getHeight() + "px',\n" ;
   }
 
   public String getData(FigmaTextNode fNode) {

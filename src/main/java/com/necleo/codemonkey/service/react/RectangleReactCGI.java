@@ -1,6 +1,7 @@
 package com.necleo.codemonkey.service.react;
 
 import com.necleo.codemonkey.configuration.S3FileLoader;
+import com.necleo.codemonkey.constant.MDCKey;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
@@ -15,6 +16,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -129,7 +131,7 @@ public class RectangleReactCGI implements ReactCGI {
   public String getBackgroundImage(FigmaRectangleNode fNode) {
     final FillsImage fillsImage = (FillsImage) fNode.getFills().get(0);
     final String imageHash = fillsImage.getImageHash();
-    return "src={{uri: '" + s3FileLoader.getImageUrl(imageHash) + "'}} \n";
+    return "src={{uri: '" + s3FileLoader.getImageUrl(imageHash, MDC.get(MDCKey.X_PROJECT_ID)) + "'}} \n";
   }
 
   public String getImgResize(FillsImage fillsImage) {
