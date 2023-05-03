@@ -13,7 +13,8 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class VideoTagFlutterCGI implements FlutterCGI {
-  SizeUtil  sizeUtil = new SizeUtil();
+  SizeUtil sizeUtil = new SizeUtil();
+
   @Override
   public Set<FigmaNodeMapper> getStrategy() {
     return Set.of(

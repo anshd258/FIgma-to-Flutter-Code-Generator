@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class InputTagFlutterCGI implements FlutterCGI {
   SizeUtil sizeUtil = new SizeUtil();
+
   @Override
   public Set<FigmaNodeMapper> getStrategy() {
     return Set.of(new FigmaNodeMapper(FigmaNodeTypes.RECTANGLE, TagDataType.INPUT));

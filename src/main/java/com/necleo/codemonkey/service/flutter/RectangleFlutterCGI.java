@@ -2,7 +2,7 @@ package com.necleo.codemonkey.service.flutter;
 
 import static com.necleo.codemonkey.constant.MDCKey.X_PROJECT_ID;
 import static com.necleo.codemonkey.lib.types.figma.properties.fills.enums.ScaleMode.FILL;
-import com.necleo.codemonkey.service.flutter.SizeUtil;
+
 import com.necleo.codemonkey.configuration.S3FileLoader;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.TagData;
@@ -29,7 +29,7 @@ import org.springframework.stereotype.Service;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class RectangleFlutterCGI implements FlutterCGI {
 
-  S3FileLoader s3FileLoader;
+//  S3FileLoader s3FileLoader;
   SizeUtil sizeUtil = new SizeUtil();
 
   @Override
@@ -55,24 +55,24 @@ public class RectangleFlutterCGI implements FlutterCGI {
     genCode += getBoxDecoration(figmaNode);
 
     genCode += "),\n";
-    System.out.println(genCode); // end indent
+    // end indent
 
     return genCode;
   }
 
-//  private String getHeight(FigmaRectangleNode fNode) {
-//    if (fNode.getHeight() != 0) {
-//      return "height:" + Integer.toString(fNode.getHeight()) + ",\n";
-//    }
-//    return "height:0,\n";
-//  }
-//
-//  private String getWidth(FigmaRectangleNode fNode) {
-//    if (fNode.getWidth() != 0) {
-//      return "width:" + Integer.toString(fNode.getWidth()) + ",\n";
-//    }
-//    return "width:0,\n";
-//  }
+  //  private String getHeight(FigmaRectangleNode fNode) {
+  //    if (fNode.getHeight() != 0) {
+  //      return "height:" + Integer.toString(fNode.getHeight()) + ",\n";
+  //    }
+  //    return "height:0,\n";
+  //  }
+  //
+  //  private String getWidth(FigmaRectangleNode fNode) {
+  //    if (fNode.getWidth() != 0) {
+  //      return "width:" + Integer.toString(fNode.getWidth()) + ",\n";
+  //    }
+  //    return "width:0,\n";
+  //  }
 
   private String getBoxDecoration(FigmaRectangleNode fNode) {
     final String upperBoxDecoration = "decoration: BoxDecoration(\n";
@@ -119,8 +119,7 @@ public class RectangleFlutterCGI implements FlutterCGI {
             + "],\n";
     gencCode +=
         "  stops: [ \n"
-            + fills.getGradientStops().stream()
-                .map(gradientStops -> gradientStops.getPosition() )
+            + fills.getGradientStops().stream().map(gradientStops -> gradientStops.getPosition())
             + "],\n";
     return upperLinearGradient + gencCode + lowerLinearGradient;
   }
@@ -180,10 +179,10 @@ public class RectangleFlutterCGI implements FlutterCGI {
     String imageHash = fills.getImageHash();
     String projectId = MDC.get(X_PROJECT_ID);
 
-    URL s3ImageUrl = s3FileLoader.getImageUrl(imageHash, projectId);
+//    URL s3ImageUrl = s3FileLoader.getImageUrl(imageHash, projectId);
     final String upperImage = " image: NetworkImage(\n";
     final String lowerImage = "),\n";
-    final String imageUrl = "'" + s3ImageUrl.getPath() + "'";
+    final String imageUrl = "'" + " " + "'";
     return upperImage + imageUrl + lowerImage;
   }
 

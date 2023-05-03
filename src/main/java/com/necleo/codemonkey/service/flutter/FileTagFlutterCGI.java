@@ -7,7 +7,6 @@ import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.TagDataType;
 import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
-
 import java.util.Optional;
 import java.util.Set;
 import lombok.AccessLevel;
@@ -23,16 +22,16 @@ import org.springframework.stereotype.Service;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class FileTagFlutterCGI implements FlutterCGI {
 
-  @Lazy
-  FlutterFigmaNodeAbstractFactory flutterFigmaNodeFactory;
+  @Lazy FlutterFigmaNodeAbstractFactory flutterFigmaNodeFactory;
+
   @Override
   public Set<FigmaNodeMapper> getStrategy() {
     return Set.of(
-            new FigmaNodeMapper(FigmaNodeTypes.FRAME, TagDataType.FILE),
-            new FigmaNodeMapper(FigmaNodeTypes.RECTANGLE, TagDataType.FILE),
-            new FigmaNodeMapper(FigmaNodeTypes.TEXT, TagDataType.FILE),
-            new FigmaNodeMapper(FigmaNodeTypes.VECTOR, TagDataType.FILE),
-            new FigmaNodeMapper(FigmaNodeTypes.LINE, TagDataType.FILE));
+        new FigmaNodeMapper(FigmaNodeTypes.FRAME, TagDataType.FILE),
+        new FigmaNodeMapper(FigmaNodeTypes.RECTANGLE, TagDataType.FILE),
+        new FigmaNodeMapper(FigmaNodeTypes.TEXT, TagDataType.FILE),
+        new FigmaNodeMapper(FigmaNodeTypes.VECTOR, TagDataType.FILE),
+        new FigmaNodeMapper(FigmaNodeTypes.LINE, TagDataType.FILE));
   }
 
   @Override
@@ -83,14 +82,9 @@ public class FileTagFlutterCGI implements FlutterCGI {
 
   private String getChild(FigmaRectangleNode fNode) {
     String genChild = "";
-    FigmaNodeMapper figmaNodeMapper =
-            new FigmaNodeMapper(fNode.getType(), null);
-    Optional<FlutterCGI> flutterCGIOptional =
-            flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
-    genChild +=
-            flutterCGIOptional
-                    .map(flutterCGI -> flutterCGI.generate(fNode, null))
-                    .orElse("");
+    FigmaNodeMapper figmaNodeMapper = new FigmaNodeMapper(fNode.getType(), null);
+    Optional<FlutterCGI> flutterCGIOptional = flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
+    genChild += flutterCGIOptional.map(flutterCGI -> flutterCGI.generate(fNode, null)).orElse("");
     return "child:" + genChild + ",\n";
   }
 

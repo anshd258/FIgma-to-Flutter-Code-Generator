@@ -17,7 +17,8 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class SliderTagFlutterCGI implements FlutterCGI {
-  SizeUtil  sizeUtil = new SizeUtil();
+  SizeUtil sizeUtil = new SizeUtil();
+
   @Override
   public Set<FigmaNodeMapper> getStrategy() {
     return Set.of(new FigmaNodeMapper(FigmaNodeTypes.FRAME, TagDataType.SLIDER));

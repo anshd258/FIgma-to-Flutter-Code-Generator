@@ -45,7 +45,7 @@ public class FigmaVectorNode extends FigmaNode {
   StrokeJoin strokeJoin;
   StrokeAlign strokeAlign;
   // vector
-  VectorNetwork vectorNetwork;
+//  VectorNetwork vectorNetwork;
   List<VectorPaths> vectorPaths;
   List<String> dashPattern;
   List<StrokeGeometry> strokeGeometry;

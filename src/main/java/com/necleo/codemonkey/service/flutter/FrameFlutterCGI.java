@@ -5,8 +5,6 @@ import static com.necleo.codemonkey.lib.types.figma.properties.fills.enums.Scale
 import com.necleo.codemonkey.factory.FlutterFigmaNodeAbstractFactory;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.TagData;
-import com.necleo.codemonkey.lib.types.enums.figmaEnums.CounterAxisAlignItems;
-import com.necleo.codemonkey.lib.types.enums.figmaEnums.PrimaryAxisAlignItems;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.FigmaFrameNode;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.Color;
@@ -85,14 +83,14 @@ public class FrameFlutterCGI implements FlutterCGI {
       final String lowerStack = "),";
       genCode += "children:[\n";
 
-      for (int i = (figmaNode.getChild().size() - 1); i >= 0; i--) {
+      for (int i = 0; i <= figmaNode.getChild().toArray().length -1; i--) {
         String genChild = "";
         String gen = "";
         FigmaNodeMapper figmaNodeMapper =
             new FigmaNodeMapper(figmaNode.getChild().get(i).getType(), null);
         Optional<FlutterCGI> flutterCGIOptional =
             flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
-        if (i == (figmaNode.getChild().size() - 1)) {
+        if (i < figmaNode.getChild().toArray().length -1) {
           int finalI = i;
           genChild +=
               flutterCGIOptional
@@ -198,69 +196,69 @@ public class FrameFlutterCGI implements FlutterCGI {
   //    }
   //  }
 
-//  private String getMainAxisAlignment(PrimaryAxisAlignItems primaryAxisAlignItems) {
-//
-//
-//    String mainAlignType = switch (primaryAxisAlignItems) {
-//      case MIN -> "start";
-//      case CENTER -> "center";
-//      case MAX -> "end";
-//      case SPACE_BETWEEN -> "spaceBetween";
-//      default -> "";
-//    };
-//    if (mainAlignType.equals("")){
-//      return "";
-//    }
-//      return "\n mainAxisAlignment: MainAxisAlignment." + mainAlignType + ",";
-//
-//
-//  }
-//
-//  private String getCrossAxisAlignment(CounterAxisAlignItems counterAxisAlignItems) {
-//
-//
-//    String mainAlignType = switch (counterAxisAlignItems) {
-//      case MIN -> "start";
-//      case CENTER -> "center";
-//      case MAX -> "end";
-//      default -> "";
-//    };
-//    if (mainAlignType.equals("")){
-//      return "";
-//    }
-//      return "\n crossAxisAlignment: CrossAxisAlignment." + mainAlignType + ",";
-//
-//  }
+  //  private String getMainAxisAlignment(PrimaryAxisAlignItems primaryAxisAlignItems) {
+  //
+  //
+  //    String mainAlignType = switch (primaryAxisAlignItems) {
+  //      case MIN -> "start";
+  //      case CENTER -> "center";
+  //      case MAX -> "end";
+  //      case SPACE_BETWEEN -> "spaceBetween";
+  //      default -> "";
+  //    };
+  //    if (mainAlignType.equals("")){
+  //      return "";
+  //    }
+  //      return "\n mainAxisAlignment: MainAxisAlignment." + mainAlignType + ",";
+  //
+  //
+  //  }
+  //
+  //  private String getCrossAxisAlignment(CounterAxisAlignItems counterAxisAlignItems) {
+  //
+  //
+  //    String mainAlignType = switch (counterAxisAlignItems) {
+  //      case MIN -> "start";
+  //      case CENTER -> "center";
+  //      case MAX -> "end";
+  //      default -> "";
+  //    };
+  //    if (mainAlignType.equals("")){
+  //      return "";
+  //    }
+  //      return "\n crossAxisAlignment: CrossAxisAlignment." + mainAlignType + ",";
+  //
+  //  }
 
-//  private String getSpacing(FigmaFrameNode figmaNode) {
-//    if (figmaNode.getLayoutMode().name().equals("HORIZONTAL")) {
-//      return "SizedBox(width:" + figmaNode.getItemSpacing() + ",),";
-//    } else {
-//      return "SizedBox(height:" + figmaNode.getItemSpacing() + ",),";
-//    }
-//  }
+  //  private String getSpacing(FigmaFrameNode figmaNode) {
+  //    if (figmaNode.getLayoutMode().name().equals("HORIZONTAL")) {
+  //      return "SizedBox(width:" + figmaNode.getItemSpacing() + ",),";
+  //    } else {
+  //      return "SizedBox(height:" + figmaNode.getItemSpacing() + ",),";
+  //    }
+  //  }
 
-//  private String getPosition(String genCode, FigmaNode figmaNode) {
-//    final String upperPosition = "  Positioned(child:\n";
-//    final String lowerPosition = "),\n";
-//    String top = "top:" + figmaNode.getY() + ",\n";
-//    String left = "left:" + figmaNode.getX() + ",\n";
-//    return upperPosition + genCode + top + left + lowerPosition;
-//  }
+  //  private String getPosition(String genCode, FigmaNode figmaNode) {
+  //    final String upperPosition = "  Positioned(child:\n";
+  //    final String lowerPosition = "),\n";
+  //    String top = "top:" + figmaNode.getY() + ",\n";
+  //    String left = "left:" + figmaNode.getX() + ",\n";
+  //    return upperPosition + genCode + top + left + lowerPosition;
+  //  }
 
-//  private String getHeight(FigmaFrameNode fNode) {
-//    if (fNode.getHeight() != 0) {
-//      return "height:" + Integer.toString(fNode.getHeight()) + ",\n";
-//    }
-//    return "height:0,\n";
-//  }
-//
-//  private String getWidth(FigmaFrameNode fNode) {
-//    if (fNode.getWidth() != 0) {
-//      return "width:" + Integer.toString(fNode.getWidth()) + ",\n";
-//    }
-//    return "width:0,\n";
-//  }
+  //  private String getHeight(FigmaFrameNode fNode) {
+  //    if (fNode.getHeight() != 0) {
+  //      return "height:" + Integer.toString(fNode.getHeight()) + ",\n";
+  //    }
+  //    return "height:0,\n";
+  //  }
+  //
+  //  private String getWidth(FigmaFrameNode fNode) {
+  //    if (fNode.getWidth() != 0) {
+  //      return "width:" + Integer.toString(fNode.getWidth()) + ",\n";
+  //    }
+  //    return "width:0,\n";
+  //  }
 
   private String getBoxDecoration(FigmaFrameNode fNode) {
     final String upperBoxDecoration = "decoration: BoxDecoration(\n";
