@@ -59,7 +59,7 @@ public class FrameFlutterCGI implements FlutterCGI {
 
     genCode += "child:" + getchild(figmaNode, tagData) + "\n";
 
-    genCode += ")\n";
+    genCode += "),\n";
     System.out.println(genCode); // end indent
 
     return genCode;
