@@ -288,7 +288,7 @@ public class FrameFlutterCGI implements FlutterCGI {
         || fNode.getBottomRightRadius() != 0) {
       genBoxDecoration += borderRadius(fNode);
     }
-    if (!(fNode.getStrokes().isEmpty())) {
+    if (fNode.getStrokeWeight() != 0) {
       genBoxDecoration += border(fNode);
     }
     return upperBoxDecoration + genBoxDecoration + bottomBoxDecoration;
