@@ -4,5 +4,5 @@ public enum PrimaryAxisAlignItems {
   MIN,
   MAX,
   CENTER,
-  SPACE_BETWEEN;
+  SPACE_BETWEEN,
 }

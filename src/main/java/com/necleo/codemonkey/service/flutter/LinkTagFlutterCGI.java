@@ -1,5 +1,6 @@
 package com.necleo.codemonkey.service.flutter;
 
+import com.necleo.codemonkey.factory.FlutterFigmaNodeAbstractFactory;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.lib.types.Tagdata.Props;
@@ -7,15 +8,19 @@ import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.TagDataType;
 import com.necleo.codemonkey.lib.types.figma.FigmaTextNode;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
+
+import java.util.Optional;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
 public class LinkTagFlutterCGI implements FlutterCGI {
 
-  TextFlutterCGI textFlutterCGI = new TextFlutterCGI();
+  @Lazy
+  FlutterFigmaNodeAbstractFactory flutterFigmaNodeFactory;
 
   @Override
   public String generate(FigmaNode figmaNode, TagData tagData) {
@@ -37,7 +42,15 @@ public class LinkTagFlutterCGI implements FlutterCGI {
 
   private String getChild(FigmaTextNode fNode, TagData tagData) {
     String genChild = "";
-    genChild += textFlutterCGI.generate(fNode, tagData);
+    FigmaNodeMapper figmaNodeMapper =
+            new FigmaNodeMapper(fNode.getType(), null);
+    Optional<FlutterCGI> flutterCGIOptional =
+            flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
+    genChild +=
+            flutterCGIOptional
+                    .map(flutterCGI -> flutterCGI.generate(fNode, null))
+                    .orElse("");
+
     return "child:" + genChild + ",\n";
   }
 

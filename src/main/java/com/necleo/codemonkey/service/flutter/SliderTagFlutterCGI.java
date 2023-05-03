@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class SliderTagFlutterCGI implements FlutterCGI {
+  SizeUtil  sizeUtil = new SizeUtil();
   @Override
   public Set<FigmaNodeMapper> getStrategy() {
     return Set.of(new FigmaNodeMapper(FigmaNodeTypes.FRAME, TagDataType.SLIDER));
@@ -163,8 +164,9 @@ public class SliderTagFlutterCGI implements FlutterCGI {
 
   private String getSize(FigmaRectangleNode fNode) {
     String genSize = "";
-    genSize += "width:" + fNode.getWidth() + ",\n";
-    genSize += "height:" + fNode.getHeight() + ",\n";
+    genSize += sizeUtil.getWidth(fNode);
+
+    genSize += sizeUtil.getHeight(fNode);
     return genSize;
   }
 }

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class VideoTagFlutterCGI implements FlutterCGI {
+  SizeUtil  sizeUtil = new SizeUtil();
   @Override
   public Set<FigmaNodeMapper> getStrategy() {
     return Set.of(
@@ -45,8 +46,8 @@ public class VideoTagFlutterCGI implements FlutterCGI {
   }
 
   private String getSize(FigmaRectangleNode fNode) {
-    String width = "width:" + fNode.getWidth() + ",\n";
-    String height = "height: " + fNode.getHeight() + ",\n";
+    String width = sizeUtil.getWidth(fNode);
+    String height = sizeUtil.getHeight(fNode);
     return width + height;
   }
 

@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class SwitchTagFlutterCGI implements FlutterCGI {
+  SizeUtil sizeUtil = new SizeUtil();
   @Override
   public Set<FigmaNodeMapper> getStrategy() {
     return Set.of(new FigmaNodeMapper(FigmaNodeTypes.RECTANGLE, TagDataType.SWITCH));
@@ -75,8 +76,8 @@ public class SwitchTagFlutterCGI implements FlutterCGI {
             + "        duration:";
     final String lowerWidgetBuild = " ),\n" + "    );\n" + "  }";
     String genCode = getDuration(300);
-    genCode += getHeight(fNode);
-    genCode += getWidth(fNode);
+    genCode += sizeUtil.getHeight(fNode);
+    genCode += sizeUtil.getWidth(fNode);
     genCode += getSwitchBoxDecoration(fNode);
 
     genCode += "child:" + getpadding(fNode);
@@ -118,19 +119,19 @@ public class SwitchTagFlutterCGI implements FlutterCGI {
     return "height:0,\n";
   }
 
-  private String getHeight(FigmaRectangleNode fNode) {
-    if (fNode.getHeight() != 0) {
-      return "height:" + Integer.toString(fNode.getHeight()) + ",\n";
-    }
-    return "height:0,\n";
-  }
-
-  private String getWidth(FigmaRectangleNode fNode) {
-    if (fNode.getWidth() != 0) {
-      return "width:" + Integer.toString(fNode.getWidth()) + ",\n";
-    }
-    return "width:0,\n";
-  }
+//  private String getHeight(FigmaRectangleNode fNode) {
+//    if (fNode.getHeight() != 0) {
+//      return "height:" + Integer.toString(fNode.getHeight()) + ",\n";
+//    }
+//    return "height:0,\n";
+//  }
+//
+//  private String getWidth(FigmaRectangleNode fNode) {
+//    if (fNode.getWidth() != 0) {
+//      return "width:" + Integer.toString(fNode.getWidth()) + ",\n";
+//    }
+//    return "width:0,\n";
+//  }
 
   private String getInitState(FigmaRectangleNode fNode) {
     final String upperInitState =

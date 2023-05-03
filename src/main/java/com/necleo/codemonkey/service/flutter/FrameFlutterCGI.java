@@ -29,6 +29,10 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class FrameFlutterCGI implements FlutterCGI {
+  SizeUtil sizeUtil = new SizeUtil();
+  PositionUtil positionUtil = new PositionUtil();
+  SpacingUtil spacingUtil = new SpacingUtil();
+  MainCrossAlignUtil mainCrossAlignUtil = new MainCrossAlignUtil();
   @Lazy FlutterFigmaNodeAbstractFactory flutterFigmaNodeFactory;
 
   @Override
@@ -48,8 +52,8 @@ public class FrameFlutterCGI implements FlutterCGI {
     String genCode = "";
 
     genCode += "\nContainer( \n";
-    genCode += getHeight(figmaNode);
-    genCode += getWidth(figmaNode);
+    genCode += sizeUtil.getHeight(figmaNode);
+    genCode += sizeUtil.getWidth(figmaNode);
     genCode += getPadding(figmaNode);
     if (!(figmaNode.getFills().isEmpty())) {
       genCode += getBoxDecoration(figmaNode);
@@ -94,7 +98,7 @@ public class FrameFlutterCGI implements FlutterCGI {
               flutterCGIOptional
                   .map(flutterCGI -> flutterCGI.generate(figmaNode.getChild().get(finalI), null))
                   .orElse("");
-          gen = getPosition(genChild, figmaNode.getChild().get(finalI));
+          gen = positionUtil.getPosition(genChild, figmaNode.getChild().get(finalI));
           genCode += gen;
         } else {
           int finalI = i;
@@ -102,7 +106,7 @@ public class FrameFlutterCGI implements FlutterCGI {
               flutterCGIOptional
                   .map(flutterCGI -> flutterCGI.generate(figmaNode.getChild().get(finalI), null))
                   .orElse("");
-          gen = getPosition(genChild, figmaNode.getChild().get(finalI));
+          gen = positionUtil.getPosition(genChild, figmaNode.getChild().get(finalI));
           genCode += gen;
         }
       }
@@ -113,8 +117,8 @@ public class FrameFlutterCGI implements FlutterCGI {
     } else if (figmaNode.getLayoutMode().name().equals("HORIZONTAL")) {
       final String upperRow = "Row(\n";
       final String lowerRow = "),\n";
-      genCode += getMainAxisAlignment(figmaNode.getPrimaryAxisAlignItems());
-      genCode += getCrossAxisAlignment(figmaNode.getCounterAxisAlignItems());
+      genCode += mainCrossAlignUtil.getMainAxisAlignment(figmaNode.getPrimaryAxisAlignItems());
+      genCode += mainCrossAlignUtil.getCrossAxisAlignment(figmaNode.getCounterAxisAlignItems());
 
       genCode += "children:[\n";
 
@@ -138,7 +142,7 @@ public class FrameFlutterCGI implements FlutterCGI {
               flutterCGIOptional
                   .map(flutterCGI -> flutterCGI.generate(figmaNode.getChild().get(finalI), null))
                   .orElse("");
-          gen += getSpacing(figmaNode);
+          gen += spacingUtil.getSpacing(figmaNode);
           genCode += genChild;
           genCode += gen;
         }
@@ -148,8 +152,8 @@ public class FrameFlutterCGI implements FlutterCGI {
     } else if (figmaNode.getLayoutMode().name().equals("VERTICAL")) {
       final String upperColumn = "Column(\n";
       final String lowerColumn = "),\n";
-      genCode += getMainAxisAlignment(figmaNode.getPrimaryAxisAlignItems());
-      genCode += getCrossAxisAlignment(figmaNode.getCounterAxisAlignItems());
+      genCode += mainCrossAlignUtil.getMainAxisAlignment(figmaNode.getPrimaryAxisAlignItems());
+      genCode += mainCrossAlignUtil.getCrossAxisAlignment(figmaNode.getCounterAxisAlignItems());
 
       genCode += "children:[\n";
 
@@ -173,7 +177,7 @@ public class FrameFlutterCGI implements FlutterCGI {
               flutterCGIOptional
                   .map(flutterCGI -> flutterCGI.generate(figmaNode.getChild().get(finalI), null))
                   .orElse("");
-          gen += getSpacing(figmaNode);
+          gen += spacingUtil.getSpacing(figmaNode);
           genCode += genChild;
           genCode += gen;
         }
@@ -194,76 +198,69 @@ public class FrameFlutterCGI implements FlutterCGI {
   //    }
   //  }
 
-  private String getMainAxisAlignment(PrimaryAxisAlignItems primaryAxisAlignItems) {
+//  private String getMainAxisAlignment(PrimaryAxisAlignItems primaryAxisAlignItems) {
+//
+//
+//    String mainAlignType = switch (primaryAxisAlignItems) {
+//      case MIN -> "start";
+//      case CENTER -> "center";
+//      case MAX -> "end";
+//      case SPACE_BETWEEN -> "spaceBetween";
+//      default -> "";
+//    };
+//    if (mainAlignType.equals("")){
+//      return "";
+//    }
+//      return "\n mainAxisAlignment: MainAxisAlignment." + mainAlignType + ",";
+//
+//
+//  }
+//
+//  private String getCrossAxisAlignment(CounterAxisAlignItems counterAxisAlignItems) {
+//
+//
+//    String mainAlignType = switch (counterAxisAlignItems) {
+//      case MIN -> "start";
+//      case CENTER -> "center";
+//      case MAX -> "end";
+//      default -> "";
+//    };
+//    if (mainAlignType.equals("")){
+//      return "";
+//    }
+//      return "\n crossAxisAlignment: CrossAxisAlignment." + mainAlignType + ",";
+//
+//  }
 
-    String mainAlignType = null;
-    switch (primaryAxisAlignItems) {
-      case MIN:
-        mainAlignType = "start";
-        break;
-      case CENTER:
-        mainAlignType = "center";
-        break;
-      case MAX:
-        mainAlignType = "end";
-        break;
-      case SPACE_BETWEEN:
-        mainAlignType = "spaceBetween";
-        break;
-    }
-    if (mainAlignType.equals(null)) {
-      return "";
-    } else return "\n mainAxisAlignment: MainAxisAlignment." + mainAlignType + ",";
-  }
+//  private String getSpacing(FigmaFrameNode figmaNode) {
+//    if (figmaNode.getLayoutMode().name().equals("HORIZONTAL")) {
+//      return "SizedBox(width:" + figmaNode.getItemSpacing() + ",),";
+//    } else {
+//      return "SizedBox(height:" + figmaNode.getItemSpacing() + ",),";
+//    }
+//  }
 
-  private String getCrossAxisAlignment(CounterAxisAlignItems counterAxisAlignItems) {
+//  private String getPosition(String genCode, FigmaNode figmaNode) {
+//    final String upperPosition = "  Positioned(child:\n";
+//    final String lowerPosition = "),\n";
+//    String top = "top:" + figmaNode.getY() + ",\n";
+//    String left = "left:" + figmaNode.getX() + ",\n";
+//    return upperPosition + genCode + top + left + lowerPosition;
+//  }
 
-    String mainAlignType = null;
-    switch (counterAxisAlignItems) {
-      case MIN:
-        mainAlignType = "start";
-        break;
-      case CENTER:
-        mainAlignType = "center";
-        break;
-      case MAX:
-        mainAlignType = "end";
-        break;
-    }
-    if (mainAlignType.equals(null)) {
-      return "";
-    } else return "\n crossAxisAlignment: CrossAxisAlignment." + mainAlignType + ",";
-  }
-
-  private String getSpacing(FigmaFrameNode figmaNode) {
-    if (figmaNode.getLayoutMode().name().equals("HORIZONTAL")) {
-      return "SizedBox(width:" + figmaNode.getItemSpacing() + ",),";
-    } else {
-      return "SizedBox(height:" + figmaNode.getItemSpacing() + ",),";
-    }
-  }
-
-  private String getPosition(String genCode, FigmaNode figmaNode) {
-    final String upperPosition = "  Positioned(child:\n";
-    final String lowerPosition = "),\n";
-    String top = "top:" + figmaNode.getY() + ",\n";
-    String left = "left:" + figmaNode.getX() + ",\n";
-    return upperPosition + genCode + top + left + lowerPosition;
-  }
-
-  private String getHeight(FigmaFrameNode fNode) {
-    if (fNode.getHeight() != 0) {
-      return "height:" + Integer.toString(fNode.getHeight()) + ",\n";
-    }
-    return "height:0,\n";
-  }
-
-  private String getWidth(FigmaFrameNode fNode) {
-    if (fNode.getWidth() != 0) {
-      return "width:" + Integer.toString(fNode.getWidth()) + ",\n";
-    }
-    return "width:0,\n";
-  }
+//  private String getHeight(FigmaFrameNode fNode) {
+//    if (fNode.getHeight() != 0) {
+//      return "height:" + Integer.toString(fNode.getHeight()) + ",\n";
+//    }
+//    return "height:0,\n";
+//  }
+//
+//  private String getWidth(FigmaFrameNode fNode) {
+//    if (fNode.getWidth() != 0) {
+//      return "width:" + Integer.toString(fNode.getWidth()) + ",\n";
+//    }
+//    return "width:0,\n";
+//  }
 
   private String getBoxDecoration(FigmaFrameNode fNode) {
     final String upperBoxDecoration = "decoration: BoxDecoration(\n";

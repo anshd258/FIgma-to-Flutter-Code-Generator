@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class InputTagFlutterCGI implements FlutterCGI {
+  SizeUtil sizeUtil = new SizeUtil();
   @Override
   public Set<FigmaNodeMapper> getStrategy() {
     return Set.of(new FigmaNodeMapper(FigmaNodeTypes.RECTANGLE, TagDataType.INPUT));
@@ -124,8 +125,8 @@ public class InputTagFlutterCGI implements FlutterCGI {
 
   private String getSize(FigmaRectangleNode fNode) {
     String genSize = "";
-    genSize += "width:" + fNode.getWidth() + ",\n";
-    genSize += "height:" + fNode.getHeight() + ",\n";
+    genSize += sizeUtil.getHeight(fNode);
+    genSize += sizeUtil.getWidth(fNode);
     return genSize;
   }
 }
