@@ -3,6 +3,7 @@ package com.necleo.codemonkey.service.flutter;
 import static com.necleo.codemonkey.constant.MDCKey.X_PROJECT_ID;
 import static com.necleo.codemonkey.lib.types.figma.properties.fills.enums.ScaleMode.FILL;
 
+
 import com.necleo.codemonkey.configuration.S3FileLoader;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.TagData;
@@ -15,6 +16,8 @@ import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSoli
 import com.necleo.codemonkey.lib.types.figma.properties.strokes.Strokes;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import java.net.URL;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +25,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 @Service
 @Slf4j
@@ -218,11 +222,17 @@ public class RectangleFlutterCGI implements FlutterCGI {
     final String upperBorder = " border: Border.all(";
     final String bottomBorder = "),\n";
     String genCode = "";
-    genCode += getStrokeAlignment(fNode);
-    genCode += getColor(fNode.getStrokes().get(0));
-    genCode += getStrokeWidth(fNode);
 
-    genCode += getStyle(fNode.getStrokes().get(0));
+    genCode += getStrokeAlignment(fNode);
+    if(!(CollectionUtils.isEmpty(fNode.getStrokes()))){
+      genCode += getColor(fNode.getStrokes().get(0));
+    }
+
+    genCode += getStrokeWidth(fNode);
+    if(!(CollectionUtils.isEmpty(fNode.getStrokes()))){
+      genCode += getStyle(fNode.getStrokes().get(0));
+    }
+
     return upperBorder + genCode + bottomBorder;
   }
 }

@@ -27,6 +27,7 @@ public class S3FileLoader {
 
   public String getJsonData(String bucketName, String key) throws IOException {
     S3Object obj = s3Client.getObject(bucketName, key);
+
     String res;
     try {
       res = IOUtils.toString(obj.getObjectContent());
