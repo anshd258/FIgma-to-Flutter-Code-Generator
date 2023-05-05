@@ -1,19 +1,26 @@
 package com.necleo.codemonkey.service.react;
 
+import com.necleo.codemonkey.factory.ReactFigmaNodeAbstractFactory;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.FigmaFrameNode;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSolid;
+import com.necleo.codemonkey.lib.utils.ReduceNumbersAfterDecimal;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
+
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 @Service
 @Slf4j
@@ -21,8 +28,12 @@ import org.springframework.stereotype.Service;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class FrameReactCGI implements ReactCGI {
 
-  RectangleReactCGI rectangleReactCGI;
-  TextReactCGI textReactCGI;
+
+  @Lazy
+  ReactFigmaNodeAbstractFactory figmaNodeFactory;
+
+  ReduceNumbersAfterDecimal reduceNumbersAfterDecimal;
+
 
   @Override
   public String generate(
@@ -38,7 +49,7 @@ public class FrameReactCGI implements ReactCGI {
     genCode += " }}>";
 
     for (FigmaNode childNode : fNode.getChild()) {
-      genCode += getChild(childNode, figmaNode);
+      genCode += getChild(childNode, figmaNode, tagDataMap);
     }
     genCode += "</div>\n";
     System.out.println(genCode); // end indent
@@ -48,9 +59,9 @@ public class FrameReactCGI implements ReactCGI {
 
   private String getParentSpecialStyles(FigmaFrameNode parentNode) {
     String parentStyles = "";
-    if (parentNode.getLayoutMode().equals("HORIZONTAL")) {
+    if (parentNode.getLayoutMode().toString().equals("HORIZONTAL")) {
       parentStyles += "flexDirection: 'row',\n";
-    } else if (parentNode.getLayoutMode().equals("HORIZONTAL")) {
+    } else if (parentNode.getLayoutMode().toString().equals("VERTICAL")) {
       parentStyles += "flexDirection: 'column',\n";
     }
     else {
@@ -71,7 +82,7 @@ public class FrameReactCGI implements ReactCGI {
     styles += getVerticalPosition(fNode);
     styles += getVisibility(fNode);
     // genCode += generate(childrenNode);
-    if (fNode.getLayoutMode().equals("AUTO")) {
+    if (fNode.getLayoutPositioning().equals("AUTO")) {
       styles += getAutoLayout(fNode);
     }
     styles += "gap: '" + fNode.getItemSpacing() + "px',\n";
@@ -81,9 +92,35 @@ public class FrameReactCGI implements ReactCGI {
 
   public String getAutoLayout(FigmaFrameNode fNode) {
     String autoLS = "";
-    autoLS += "width: full,\n";
-    autoLS += "height: 100%,\n";
-    autoLS += "display: flex";
+//    autoLS += "width: full,\n";
+//    autoLS += "height: 100%,\n";
+    autoLS += "display: 'flex',\n";
+
+    if (fNode.getLayoutMode().toString().equals("HORIZONTAL")) {
+      autoLS += "flexDirection: 'row',\n";
+    } else if (fNode.getLayoutMode().toString().equals("VERTICAL")) {
+      autoLS += "flexDirection: 'column',\n";
+    }
+
+//    according to alignment fix justifyContent and position -
+//    left & top - fixed else absolute else no poz.
+//    justify we'll have to check for left right and center
+    String primaryAlign = "";
+    switch (fNode.getPrimaryAxisAlignItems().toString()) {
+      case "MIN" -> primaryAlign = "flex-start";
+      case "CENTER" -> primaryAlign = "center";
+      case "MAX" -> primaryAlign = "flex-end";
+      case "SPACE_BETWEEN" -> primaryAlign = "space-between";
+    }
+    autoLS += "justifyContent: '" + primaryAlign + "',\n";
+//    AlignItems -
+    String counterAlign = "";
+    switch (fNode.getCounterAxisAlignItems().toString()) {
+      case "MIN" -> counterAlign = "flex-start";
+      case "CENTER" -> counterAlign = "center";
+      case "MAX" -> counterAlign = "flex-end";
+    }
+    autoLS += "alignItems: '" + counterAlign + "',\n";
 
     return autoLS;
   }
@@ -98,18 +135,31 @@ public class FrameReactCGI implements ReactCGI {
     return padding;
   }
 
-  public String getChild(FigmaNode fNode, FigmaNode parentNode) {
+  public String getChild(FigmaNode fNode, FigmaNode parentNode, Map<String, TagData> tagDataMap) {
 
-    FigmaNodeTypes childType = fNode.getType();
-    Map<String, TagData> tagDataMap = null;
-    if (childType == FigmaNodeTypes.TEXT) {
-      return textReactCGI.generate(fNode, parentNode, tagDataMap, null);
-    } else if (FigmaNodeTypes.RECTANGLE == (childType)) {
-      return rectangleReactCGI.generate(fNode, parentNode, tagDataMap, null);
-    } else if (childType == (FigmaNodeTypes.FRAME)) {
-      return generate(fNode, parentNode, tagDataMap, null);
-    }
-    return "";
+    String genChild = "";
+    /*
+    Working version of code before -
+//    FigmaNodeTypes childType = fNode.getType();
+//    Map<String, TagData> tagDataMap = null;
+//    if (childType == FigmaNodeTypes.TEXT) {
+//      return textReactCGI.generate(fNode, parentNode, tagDataMap, null);
+//    } else if (FigmaNodeTypes.RECTANGLE == (childType) || FigmaNodeTypes.VECTOR == (childType)) {
+//      return rectangleReactCGI.generate(fNode, parentNode, tagDataMap, null);
+//    } else if (childType == (FigmaNodeTypes.FRAME)) {
+//      return generate(fNode, parentNode, tagDataMap, null);
+//    }
+     */
+
+    Set<String> importFunctions = new HashSet<>();
+
+    Optional<ReactCGI> reactCGIOptional =
+            figmaNodeFactory.getProcessor(FigmaNodeMapper.of(fNode, tagDataMap));
+    genChild +=
+            reactCGIOptional
+                    .map(reactCGI -> reactCGI.generate(fNode, null, tagDataMap, importFunctions))
+                    .orElseThrow();
+    return genChild;
   }
 
   // styling
@@ -129,19 +179,23 @@ public class FrameReactCGI implements ReactCGI {
   }
 
   public String getBackgroundColour(FigmaFrameNode fNode) {
-    final FillsSolid fills = (FillsSolid) fNode.getFills().get(0);
-    final String begin = "backgroundColor: 'rgb(";
-    final String end = ")',\n";
-    final String fNodeColourR = (255 * fills.getColor().getR()) + ",";
-    final String fNodeColourG = (255 * fills.getColor().getG()) + ",";
-    final String fNodeColourB = String.valueOf(255 * fills.getColor().getB());
-    return begin + fNodeColourR + fNodeColourG + fNodeColourB + end;
+    if (CollectionUtils.isEmpty(fNode.getFills()))
+      return "";
+    else {
+      final FillsSolid fills = (FillsSolid) fNode.getFills().get(0);
+      final String begin = "backgroundColor: 'rgb(";
+      final String end = ")',\n";
+      final String fNodeColourR = reduceNumbersAfterDecimal.reducerDecimal(fills.getColor().getR()) + ",";
+      final String fNodeColourG = reduceNumbersAfterDecimal.reducerDecimal(fills.getColor().getG()) + ",";
+      final String fNodeColourB = reduceNumbersAfterDecimal.reducerDecimal(fills.getColor().getB());
+      return begin + fNodeColourR + fNodeColourG + fNodeColourB + end;
+    }
   }
 
   public String getBoxDecoration(FigmaFrameNode fNode) {
     final String upperBoxDecoration = "boxSizing: '";
     //        final String bottomBoxDecoration = ",\n";
-    String genBoxDecoration = "";
+    String genBoxDecoration;
     if (fNode.getCornerRadius() != 0) {
       genBoxDecoration = "border-box', \n borderRadius: '";
       genBoxDecoration = genBoxDecoration + borderRadius(fNode) + "px',\n";
@@ -159,9 +213,9 @@ public class FrameReactCGI implements ReactCGI {
   }
 
   public String border(FigmaFrameNode fNode) {
-    final String fNodeColourR = (255 * fNode.getStrokes().get(0).getColor().getR()) + ",";
-    final String fNodeColourG = (255 * fNode.getStrokes().get(0).getColor().getG()) + ",";
-    final String fNodeColourB = String.valueOf(255 * fNode.getStrokes().get(0).getColor().getB());
+    final String fNodeColourR = reduceNumbersAfterDecimal.reducerDecimal(fNode.getStrokes().get(0).getColor().getR()) + ",";
+    final String fNodeColourG = reduceNumbersAfterDecimal.reducerDecimal(fNode.getStrokes().get(0).getColor().getG()) + ",";
+    final String fNodeColourB = reduceNumbersAfterDecimal.reducerDecimal(fNode.getStrokes().get(0).getColor().getB());
 
     final String upperBorder = "border: '";
     final String width = (fNode.getStrokeWeight()) + "px ";

@@ -5,6 +5,7 @@ import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.FigmaTextNode;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSolid;
+import com.necleo.codemonkey.lib.utils.ReduceNumbersAfterDecimal;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import java.util.Map;
 import java.util.Set;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class TextReactCGI implements ReactCGI {
+  ReduceNumbersAfterDecimal reduceNumbersAfterDecimal;
+
   @Override
   public Set<FigmaNodeMapper> getStrategy() {
 
@@ -73,17 +76,17 @@ public class TextReactCGI implements ReactCGI {
               + ", "
               + fNode.getStrokeWeight()
               + "px, rgb("
-              + fNode.getStrokes().get(0).getColor().getR() * 255
+              + reduceNumbersAfterDecimal.reducerDecimal(fNode.getStrokes().get(0).getColor().getR())
               + ", "
-              + fNode.getStrokes().get(0).getColor().getG() * 255
+              + reduceNumbersAfterDecimal.reducerDecimal(fNode.getStrokes().get(0).getColor().getG())
               + ", "
-              + fNode.getStrokes().get(0).getColor().getB() * 255
+              + reduceNumbersAfterDecimal.reducerDecimal(fNode.getStrokes().get(0).getColor().getB())
               + ")',\n";
     }
     style += getAlignment(fNode);
     style += getFont(fNode);
     style += getWidthHeight(fNode);
-    style += "position: 'absolute',\n";
+//    style += "position: 'absolute',\n";
 
     return style;
   }
@@ -102,7 +105,7 @@ public class TextReactCGI implements ReactCGI {
   public String getFont(FigmaTextNode fNode) {
     String font = "";
     font += "fontWeight: '" + fNode.getFontWeight() + "',\n ";
-    font += "fontFace: '" + fNode.getFontFamily() + "',\n";
+    font += "fontFace: '" + fNode.getFontName().getFamily() + "',\n";
     font += "fontSize: '" + fNode.getFontSize() + "',\n";
 
     return font;
@@ -114,6 +117,8 @@ public class TextReactCGI implements ReactCGI {
     //       alignment += "justifyContent: '"+ (fNode.getPrimaryAxisAlignitems() ?
     // fNode.getPrimaryAxisAlignitems().toString().toLowerCase()  :'' )  +"',\n";
     alignment += "lineHeight: '" + "auto" + "',\n";
+    alignment += "display: 'flex',\n";
+    alignment += "justifyContent: 'center',\n";
     return alignment;
   }
 }

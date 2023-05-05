@@ -44,7 +44,7 @@ public class FigmaTextNode extends FigmaNode {
   boolean autoRename;
   String characters;
 
-  String fontFamily;
+  FontName fontName;
   int fontWeight;
 
   int fontSize;

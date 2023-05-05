@@ -8,6 +8,7 @@ import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes
 import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsImage;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSolid;
+import com.necleo.codemonkey.lib.utils.ReduceNumbersAfterDecimal;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import java.util.Map;
 import java.util.Set;
@@ -28,6 +29,8 @@ public class RectangleReactCGI implements ReactCGI {
 
 
   S3FileLoader s3FileLoader;
+
+  ReduceNumbersAfterDecimal reduceNumbersAfterDecimal;
 
   @Override
   public Set<FigmaNodeMapper> getStrategy() {
@@ -94,9 +97,9 @@ public class RectangleReactCGI implements ReactCGI {
     final FillsSolid fills = (FillsSolid) fNode.getFills().get(0);
     final String begin = "backgroundColor: 'rgb(";
     final String end = ")',\n";
-    final String fNodeColourR = (255 * fills.getColor().getR()) + ",";
-    final String fNodeColourG = (255 * fills.getColor().getG()) + ",";
-    final String fNodeColourB = String.valueOf(255 * fills.getColor().getB());
+    final String fNodeColourR = reduceNumbersAfterDecimal.reducerDecimal(fills.getColor().getR()) + ",";
+    final String fNodeColourG = reduceNumbersAfterDecimal.reducerDecimal(fills.getColor().getG()) + ",";
+    final String fNodeColourB = reduceNumbersAfterDecimal.reducerDecimal(fills.getColor().getB());
     return begin + fNodeColourR + fNodeColourG + fNodeColourB + end;
   }
 
@@ -178,9 +181,9 @@ public class RectangleReactCGI implements ReactCGI {
   }
 
   public String border(FigmaRectangleNode fNode) {
-    final String fNodeColourR = (255 * fNode.getStrokes().get(0).getColor().getR()) + ",";
-    final String fNodeColourG = (255 * fNode.getStrokes().get(0).getColor().getG()) + ",";
-    final String fNodeColourB = String.valueOf(255 * fNode.getStrokes().get(0).getColor().getB());
+    final String fNodeColourR = reduceNumbersAfterDecimal.reducerDecimal(fNode.getStrokes().get(0).getColor().getR()) + ",";
+    final String fNodeColourG = reduceNumbersAfterDecimal.reducerDecimal(fNode.getStrokes().get(0).getColor().getG()) + ",";
+    final String fNodeColourB = reduceNumbersAfterDecimal.reducerDecimal(fNode.getStrokes().get(0).getColor().getB());
 
     final String upperBorder = "border: '";
     final String width = (fNode.getStrokeWeight()) + "px ";

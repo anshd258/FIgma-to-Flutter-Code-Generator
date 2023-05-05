@@ -64,4 +64,6 @@ public class FigmaFrameNode extends FigmaNode {
   // layoutGrids - need to check
   String gridStyleId;
   boolean clipsContent;
+
+  String layoutPositioning;
 }

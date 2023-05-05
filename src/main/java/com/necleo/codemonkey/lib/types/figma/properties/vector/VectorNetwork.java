@@ -1,5 +1,6 @@
 package com.necleo.codemonkey.lib.types.figma.properties.vector;
 
+import com.necleo.codemonkey.lib.types.figma.properties.vector.regions.RegionType;
 import com.necleo.codemonkey.lib.types.figma.properties.vector.segment.Segment;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -10,6 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class VectorNetwork {
-  private List<String> regions;
+  private List<RegionType> regions;
   private List<Segment> segments;
 }
