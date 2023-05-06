@@ -3,10 +3,8 @@ package com.necleo.codemonkey.service.flutter;
 import static com.necleo.codemonkey.constant.MDCKey.X_PROJECT_ID;
 import static com.necleo.codemonkey.lib.types.figma.properties.fills.enums.ScaleMode.FILL;
 
-
-import com.necleo.codemonkey.configuration.S3FileLoader;
-import com.necleo.codemonkey.lib.types.FigmaNode;
-import com.necleo.codemonkey.lib.types.TagData;
+import com.necleo.codemonkey.factory.FlutterBoilerTypeAbstractFactory;
+import com.necleo.codemonkey.lib.types.enums.boilerplate.BoilerType;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.Color;
@@ -14,16 +12,18 @@ import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsGrad
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsImage;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSolid;
 import com.necleo.codemonkey.lib.types.figma.properties.strokes.Strokes;
+import com.necleo.codemonkey.model.factory.BoilerNodeMapper;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
-import java.net.URL;
-import java.util.Collection;
-import java.util.Collections;
+import com.necleo.codemonkey.model.factory.NecleoDataNode;
+import com.necleo.codemonkey.service.flutter.boilerplate.BoilerCGI;
+import java.util.Optional;
 import java.util.Set;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -33,8 +33,9 @@ import org.springframework.util.CollectionUtils;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class RectangleFlutterCGI implements FlutterCGI {
 
-//  S3FileLoader s3FileLoader;
+  //  S3FileLoader s3FileLoader;
   SizeUtil sizeUtil = new SizeUtil();
+  @Lazy FlutterBoilerTypeAbstractFactory flutterBoilerTypeAbstractFactory;
 
   @Override
   public Set<FigmaNodeMapper> getStrategy() {
@@ -42,8 +43,8 @@ public class RectangleFlutterCGI implements FlutterCGI {
   }
 
   @Override
-  public String generate(FigmaNode figmaNode, TagData tagData) {
-    if (!(figmaNode instanceof FigmaRectangleNode fNode)) {
+  public String generate(NecleoDataNode necleoDataNode) {
+    if (!(necleoDataNode.fNode instanceof FigmaRectangleNode fNode)) {
       throw new IllegalArgumentException();
     }
     return generat(fNode);
@@ -60,7 +61,10 @@ public class RectangleFlutterCGI implements FlutterCGI {
 
     genCode += "),\n";
     // end indent
-
+    BoilerNodeMapper boilerNodeMapper = new BoilerNodeMapper(BoilerType.STATELESS, null);
+    Optional<BoilerCGI> flutterBoilerCGIOptional =
+        flutterBoilerTypeAbstractFactory.getProcessor(boilerNodeMapper);
+    flutterBoilerCGIOptional.map(BoilerCGI::generate);
     return genCode;
   }
 
@@ -106,9 +110,9 @@ public class RectangleFlutterCGI implements FlutterCGI {
         || fNode.getBottomRightRadius() != 0) {
       genBoxDecoration += borderRadius(fNode);
     }
-        if (fNode.getStrokeWeight() != 0) {
-          genBoxDecoration += border(fNode);
-        }
+    if (fNode.getStrokeWeight() != 0) {
+      genBoxDecoration += border(fNode);
+    }
     return upperBoxDecoration + genBoxDecoration + bottomBoxDecoration;
   }
 
@@ -183,7 +187,7 @@ public class RectangleFlutterCGI implements FlutterCGI {
     String imageHash = fills.getImageHash();
     String projectId = MDC.get(X_PROJECT_ID);
 
-//    URL s3ImageUrl = s3FileLoader.getImageUrl(imageHash, projectId);
+    //    URL s3ImageUrl = s3FileLoader.getImageUrl(imageHash, projectId);
     final String upperImage = " image: NetworkImage(\n";
     final String lowerImage = "),\n";
     final String imageUrl = "'" + " " + "'";
@@ -224,12 +228,12 @@ public class RectangleFlutterCGI implements FlutterCGI {
     String genCode = "";
 
     genCode += getStrokeAlignment(fNode);
-    if(!(CollectionUtils.isEmpty(fNode.getStrokes()))){
+    if (!(CollectionUtils.isEmpty(fNode.getStrokes()))) {
       genCode += getColor(fNode.getStrokes().get(0));
     }
 
     genCode += getStrokeWidth(fNode);
-    if(!(CollectionUtils.isEmpty(fNode.getStrokes()))){
+    if (!(CollectionUtils.isEmpty(fNode.getStrokes()))) {
       genCode += getStyle(fNode.getStrokes().get(0));
     }
 

@@ -1,11 +1,10 @@
 package com.necleo.codemonkey.service.flutter;
 
-import com.necleo.codemonkey.lib.types.FigmaNode;
-import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.FigmaTextNode;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSolid;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
+import com.necleo.codemonkey.model.factory.NecleoDataNode;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,8 +20,8 @@ public class TextFlutterCGI implements FlutterCGI {
   }
 
   @Override
-  public String generate(FigmaNode figmaNode, TagData tagData) {
-    if (!(figmaNode instanceof FigmaTextNode fNode)) {
+  public String generate(NecleoDataNode necleoDataNode) {
+    if (!(necleoDataNode.fNode instanceof FigmaTextNode fNode)) {
       throw new IllegalArgumentException();
     }
     return generat(fNode);

@@ -1,11 +1,10 @@
 package com.necleo.codemonkey.service.flutter;
 
-import com.necleo.codemonkey.lib.types.FigmaNode;
-import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.FigmaLineNode;
 import com.necleo.codemonkey.lib.types.figma.properties.strokes.Color;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
+import com.necleo.codemonkey.model.factory.NecleoDataNode;
 import java.util.Set;
 
 public class LineFlutterCGI implements FlutterCGI {
@@ -17,8 +16,8 @@ public class LineFlutterCGI implements FlutterCGI {
   }
 
   @Override
-  public String generate(FigmaNode figmaNode, TagData tagData) {
-    if (!(figmaNode instanceof FigmaLineNode fNode)) {
+  public String generate(NecleoDataNode necleoDataNode) {
+    if (!(necleoDataNode.fNode instanceof FigmaLineNode fNode)) {
       throw new IllegalArgumentException();
     }
     return generat(fNode);

@@ -1,13 +1,13 @@
 package com.necleo.codemonkey.service.flutter;
 
 import com.necleo.codemonkey.factory.FlutterFigmaNodeAbstractFactory;
-import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.lib.types.Tagdata.Props;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.TagDataType;
 import com.necleo.codemonkey.lib.types.figma.FigmaTextNode;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
+import com.necleo.codemonkey.model.factory.NecleoDataNode;
 import java.util.Optional;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
@@ -21,28 +21,29 @@ public class LinkTagFlutterCGI implements FlutterCGI {
   @Lazy FlutterFigmaNodeAbstractFactory flutterFigmaNodeFactory;
 
   @Override
-  public String generate(FigmaNode figmaNode, TagData tagData) {
+  public String generate(NecleoDataNode necleoDataNode) {
 
-    if (!(figmaNode instanceof FigmaTextNode fNode)) {
+    if (!(necleoDataNode.fNode instanceof FigmaTextNode fNode)) {
       throw new IllegalArgumentException();
     }
-    return generat(fNode, tagData);
+    return generat(fNode, necleoDataNode.tagData, necleoDataNode);
   }
 
-  private String generat(FigmaTextNode fNode, TagData tagData) {
+  private String generat(FigmaTextNode fNode, TagData tagData, NecleoDataNode necleoDataNode) {
     final String upperButton = " InkWell(\n";
     final String lowerButton = "),\n";
     String genCode = "";
     genCode += getLink(tagData);
-    genCode += getChild(fNode, tagData);
+    genCode += getChild(fNode, tagData, necleoDataNode);
     return upperButton + genCode + lowerButton;
   }
 
-  private String getChild(FigmaTextNode fNode, TagData tagData) {
+  private String getChild(FigmaTextNode fNode, TagData tagData, NecleoDataNode necleoDataNode) {
     String genChild = "";
     FigmaNodeMapper figmaNodeMapper = new FigmaNodeMapper(fNode.getType(), null);
     Optional<FlutterCGI> flutterCGIOptional = flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
-    genChild += flutterCGIOptional.map(flutterCGI -> flutterCGI.generate(fNode, null)).orElse("");
+    genChild +=
+        flutterCGIOptional.map(flutterCGI -> flutterCGI.generate(necleoDataNode)).orElse("");
 
     return "child:" + genChild + ",\n";
   }

@@ -1,21 +1,17 @@
 package com.necleo.codemonkey.service.flutter;
 
-import com.necleo.codemonkey.configuration.S3FileLoader;
-import com.necleo.codemonkey.factory.FlutterFigmaNodeAbstractFactory;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
-import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
 import com.necleo.codemonkey.lib.types.figma.FigmaVectorNode;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSolid;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
-import java.util.Optional;
+import com.necleo.codemonkey.model.factory.NecleoDataNode;
 import java.util.Set;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -31,9 +27,9 @@ public class VectorFlutterCGI implements FlutterCGI {
   }
 
   @Override
-  public String generate(FigmaNode figmaNode, TagData tagData) {
+  public String generate(NecleoDataNode necleoDataNode) {
 
-    return generat(figmaNode, tagData);
+    return generat(necleoDataNode.fNode, necleoDataNode.tagData);
   }
 
   private String generat(FigmaNode figmaNode, TagData tagData) {
@@ -60,9 +56,9 @@ public class VectorFlutterCGI implements FlutterCGI {
       }
     }
 
-
     return "child:" + genChild + ",\n";
   }
+
   private String color(FillsSolid fills) {
     final String upperColor = "Color.fromRGBO(\n";
     final String lowerColor = ")\n";

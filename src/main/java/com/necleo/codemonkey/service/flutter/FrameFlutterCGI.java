@@ -3,7 +3,6 @@ package com.necleo.codemonkey.service.flutter;
 import static com.necleo.codemonkey.lib.types.figma.properties.fills.enums.ScaleMode.FILL;
 
 import com.necleo.codemonkey.factory.FlutterFigmaNodeAbstractFactory;
-import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.FigmaFrameNode;
@@ -12,6 +11,7 @@ import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsGrad
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsImage;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSolid;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
+import com.necleo.codemonkey.model.factory.NecleoDataNode;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -39,14 +39,14 @@ public class FrameFlutterCGI implements FlutterCGI {
   }
 
   @Override
-  public String generate(FigmaNode figmaNode, TagData tagData) {
-    if (!(figmaNode instanceof FigmaFrameNode fNode)) {
+  public String generate(NecleoDataNode necleoDataNode) {
+    if (!(necleoDataNode.fNode instanceof FigmaFrameNode fNode)) {
       throw new IllegalArgumentException();
     }
-    return generat(fNode, tagData);
+    return generat(fNode, necleoDataNode.tagData, necleoDataNode);
   }
 
-  private String generat(FigmaFrameNode figmaNode, TagData tagData) {
+  private String generat(FigmaFrameNode figmaNode, TagData tagData, NecleoDataNode necleoDataNode) {
     String genCode = "";
 
     genCode += "\nContainer( \n";
@@ -57,7 +57,7 @@ public class FrameFlutterCGI implements FlutterCGI {
       genCode += getBoxDecoration(figmaNode);
     }
 
-    genCode += "child:" + getchild(figmaNode, tagData) + "\n";
+    genCode += "child:" + getchild(figmaNode, tagData, necleoDataNode) + "\n";
 
     genCode += "),\n";
     System.out.println(genCode); // end indent
@@ -75,113 +75,128 @@ public class FrameFlutterCGI implements FlutterCGI {
     return upperPadding + leftPaing + rigt + top + bottom + lowerPadding;
   }
 
-  private String getchild(FigmaFrameNode figmaNode, TagData tagData) {
-    String genCode = "";
+  private String getchild(
+      FigmaFrameNode figmaNode, TagData tagData, NecleoDataNode necleoDataNode) {
+    StringBuilder genCode = new StringBuilder();
+    NecleoDataNode necleoDataNodeTemp = new NecleoDataNode();
+    switch (figmaNode.getLayoutMode().name()) {
+      case "NONE" -> {
+        final String upperStack = "Stack(\n";
+        final String lowerStack = "),";
+        genCode.append("children:[\n");
+        for (int i = 0; i <= figmaNode.getChild().toArray().length - 1; i++) {
+          String genChild = "";
+          String gen = "";
+          FigmaNodeMapper figmaNodeMapper =
+              new FigmaNodeMapper(figmaNode.getChild().get(i).getType(), null);
+          Optional<FlutterCGI> flutterCGIOptional =
+              flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
+          if (i < figmaNode.getChild().toArray().length - 1) {
+            necleoDataNodeTemp.fNode = necleoDataNode.fNode.getChild().get(i);
+            necleoDataNodeTemp.tagData = necleoDataNode.tagData;
+            necleoDataNodeTemp.imports = necleoDataNode.imports;
 
-    if (figmaNode.getLayoutMode().name().equals("NONE")) {
-      final String upperStack = "Stack(\n";
-      final String lowerStack = "),";
-      genCode += "children:[\n";
-
-      for (int i = 0; i <= figmaNode.getChild().toArray().length -1; i++) {
-        String genChild = "";
-        String gen = "";
-        FigmaNodeMapper figmaNodeMapper =
-            new FigmaNodeMapper(figmaNode.getChild().get(i).getType(), null);
-        Optional<FlutterCGI> flutterCGIOptional =
-            flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
-        if (i < figmaNode.getChild().toArray().length -1) {
-          int finalI = i;
-          genChild +=
-              flutterCGIOptional
-                  .map(flutterCGI -> flutterCGI.generate(figmaNode.getChild().get(finalI), null))
-                  .orElse("");
-          gen = positionUtil.getPosition(genChild, figmaNode.getChild().get(finalI));
-          genCode += gen;
-        } else {
-          int finalI = i;
-          genChild +=
-              flutterCGIOptional
-                  .map(flutterCGI -> flutterCGI.generate(figmaNode.getChild().get(finalI), null))
-                  .orElse("");
-          gen = positionUtil.getPosition(genChild, figmaNode.getChild().get(finalI));
-          genCode += gen;
+            genChild +=
+                flutterCGIOptional
+                    .map(flutterCGI -> flutterCGI.generate(necleoDataNodeTemp))
+                    .orElse("");
+            gen = positionUtil.getPosition(genChild, figmaNode.getChild().get(i));
+            genCode.append(gen);
+          } else {
+            necleoDataNodeTemp.fNode = necleoDataNode.fNode.getChild().get(i);
+            necleoDataNodeTemp.tagData = necleoDataNode.tagData;
+            necleoDataNodeTemp.imports = necleoDataNode.imports;
+            genChild +=
+                flutterCGIOptional
+                    .map(flutterCGI -> flutterCGI.generate(necleoDataNodeTemp))
+                    .orElse("");
+            gen = positionUtil.getPosition(genChild, figmaNode.getChild().get(i));
+            genCode.append(gen);
+          }
         }
+        genCode.append("],\n");
+        return upperStack + genCode + lowerStack;
       }
-      genCode += "],\n";
-
-      return upperStack + genCode + lowerStack;
-
-    } else if (figmaNode.getLayoutMode().name().equals("HORIZONTAL")) {
-      final String upperRow = "Row(\n";
-      final String lowerRow = "),\n";
-      genCode += mainCrossAlignUtil.getMainAxisAlignment(figmaNode.getPrimaryAxisAlignItems());
-      genCode += mainCrossAlignUtil.getCrossAxisAlignment(figmaNode.getCounterAxisAlignItems());
-
-      genCode += "children:[\n";
-
-      for (int i = 0; i < figmaNode.getChild().size(); i++) {
-        String genChild = "";
-        String gen = "";
-        FigmaNodeMapper figmaNodeMapper =
-            new FigmaNodeMapper(figmaNode.getChild().get(i).getType(), null);
-        Optional<FlutterCGI> flutterCGIOptional =
-            flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
-        if (i == (figmaNode.getChild().size() - 1)) {
-          int finalI = i;
-          genChild +=
-              flutterCGIOptional
-                  .map(flutterCGI -> flutterCGI.generate(figmaNode.getChild().get(finalI), null))
-                  .orElse("");
-          genCode += genChild;
-        } else {
-          int finalI = i;
-          genChild +=
-              flutterCGIOptional
-                  .map(flutterCGI -> flutterCGI.generate(figmaNode.getChild().get(finalI), null))
-                  .orElse("");
-          gen += spacingUtil.getSpacing(figmaNode);
-          genCode += genChild;
-          genCode += gen;
+      case "HORIZONTAL" -> {
+        final String upperRow = "Row(\n";
+        final String lowerRow = "),\n";
+        genCode.append(
+            mainCrossAlignUtil.getMainAxisAlignment(figmaNode.getPrimaryAxisAlignItems()));
+        genCode.append(
+            mainCrossAlignUtil.getCrossAxisAlignment(figmaNode.getCounterAxisAlignItems()));
+        genCode.append("children:[\n");
+        for (int i = 0; i < figmaNode.getChild().size(); i++) {
+          String genChild = "";
+          String gen = "";
+          FigmaNodeMapper figmaNodeMapper =
+              new FigmaNodeMapper(figmaNode.getChild().get(i).getType(), null);
+          Optional<FlutterCGI> flutterCGIOptional =
+              flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
+          if (i == (figmaNode.getChild().size() - 1)) {
+            necleoDataNodeTemp.fNode = necleoDataNode.fNode.getChild().get(i);
+            necleoDataNodeTemp.tagData = necleoDataNode.tagData;
+            necleoDataNodeTemp.imports = necleoDataNode.imports;
+            genChild +=
+                flutterCGIOptional
+                    .map(flutterCGI -> flutterCGI.generate(necleoDataNodeTemp))
+                    .orElse("");
+            genCode.append(genChild);
+          } else {
+            necleoDataNodeTemp.fNode = necleoDataNode.fNode.getChild().get(i);
+            necleoDataNodeTemp.tagData = necleoDataNode.tagData;
+            necleoDataNodeTemp.imports = necleoDataNode.imports;
+            genChild +=
+                flutterCGIOptional
+                    .map(flutterCGI -> flutterCGI.generate(necleoDataNodeTemp))
+                    .orElse("");
+            gen += spacingUtil.getSpacing(figmaNode);
+            genCode.append(genChild);
+            genCode.append(gen);
+          }
         }
+        genCode.append("],\n");
+        return upperRow + genCode + lowerRow;
       }
-      genCode += "],\n";
-      return upperRow + genCode + lowerRow;
-    } else if (figmaNode.getLayoutMode().name().equals("VERTICAL")) {
-      final String upperColumn = "Column(\n";
-      final String lowerColumn = "),\n";
-      genCode += mainCrossAlignUtil.getMainAxisAlignment(figmaNode.getPrimaryAxisAlignItems());
-      genCode += mainCrossAlignUtil.getCrossAxisAlignment(figmaNode.getCounterAxisAlignItems());
-
-      genCode += "children:[\n";
-
-      for (int i = 0; i < figmaNode.getChild().size(); i++) {
-        String genChild = "";
-        String gen = "";
-        FigmaNodeMapper figmaNodeMapper =
-            new FigmaNodeMapper(figmaNode.getChild().get(i).getType(), null);
-        Optional<FlutterCGI> flutterCGIOptional =
-            flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
-        if (i == (figmaNode.getChild().size() - 1)) {
-          int finalI = i;
-          genChild +=
-              flutterCGIOptional
-                  .map(flutterCGI -> flutterCGI.generate(figmaNode.getChild().get(finalI), null))
-                  .orElse("");
-          genCode += genChild;
-        } else {
-          int finalI = i;
-          genChild +=
-              flutterCGIOptional
-                  .map(flutterCGI -> flutterCGI.generate(figmaNode.getChild().get(finalI), null))
-                  .orElse("");
-          gen += spacingUtil.getSpacing(figmaNode);
-          genCode += genChild;
-          genCode += gen;
+      case "VERTICAL" -> {
+        final String upperColumn = "Column(\n";
+        final String lowerColumn = "),\n";
+        genCode.append(
+            mainCrossAlignUtil.getMainAxisAlignment(figmaNode.getPrimaryAxisAlignItems()));
+        genCode.append(
+            mainCrossAlignUtil.getCrossAxisAlignment(figmaNode.getCounterAxisAlignItems()));
+        genCode.append("children:[\n");
+        for (int i = 0; i < figmaNode.getChild().size(); i++) {
+          String genChild = "";
+          String gen = "";
+          FigmaNodeMapper figmaNodeMapper =
+              new FigmaNodeMapper(figmaNode.getChild().get(i).getType(), null);
+          Optional<FlutterCGI> flutterCGIOptional =
+              flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
+          if (i == (figmaNode.getChild().size() - 1)) {
+            necleoDataNodeTemp.fNode = necleoDataNode.fNode.getChild().get(i);
+            necleoDataNodeTemp.tagData = necleoDataNode.tagData;
+            necleoDataNodeTemp.imports = necleoDataNode.imports;
+            genChild +=
+                flutterCGIOptional
+                    .map(flutterCGI -> flutterCGI.generate(necleoDataNodeTemp))
+                    .orElse("");
+            genCode.append(genChild);
+          } else {
+            necleoDataNodeTemp.fNode = necleoDataNode.fNode.getChild().get(i);
+            necleoDataNodeTemp.tagData = necleoDataNode.tagData;
+            necleoDataNodeTemp.imports = necleoDataNode.imports;
+            genChild +=
+                flutterCGIOptional
+                    .map(flutterCGI -> flutterCGI.generate(necleoDataNodeTemp))
+                    .orElse("");
+            gen += spacingUtil.getSpacing(figmaNode);
+            genCode.append(genChild);
+            genCode.append(gen);
+          }
         }
+        genCode.append("],\n");
+        return upperColumn + genCode + lowerColumn;
       }
-      genCode += "],\n";
-      return upperColumn + genCode + lowerColumn;
     }
 
     return "";

@@ -6,7 +6,9 @@ import com.necleo.codemonkey.lib.types.ASTNode;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
+import com.necleo.codemonkey.model.factory.NecleoDataNode;
 import com.necleo.codemonkey.service.flutter.FlutterCGI;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import lombok.AccessLevel;
@@ -30,17 +32,17 @@ public class FlutterCodeGenImpl implements CodeGen {
 
   @Override
   public ASTNode generate(FigmaNode fNode, Map<String, TagData> tagDataMap) {
-
+    NecleoDataNode necleoDataNode = new NecleoDataNode();
+    necleoDataNode.fNode = fNode;
+    necleoDataNode.tagData = tagDataMap.get(fNode.getId());
+    necleoDataNode.imports = new HashSet<String>();
     String genCode = "";
 
     String tagName =
         Optional.ofNullable(tagDataMap.get(fNode.getId())).map(TagData::getTagName).orElse(null);
     FigmaNodeMapper figmaNodeMapper = new FigmaNodeMapper(fNode.getType(), null);
     Optional<FlutterCGI> flutterCGIOptional = flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
-    genCode +=
-        flutterCGIOptional
-            .map(flutterCGI -> flutterCGI.generate(fNode, tagDataMap.get(fNode.getId())))
-            .orElse("");
+    genCode += flutterCGIOptional.map(flutterCGI -> flutterCGI.generate(necleoDataNode)).orElse("");
     return ASTNode.builder().value(genCode).build();
   }
 }

@@ -1,12 +1,11 @@
 package com.necleo.codemonkey.service.flutter;
 
 import com.necleo.codemonkey.factory.FlutterFigmaNodeAbstractFactory;
-import com.necleo.codemonkey.lib.types.FigmaNode;
-import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.TagDataType;
 import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
+import com.necleo.codemonkey.model.factory.NecleoDataNode;
 import java.util.Optional;
 import java.util.Set;
 import lombok.AccessLevel;
@@ -35,15 +34,15 @@ public class FileTagFlutterCGI implements FlutterCGI {
   }
 
   @Override
-  public String generate(FigmaNode figmaNode, TagData tagData) {
-    if (!(figmaNode instanceof FigmaRectangleNode fNode)) {
+  public String generate(NecleoDataNode necleoDataNode) {
+    if (!(necleoDataNode.fNode instanceof FigmaRectangleNode fNode)) {
       throw new IllegalArgumentException();
     }
-    return generat(fNode);
+    return generat(fNode, necleoDataNode);
   }
 
-  private String generat(FigmaRectangleNode fNode) {
-    String widget = getWidget(fNode);
+  private String generat(FigmaRectangleNode fNode, NecleoDataNode necleoDataNode) {
+    String widget = getWidget(fNode, necleoDataNode);
     String function = getFunction();
 
     return widget + function;
@@ -69,22 +68,23 @@ public class FileTagFlutterCGI implements FlutterCGI {
     return fileNameAndPath;
   }
 
-  private String getWidget(FigmaRectangleNode fNode) {
+  private String getWidget(FigmaRectangleNode fNode, NecleoDataNode necleoDataNode) {
     final String upperButton = "GestureDetector(\n";
 
     final String lowerButton = "),\n\n";
     String genCode = "";
     genCode += getOnclick();
-    genCode += getChild(fNode);
+    genCode += getChild(fNode, necleoDataNode);
 
     return upperButton + genCode + lowerButton;
   }
 
-  private String getChild(FigmaRectangleNode fNode) {
+  private String getChild(FigmaRectangleNode fNode, NecleoDataNode necleoDataNode) {
     String genChild = "";
     FigmaNodeMapper figmaNodeMapper = new FigmaNodeMapper(fNode.getType(), null);
     Optional<FlutterCGI> flutterCGIOptional = flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
-    genChild += flutterCGIOptional.map(flutterCGI -> flutterCGI.generate(fNode, null)).orElse("");
+    genChild +=
+        flutterCGIOptional.map(flutterCGI -> flutterCGI.generate(necleoDataNode)).orElse("");
     return "child:" + genChild + ",\n";
   }
 

@@ -1,12 +1,11 @@
 package com.necleo.codemonkey.service.flutter;
 
-import com.necleo.codemonkey.lib.types.FigmaNode;
-import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.TagDataType;
 import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
 import com.necleo.codemonkey.lib.types.figma.properties.strokes.Strokes;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
+import com.necleo.codemonkey.model.factory.NecleoDataNode;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,9 +21,9 @@ public class InputTagFlutterCGI implements FlutterCGI {
   }
 
   @Override
-  public String generate(FigmaNode figmaNode, TagData tagData) {
+  public String generate(NecleoDataNode necleoDataNode) {
 
-    if (!(figmaNode instanceof FigmaRectangleNode fNode)) {
+    if (!(necleoDataNode.fNode instanceof FigmaRectangleNode fNode)) {
       throw new IllegalArgumentException();
     }
     return generat(fNode);

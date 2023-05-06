@@ -8,7 +8,6 @@ import com.necleo.codemonkey.lib.types.figma.properties.fills.FillGeometry;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.Fills;
 import com.necleo.codemonkey.lib.types.figma.properties.strokes.StrokeGeometry;
 import com.necleo.codemonkey.lib.types.figma.properties.strokes.Strokes;
-import com.necleo.codemonkey.lib.types.figma.properties.vector.VectorNetwork;
 import com.necleo.codemonkey.lib.types.figma.properties.vector.VectorPaths;
 import java.util.List;
 import lombok.*;
@@ -45,7 +44,7 @@ public class FigmaVectorNode extends FigmaNode {
   StrokeJoin strokeJoin;
   StrokeAlign strokeAlign;
   // vector
-//  VectorNetwork vectorNetwork;
+  //  VectorNetwork vectorNetwork;
   List<VectorPaths> vectorPaths;
   List<String> dashPattern;
   List<StrokeGeometry> strokeGeometry;
