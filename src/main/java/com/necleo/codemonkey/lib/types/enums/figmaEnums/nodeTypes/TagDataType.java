@@ -1,6 +1,7 @@
 package com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes;
 
 public enum TagDataType {
+  TEXT,
   BUTTON,
   CONTAINER,
   INPUT,

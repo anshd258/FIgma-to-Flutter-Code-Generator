@@ -158,7 +158,8 @@ public class FrameReactCGI implements ReactCGI {
     genChild +=
             reactCGIOptional
                     .map(reactCGI -> reactCGI.generate(fNode, null, tagDataMap, importFunctions))
-                    .orElseThrow();
+                    .orElseThrow()
+    ;
     return genChild;
   }
 

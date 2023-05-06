@@ -3,6 +3,7 @@ package com.necleo.codemonkey.service.react;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
+import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.TagDataType;
 import com.necleo.codemonkey.lib.types.figma.FigmaTextNode;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSolid;
 import com.necleo.codemonkey.lib.utils.ReduceNumbersAfterDecimal;
@@ -20,7 +21,7 @@ public class TextReactCGI implements ReactCGI {
   @Override
   public Set<FigmaNodeMapper> getStrategy() {
 
-    return Set.of(new FigmaNodeMapper(FigmaNodeTypes.TEXT, null));
+    return Set.of(new FigmaNodeMapper(FigmaNodeTypes.TEXT, null), new FigmaNodeMapper(FigmaNodeTypes.TEXT, TagDataType.TEXT));
   }
 
   @Override
