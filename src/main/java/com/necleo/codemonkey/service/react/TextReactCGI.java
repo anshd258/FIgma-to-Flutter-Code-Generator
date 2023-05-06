@@ -105,7 +105,10 @@ public class TextReactCGI implements ReactCGI {
   public String getFont(FigmaTextNode fNode) {
     String font = "";
     font += "fontWeight: '" + fNode.getFontWeight() + "',\n ";
-    font += "fontFace: '" + fNode.getFontName().getFamily() + "',\n";
+    if (!(fNode.getFontName() instanceof Object))
+      font += "fontFace: 'Sans-Serif',\n";
+    else
+      font += "fontFace: '" + fNode.getFontName().getFamily() + "',\n";
     font += "fontSize: '" + fNode.getFontSize() + "',\n";
 
     return font;
