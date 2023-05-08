@@ -18,7 +18,7 @@ public class StateLessBoilerCGI implements BoilerCGI {
   public String generate(String genCode) {
     String genWidget = "";
     genWidget += getUpperStateLessWidget();
-    genWidget += genCode.substring(0,genCode.length()-2) + "\n";
+    genWidget += genCode.substring(0,genCode.length()-2) + ";\n";
     genWidget += getLowerStateLessWidget();
     return genWidget;
     

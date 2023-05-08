@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 public class FrameFlutterCGI implements FlutterCGI {
   SizeUtil sizeUtil = new SizeUtil();
   PositionUtil positionUtil = new PositionUtil();
+  FlexibleUtil flexibleUtil = new FlexibleUtil();
   SpacingUtil spacingUtil = new SpacingUtil();
   MainCrossAlignUtil mainCrossAlignUtil = new MainCrossAlignUtil();
   @Lazy FlutterFigmaNodeAbstractFactory flutterFigmaNodeFactory;
@@ -140,7 +141,7 @@ public class FrameFlutterCGI implements FlutterCGI {
                 flutterCGIOptional
                     .map(flutterCGI -> flutterCGI.generate(necleoDataNodeTemp))
                     .orElse("");
-            genCode.append(genChild);
+            genCode.append(flexibleUtil.getFlexible(genChild) );
           } else {
             necleoDataNodeTemp.fNode = necleoDataNode.fNode.getChild().get(i);
             necleoDataNodeTemp.tagData = necleoDataNode.tagData;
@@ -150,7 +151,7 @@ public class FrameFlutterCGI implements FlutterCGI {
                     .map(flutterCGI -> flutterCGI.generate(necleoDataNodeTemp))
                     .orElse("");
             gen += spacingUtil.getSpacing(figmaNode);
-            genCode.append(genChild);
+            genCode.append(flexibleUtil.getFlexible(genChild));
             genCode.append(gen);
           }
         }
@@ -180,7 +181,7 @@ public class FrameFlutterCGI implements FlutterCGI {
                 flutterCGIOptional
                     .map(flutterCGI -> flutterCGI.generate(necleoDataNodeTemp))
                     .orElse("");
-            genCode.append(genChild);
+            genCode.append(flexibleUtil.getFlexible(genChild));
           } else {
             necleoDataNodeTemp.fNode = necleoDataNode.fNode.getChild().get(i);
             necleoDataNodeTemp.tagData = necleoDataNode.tagData;
@@ -190,7 +191,7 @@ public class FrameFlutterCGI implements FlutterCGI {
                     .map(flutterCGI -> flutterCGI.generate(necleoDataNodeTemp))
                     .orElse("");
             gen += spacingUtil.getSpacing(figmaNode);
-            genCode.append(genChild);
+            genCode.append(flexibleUtil.getFlexible(genChild));
             genCode.append(gen);
           }
         }
