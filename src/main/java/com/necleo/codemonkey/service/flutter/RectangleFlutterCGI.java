@@ -61,10 +61,7 @@ public class RectangleFlutterCGI implements FlutterCGI {
 
     genCode += "),\n";
     // end indent
-    BoilerNodeMapper boilerNodeMapper = new BoilerNodeMapper(BoilerType.STATELESS, null);
-    Optional<BoilerCGI> flutterBoilerCGIOptional =
-        flutterBoilerTypeAbstractFactory.getProcessor(boilerNodeMapper);
-    flutterBoilerCGIOptional.map(BoilerCGI::generate);
+
     return genCode;
   }
 

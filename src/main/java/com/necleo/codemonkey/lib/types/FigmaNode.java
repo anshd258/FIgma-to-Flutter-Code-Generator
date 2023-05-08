@@ -31,6 +31,7 @@ import lombok.extern.jackson.Jacksonized;
   @JsonSubTypes.Type(value = FigmaStarNode.class, name = "STAR"),
   @JsonSubTypes.Type(value = FigmaVectorNode.class, name = "VECTOR"),
   @JsonSubTypes.Type(value = FigmaFrameNode.class, name = "FRAME"),
+        @JsonSubTypes.Type(value = FigmaFrameNode.class, name = "GROUP"),
   @JsonSubTypes.Type(value = FigmaComponentNode.class, name = "COMPONENT"),
   @JsonSubTypes.Type(value = FigmaTextNode.class, name = "TEXT")
 })

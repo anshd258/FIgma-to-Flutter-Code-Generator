@@ -24,6 +24,6 @@ public class CodegenController {
     Map<String, TagData> tagDataMap =
         entity.getTagData().stream()
             .collect(Collectors.toMap(TagData::getFigmaNodeId, tagData -> tagData));
-    return codeGenService.gen(entity.getScreen().get(0), tagDataMap);
+    return codeGenService.gen(entity.getScreen(), tagDataMap);
   }
 }

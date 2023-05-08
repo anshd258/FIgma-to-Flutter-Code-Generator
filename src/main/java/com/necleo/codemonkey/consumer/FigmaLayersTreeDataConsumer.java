@@ -3,7 +3,6 @@ package com.necleo.codemonkey.consumer;
 import static com.necleo.codemonkey.constant.MDCKey.X_PROJECT_ID;
 
 import com.amazonaws.services.s3.event.S3EventNotification;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.necleo.codemonkey.configuration.S3FileLoader;
 import com.necleo.codemonkey.consumer.request.FigmaNodeConsumerRequest;
@@ -66,20 +65,20 @@ public class FigmaLayersTreeDataConsumer {
 
   private void loadS3AndConsume(String bucketName, String key) throws IOException {
     String jsonData = s3FileLoader.getJsonData(bucketName, key);
-    log.info(jsonData);
+//    log.info(jsonData);
 
-    Map<String, Object> o = objectMapper.readValue(jsonData, new TypeReference<>() {});
-
-    Map<String, Object> screen =
-        new HashMap<>(
-            Map.of(
-                "screen",
-                ((Map<String, Object>) ((List<Object>) o.get("screen")).get(0)).get("selection")));
-
-    screen.put("tag_data", o.get("tag_data"));
+//    Map<String, Object> o = objectMapper.readValue(jsonData, new TypeReference<>() {});
+//
+//    Map<String, Object> screen =
+//        new HashMap<>(
+//            Map.of(
+//                "screen",
+//                ((List<Object>) o.get("screen"))));
+//
+//    screen.put("tag_data", o.get("tag_data"));
 
     FigmaNodeConsumerRequest figmaNodes =
-        objectMapper.convertValue(screen, new TypeReference<>() {});
+        objectMapper.readValue(jsonData, FigmaNodeConsumerRequest.class);
 
     Map<String, TagData> tagDataMap = new HashMap<>();
     if (!ObjectUtils.isEmpty(figmaNodes.getTagData())) {
@@ -88,6 +87,6 @@ public class FigmaLayersTreeDataConsumer {
               .collect(Collectors.toMap(TagData::getFigmaNodeId, tagData -> tagData));
     }
 
-    codeGenService.gen(figmaNodes.getScreen().get(0), tagDataMap);
+    codeGenService.gen(figmaNodes.getScreen(), tagDataMap);
   }
 }

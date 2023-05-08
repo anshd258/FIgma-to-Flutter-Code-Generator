@@ -2,6 +2,8 @@ package com.necleo.codemonkey.model.factory;
 
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.TagData;
+
+import java.util.Map;
 import java.util.Set;
 
 // @Builder
@@ -12,8 +14,10 @@ public class NecleoDataNode {
 
   public TagData tagData;
   public Set<String> imports;
+  public Map<String,String> functionData;
 
-  public Set<String> utilClasses;
+  public Map<String,String> utilClass;
 
-  public Set<String> utilFunctions;
+  public Map<String,String> screenData;
+
 }

@@ -8,10 +8,9 @@ import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import com.necleo.codemonkey.service.react.ReactCGI;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+
+import java.util.*;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -34,15 +33,15 @@ public class ReactCodeGenImpl implements CodeGen {
   }
 
   @Override
-  public ASTNode generate(FigmaNode fNode, Map<String, TagData> tagDataMap) {
+  public ASTNode generate(List<FigmaNode> fNode, Map<String, TagData> tagDataMap) {
     String genCode = "";
     Set<String> importFunctions = new HashSet<>();
 
     Optional<ReactCGI> reactCGIOptional =
-        figmaNodeFactory.getProcessor(FigmaNodeMapper.of(fNode, tagDataMap));
+        figmaNodeFactory.getProcessor(FigmaNodeMapper.of(fNode.get(0), tagDataMap));
     genCode +=
         reactCGIOptional
-            .map(reactCGI -> reactCGI.generate(fNode, null, tagDataMap, importFunctions))
+            .map(reactCGI -> reactCGI.generate(fNode.get(0), null, tagDataMap, importFunctions))
             .orElseThrow();
     String finalFile = genFileFunctions.genFile(importFunctions, genCode);
     log.info(finalFile);

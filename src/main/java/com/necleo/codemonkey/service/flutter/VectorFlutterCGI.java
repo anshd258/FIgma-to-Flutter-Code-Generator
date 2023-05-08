@@ -29,19 +29,18 @@ public class VectorFlutterCGI implements FlutterCGI {
   @Override
   public String generate(NecleoDataNode necleoDataNode) {
 
-    return generat(necleoDataNode.fNode, necleoDataNode.tagData);
+    return generat(necleoDataNode.fNode, necleoDataNode);
   }
 
-  private String generat(FigmaNode figmaNode, TagData tagData) {
+  private String generat(FigmaNode figmaNode, NecleoDataNode necleoDataNode) {
     final String upperVector = "ClipPath(\n";
     final String bottomVector = ")\n";
     String genCode = "";
-    genCode += "clipper: MyClipper(),\n";
+    necleoDataNode.imports.add("MYCLIPPER");
+    genCode += "clipper: MyClipper(" + ((FigmaVectorNode) figmaNode).getFillGeometry().get(0).data + " \"),\n";
     genCode += getChild((FigmaVectorNode) figmaNode, null);
-    if (!(figmaNode instanceof FigmaVectorNode fNode)) {
-      throw new IllegalArgumentException();
-    }
-    return genCode + "\n" + getClipperPath(fNode);
+    FigmaVectorNode fNode = (FigmaVectorNode) figmaNode;
+    return genCode + "\n" ;
   }
 
   private String getChild(FigmaVectorNode fNode, TagData tagData) {
@@ -49,11 +48,14 @@ public class VectorFlutterCGI implements FlutterCGI {
     genChild += "\nContainer( \n";
     genChild += sizeUtil.getHeight(fNode);
     genChild += sizeUtil.getWidth(fNode);
-    if (fNode.getFills().get(0).getType().equals("SOLID")) {
-      final FillsSolid fills = (FillsSolid) fNode.getFills().get(0);
-      if (fills.getColor() != null && fNode.getFills().get(0).getOpacity() != 0) {
-        genChild += "color:" + color(fills) + ",\n";
-      }
+    if(fNode.getFills() != null){
+      if (fNode.getFills().get(0).getType().equals("SOLID")) {
+        final FillsSolid fills = (FillsSolid) fNode.getFills().get(0);
+        if (fills.getColor() != null && fNode.getFills().get(0).getOpacity() != 0) {
+          genChild += "color:" + color(fills) + ",\n";
+        }
+    }
+
     }
 
     return "child:" + genChild + ",\n";
@@ -76,9 +78,7 @@ public class VectorFlutterCGI implements FlutterCGI {
             + "  final String pathData;\n"
             + "\n"
             + "  MyClipper(\n"
-            + "      {this.pathData ='"
-            + figmaNode.getFillGeometry().get(0).getData()
-            + "'});\n";
+            + "      {required this.pathData});\n";
     final String lowerClipper =
         "  @override\n"
             + "  Path getClip(Size size) {\n"

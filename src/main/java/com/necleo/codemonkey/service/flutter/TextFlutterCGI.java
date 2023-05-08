@@ -24,21 +24,22 @@ public class TextFlutterCGI implements FlutterCGI {
     if (!(necleoDataNode.fNode instanceof FigmaTextNode fNode)) {
       throw new IllegalArgumentException();
     }
-    return generat(fNode);
+    return generat(fNode, necleoDataNode);
   }
 
-  public String generat(FigmaTextNode fNode) {
+  public String generat(FigmaTextNode fNode, NecleoDataNode necleoDataNode) {
     String genCode = "";
     final String upperText = "Text(\n";
     final String lowerText = "),\n";
 
     genCode += getText(fNode);
-    genCode += getTextStyle(fNode);
+    genCode += getTextStyle(fNode,necleoDataNode );
 
     return upperText + genCode + lowerText;
   }
 
-  private String getTextStyle(FigmaTextNode fNode) {
+  private String getTextStyle(FigmaTextNode fNode, NecleoDataNode necleoDataNode) {
+    necleoDataNode.imports.add("GOOGLE_FONTS");
     final String upperTextStyle = "style: GoogleFonts." + "inter" + "(\n";
     final String lowerTextStyle = "),\n";
     String genTextStyle = "";

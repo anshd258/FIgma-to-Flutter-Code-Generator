@@ -6,6 +6,8 @@ import com.necleo.codemonkey.lib.engine.ast.AstMaker;
 import com.necleo.codemonkey.lib.types.ASTNode;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.TagData;
+
+import java.util.List;
 import java.util.Map;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -32,11 +34,17 @@ public class CodeGenService {
     return null;
   }
 
-  public String gen(FigmaNode screen, Map<String, TagData> tagDataMap) {
+//  static{
+//    log.info("adad");
+//  }
+
+  public String gen(List<FigmaNode> screen, Map<String, TagData> tagDataMap) {
 
     CodeGen processor = languageFactory.getCodeGenProcessor(Language.FLUTTER);
 
     ASTNode astNode = processor.generate(screen, tagDataMap);
+
+
     //    ASTNode astNode = astMaker().ast(screen);
     StringBuffer text = aST2Text().toText(astNode);
     log.info("Code gen : \n{}", text.toString());
