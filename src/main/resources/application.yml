@@ -1,3 +1,6 @@
+
+#    base:
+#      folder: ${AWS_S3_BUCKET_FOLDER:}
 aws:
   access:
     key: ${AWS_ACCESS_KEY:AKIA3TU5OEBRIGR2HNLN}
@@ -6,9 +9,7 @@ aws:
   s3:
     bucket:
       name: ${AWS_S3_BUCKET_NAME:timon-assets-dev}
-#    base:
-#      folder: ${AWS_S3_BUCKET_FOLDER:}
-
+      file: ${AWS_S3_BUCKET_NAME:necleo-code-gen}
 
 server:
   port: 8080

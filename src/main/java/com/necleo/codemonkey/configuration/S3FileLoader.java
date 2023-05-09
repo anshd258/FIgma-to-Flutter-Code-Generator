@@ -1,8 +1,12 @@
 package com.necleo.codemonkey.configuration;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectResult;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.util.IOUtils;
+
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.time.Instant;
@@ -22,6 +26,8 @@ public class S3FileLoader {
 
   @Value("${aws.s3.bucket.name}")
   String bucketName;
+  @Value("${aws.s3.bucket.file}")
+  String fileBucketName;
 
   AmazonS3 s3Client;
 
@@ -41,5 +47,22 @@ public class S3FileLoader {
     String bucketUrl = "project/" + projectId + "/asset/" + imgHash;
     return s3Client.generatePresignedUrl(
         bucketName, bucketUrl, Date.from(Instant.now().plusSeconds(3000)));
+  }
+
+  public PutObjectResult uploadFile(String content, String extension, String  fileName  ){
+    String fileKey = fileName + "." ;
+
+// Define the file content and extension
+
+// Create the file object with the specified extension
+    ObjectMetadata metadata = new ObjectMetadata();
+    metadata.setContentType("text/plain");
+    metadata.setContentLength(content.getBytes().length);
+    metadata.setContentDisposition("attachment; filename=\"" + fileKey + extension + "\"");
+
+    ByteArrayInputStream input = new ByteArrayInputStream(content.getBytes());
+
+// Upload the file to S3
+    return s3Client.putObject(fileBucketName, fileKey + extension, input, metadata);
   }
 }

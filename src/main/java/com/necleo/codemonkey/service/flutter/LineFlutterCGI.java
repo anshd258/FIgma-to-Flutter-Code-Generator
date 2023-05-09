@@ -5,8 +5,12 @@ import com.necleo.codemonkey.lib.types.figma.FigmaLineNode;
 import com.necleo.codemonkey.lib.types.figma.properties.strokes.Color;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import com.necleo.codemonkey.model.factory.NecleoDataNode;
-import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
+import java.util.Set;
+@Service
+@Slf4j
 public class LineFlutterCGI implements FlutterCGI {
   SizeUtil sizeUtil = new SizeUtil();
 

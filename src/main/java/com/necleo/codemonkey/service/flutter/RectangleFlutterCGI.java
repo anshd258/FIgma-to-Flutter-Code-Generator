@@ -110,6 +110,11 @@ public class RectangleFlutterCGI implements FlutterCGI {
     if (fNode.getStrokeWeight() != 0) {
       genBoxDecoration += border(fNode);
     }
+
+    if (!(fNode.getEffects().isEmpty())){
+      if(fNode.getEffects().get(0).)
+      genBoxDecoration +=
+    }
     return upperBoxDecoration + genBoxDecoration + bottomBoxDecoration;
   }
 

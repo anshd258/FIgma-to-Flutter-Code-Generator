@@ -54,11 +54,15 @@ public class FlutterCodeGenImpl implements CodeGen {
     FigmaNodeMapper figmaNodeMapper = new FigmaNodeMapper(fNode.get(0).getType(), null);
     Optional<FlutterCGI> flutterCGIOptional = flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
     genCode += flutterCGIOptional.map(flutterCGI -> flutterCGI.generate(necleoDataNode)).orElse("");
+
     BoilerNodeMapper boilerNodeMapper = new BoilerNodeMapper(BoilerType.STATELESS, null);
     Optional<BoilerCGI> boilerCGIOptional = flutterBoilerTypeAbstractFactory.getProcessor(boilerNodeMapper);
+
     String finalGenCode = genCode;
      String widget = boilerCGIOptional.map(boilerCGI -> boilerCGI.generate(finalGenCode)).orElse("");
+
     necleoDataNode.imports.forEach(log::info);
+
    String imports = importHandler.getImports(necleoDataNode.imports);
     return ASTNode.builder().value(imports + widget).build();
   }

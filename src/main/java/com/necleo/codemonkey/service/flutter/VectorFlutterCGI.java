@@ -1,5 +1,6 @@
 package com.necleo.codemonkey.service.flutter;
 
+import com.necleo.codemonkey.configuration.S3FileLoader;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
@@ -20,7 +21,7 @@ import org.springframework.stereotype.Service;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class VectorFlutterCGI implements FlutterCGI {
   SizeUtil sizeUtil = new SizeUtil();
-
+  S3FileLoader s3FileLoader;
   @Override
   public Set<FigmaNodeMapper> getStrategy() {
     return Set.of(new FigmaNodeMapper(FigmaNodeTypes.VECTOR, null));
@@ -36,11 +37,15 @@ public class VectorFlutterCGI implements FlutterCGI {
     final String upperVector = "ClipPath(\n";
     final String bottomVector = ")\n";
     String genCode = "";
-    necleoDataNode.imports.add("MYCLIPPER");
-    genCode += "clipper: MyClipper(" + ((FigmaVectorNode) figmaNode).getFillGeometry().get(0).data + " \"),\n";
+    if(!necleoDataNode.imports.contains("MYCLIPPER")){
+      necleoDataNode.imports.add("MYCLIPPER");
+      getClipperPath();
+    }
+
+    genCode += "clipper: MyClipper(\"" + ((FigmaVectorNode) figmaNode).getFillGeometry().get(0).data + " \"),\n";
     genCode += getChild((FigmaVectorNode) figmaNode, null);
-    FigmaVectorNode fNode = (FigmaVectorNode) figmaNode;
-    return genCode + "\n" ;
+
+    return upperVector + genCode + bottomVector + "\n" ;
   }
 
   private String getChild(FigmaVectorNode fNode, TagData tagData) {
@@ -48,7 +53,7 @@ public class VectorFlutterCGI implements FlutterCGI {
     genChild += "\nContainer( \n";
     genChild += sizeUtil.getHeight(fNode);
     genChild += sizeUtil.getWidth(fNode);
-    if(fNode.getFills() != null){
+    if(!(fNode.getFills().isEmpty())){
       if (fNode.getFills().get(0).getType().equals("SOLID")) {
         final FillsSolid fills = (FillsSolid) fNode.getFills().get(0);
         if (fills.getColor() != null && fNode.getFills().get(0).getOpacity() != 0) {
@@ -72,7 +77,7 @@ public class VectorFlutterCGI implements FlutterCGI {
     return upperColor + red + green + blue + opacity + lowerColor;
   }
 
-  private String getClipperPath(FigmaVectorNode figmaNode) {
+  private void getClipperPath() {
     final String upperClipper =
         "class MyClipper extends CustomClipper<Path> {\n"
             + "  final String pathData;\n"
@@ -90,7 +95,7 @@ public class VectorFlutterCGI implements FlutterCGI {
             + "  @override\n"
             + "  bool shouldReclip(CustomClipper<Path> oldClipper) => false;\n"
             + "}";
+    s3FileLoader.uploadFile(upperClipper + lowerClipper,"dart", "myclipper");
 
-    return upperClipper + lowerClipper;
   }
 }
