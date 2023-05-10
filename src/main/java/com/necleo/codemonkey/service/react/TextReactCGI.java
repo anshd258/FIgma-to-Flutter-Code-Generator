@@ -8,6 +8,8 @@ import com.necleo.codemonkey.lib.types.figma.FigmaTextNode;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSolid;
 import com.necleo.codemonkey.lib.utils.ReduceNumbersAfterDecimal;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
+
+import java.text.DecimalFormat;
 import java.util.Map;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
@@ -88,6 +90,7 @@ public class TextReactCGI implements ReactCGI {
     style += getFont(fNode);
     style += getWidthHeight(fNode);
 //    style += "position: 'absolute',\n";
+    style += "letterSpacing: '" + (new DecimalFormat("#.#")).format(fNode.getLetterSpacing().getValue()) + "px',\n";
 
     return style;
   }
@@ -100,17 +103,17 @@ public class TextReactCGI implements ReactCGI {
     //        if (!Objects.equals(fNode.getName(), ""))
     //            return " ";
     //        else
-    return fNode.getName();
+    return fNode.getCharacters();
   }
 
   public String getFont(FigmaTextNode fNode) {
     String font = "";
     font += "fontWeight: '" + fNode.getFontWeight() + "',\n ";
-    if (!(fNode.getFontName() instanceof Object))
-      font += "fontFace: 'Sans-Serif',\n";
-    else
+//    if (!(fNode.getFontName() instanceof Object))
+//      font += "fontFace: 'Sans-Serif',\n";
+//    else
       font += "fontFace: '" + fNode.getFontName().getFamily() + "',\n";
-    font += "fontSize: '" + fNode.getFontSize() + "',\n";
+    font += "fontSize: '" + fNode.getFontSize() + "px',\n";
 
     return font;
   }
@@ -120,7 +123,8 @@ public class TextReactCGI implements ReactCGI {
 
     //       alignment += "justifyContent: '"+ (fNode.getPrimaryAxisAlignitems() ?
     // fNode.getPrimaryAxisAlignitems().toString().toLowerCase()  :'' )  +"',\n";
-    alignment += "lineHeight: '" + "auto" + "',\n";
+    String lineHeightUnit = fNode.getLineHeight().getUnit().equals("PIXELS") ? "px" : "rem";
+    alignment += "lineHeight: '" + fNode.getLineHeight().getValue() + lineHeightUnit + "',\n";
     alignment += "display: 'flex',\n";
     alignment += "justifyContent: 'center',\n";
     return alignment;

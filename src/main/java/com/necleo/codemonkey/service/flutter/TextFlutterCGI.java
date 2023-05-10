@@ -39,19 +39,20 @@ public class TextFlutterCGI implements FlutterCGI {
   }
 
   private String getTextStyle(FigmaTextNode fNode) {
-    final String upperTextStyle = "style: const  GoogleFonts." + fNode.getFontName().getFamily() + "(\n";
+    final String upperTextStyle = "style: const  GoogleFonts." + "" + "(\n";
+//    fNode.getFontName().getFamily()
     final String lowerTextStyle = "),\n";
     String genTextStyle = "";
     if (fNode.getFills() != null) {
       final FillsSolid fills = (FillsSolid) fNode.getFills().get(0);
       genTextStyle += getColor(fills);
     }
-    if (fNode.getFontName().getFamily() != null) {
+//    if (fNode.getFontName().getFamily() != null) {
       genTextStyle += getFontStyle(fNode);
       genTextStyle += getFontWeight(fNode);
       //      genTextStyle += getLetterSpacing(fNode);
       genTextStyle += getLineHeight(fNode);
-    }
+//    }
     return upperTextStyle + genTextStyle + lowerTextStyle;
   }
 

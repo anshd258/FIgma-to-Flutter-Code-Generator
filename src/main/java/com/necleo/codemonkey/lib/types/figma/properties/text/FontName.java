@@ -1,4 +1,4 @@
-package com.necleo.codemonkey.lib.types.figma;
+package com.necleo.codemonkey.lib.types.figma.properties.text;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -2,9 +2,12 @@ package com.necleo.codemonkey.lib.types.figma;
 
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.*;
+import com.necleo.codemonkey.lib.types.figma.properties.effects.EffectType;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.FillGeometry;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.Fills;
 import com.necleo.codemonkey.lib.types.figma.properties.strokes.Strokes;
+
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -19,7 +22,7 @@ import lombok.extern.jackson.Jacksonized;
 public class FigmaFrameNode extends FigmaNode {
   int opacity;
   boolean isMask;
-  List<Effect> effects;
+  ArrayList<EffectType> effects;
   String effectsStyleId;
 
   // Corner Related Properties
