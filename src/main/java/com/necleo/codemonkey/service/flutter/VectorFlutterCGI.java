@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class VectorFlutterCGI implements FlutterCGI {
   SizeUtil sizeUtil = new SizeUtil();
+  ClipperUtil clipperUtil = new ClipperUtil();
   S3FileLoader s3FileLoader;
   @Override
   public Set<FigmaNodeMapper> getStrategy() {
@@ -39,7 +40,8 @@ public class VectorFlutterCGI implements FlutterCGI {
     String genCode = "";
     if(!necleoDataNode.imports.contains("MYCLIPPER")){
       necleoDataNode.imports.add("MYCLIPPER");
-      getClipperPath();
+      necleoDataNode.packages.add("SVG_PATH_PARSER");
+      clipperUtil.getClipperPath();
     }
 
     genCode += "clipper: MyClipper(\"" + ((FigmaVectorNode) figmaNode).getFillGeometry().get(0).data + " \"),\n";
@@ -77,25 +79,5 @@ public class VectorFlutterCGI implements FlutterCGI {
     return upperColor + red + green + blue + opacity + lowerColor;
   }
 
-  private void getClipperPath() {
-    final String upperClipper =
-        "class MyClipper extends CustomClipper<Path> {\n"
-            + "  final String pathData;\n"
-            + "\n"
-            + "  MyClipper(\n"
-            + "      {required this.pathData});\n";
-    final String lowerClipper =
-        "  @override\n"
-            + "  Path getClip(Size size) {\n"
-            + "    Path path = parseSvgPath(pathData);\n"
-            + "   \n"
-            + "    return path;\n"
-            + "  }\n"
-            + "\n"
-            + "  @override\n"
-            + "  bool shouldReclip(CustomClipper<Path> oldClipper) => false;\n"
-            + "}";
-    s3FileLoader.uploadFile(upperClipper + lowerClipper,"dart", "myclipper");
 
-  }
 }

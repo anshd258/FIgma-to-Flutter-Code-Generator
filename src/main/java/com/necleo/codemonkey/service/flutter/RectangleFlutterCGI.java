@@ -3,6 +3,7 @@ package com.necleo.codemonkey.service.flutter;
 import static com.necleo.codemonkey.constant.MDCKey.X_PROJECT_ID;
 import static com.necleo.codemonkey.lib.types.figma.properties.fills.enums.ScaleMode.FILL;
 
+import com.necleo.codemonkey.configuration.S3FileLoader;
 import com.necleo.codemonkey.factory.FlutterBoilerTypeAbstractFactory;
 import com.necleo.codemonkey.lib.types.enums.boilerplate.BoilerType;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
@@ -16,6 +17,8 @@ import com.necleo.codemonkey.model.factory.BoilerNodeMapper;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import com.necleo.codemonkey.model.factory.NecleoDataNode;
 import com.necleo.codemonkey.service.flutter.boilerplate.BoilerCGI;
+
+import java.net.URL;
 import java.util.Optional;
 import java.util.Set;
 import lombok.AccessLevel;
@@ -33,7 +36,7 @@ import org.springframework.util.CollectionUtils;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class RectangleFlutterCGI implements FlutterCGI {
 
-  //  S3FileLoader s3FileLoader;
+    S3FileLoader s3FileLoader;
   SizeUtil sizeUtil = new SizeUtil();
   @Lazy FlutterBoilerTypeAbstractFactory flutterBoilerTypeAbstractFactory;
 
@@ -111,10 +114,10 @@ public class RectangleFlutterCGI implements FlutterCGI {
       genBoxDecoration += border(fNode);
     }
 
-    if (!(fNode.getEffects().isEmpty())){
-      if(fNode.getEffects().get(0).)
-      genBoxDecoration +=
-    }
+//    if (!(fNode.getEffects().isEmpty())){
+//      if(fNode.getEffects().get(0).)
+//      genBoxDecoration +=
+//    }
     return upperBoxDecoration + genBoxDecoration + bottomBoxDecoration;
   }
 
@@ -189,10 +192,10 @@ public class RectangleFlutterCGI implements FlutterCGI {
     String imageHash = fills.getImageHash();
     String projectId = MDC.get(X_PROJECT_ID);
 
-    //    URL s3ImageUrl = s3FileLoader.getImageUrl(imageHash, projectId);
+        URL s3ImageUrl = s3FileLoader.getImageUrl(imageHash, projectId);
     final String upperImage = " image: NetworkImage(\n";
     final String lowerImage = "),\n";
-    final String imageUrl = "'" + " " + "'";
+    final String imageUrl = "'" + s3ImageUrl.toString() + "'";
     return upperImage + imageUrl + lowerImage;
   }
 

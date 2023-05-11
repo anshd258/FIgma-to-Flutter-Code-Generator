@@ -4,5 +4,7 @@ public enum ScaleMode {
   FILL,
   FIT,
   TILE,
-  STRETCH;
+  STRETCH,
+
+  CROP,
 }

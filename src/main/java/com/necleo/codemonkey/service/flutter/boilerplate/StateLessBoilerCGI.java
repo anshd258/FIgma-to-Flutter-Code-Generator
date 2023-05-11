@@ -18,7 +18,7 @@ public class StateLessBoilerCGI implements BoilerCGI {
   public String generate(String genCode) {
     String genWidget = "";
     genWidget += getUpperStateLessWidget();
-    genWidget += genCode.substring(0,genCode.length()-2) + ";\n";
+    genWidget += genCode.substring(0,genCode.length()-2) + "\n";
     genWidget += getLowerStateLessWidget();
     return genWidget;
     
@@ -26,16 +26,22 @@ public class StateLessBoilerCGI implements BoilerCGI {
 
   private String getLowerStateLessWidget() {
 
-    return "  }\n" +
-            "}";
+    return """
+            ,
+                );
+              }
+            }""";
   }
 
   private String getUpperStateLessWidget() {
-    return "class MainApp extends StatelessWidget {\n" +
-            "  const MainApp({ super.key });\n" +
-            "\n" +
-            "  @override\n" +
-            "  Widget build(BuildContext context) {\n" +
-            "    return ";
+    return """
+
+            class MainApp extends StatelessWidget {
+              const MainApp({super.key});
+
+              @override
+              Widget build(BuildContext context) {
+                return  Scaffold(
+                   body:""";
   }
 }

@@ -15,8 +15,11 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import static com.necleo.codemonkey.constant.MDCKey.X_PROJECT_ID;
 
 @Component
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
@@ -49,8 +52,10 @@ public class S3FileLoader {
         bucketName, bucketUrl, Date.from(Instant.now().plusSeconds(3000)));
   }
 
-  public PutObjectResult uploadFile(String content, String extension, String  fileName  ){
-    String fileKey = fileName + "." ;
+  public PutObjectResult uploadFile(String content, String extension, String  fileName ,String path){
+    String  projectId =   MDC.get(X_PROJECT_ID);
+
+    String fileKey = projectId + path + fileName + "." ;
 
 // Define the file content and extension
 

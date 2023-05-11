@@ -14,7 +14,7 @@ public class ImportHandler {
        genImports += imports.stream().map(s -> switch (s) {
            case "GOOGLE_FONTS" -> "import 'package:google_fonts/google_fonts.dart';\n";
            case "MATERIALAPP" -> "import 'package:flutter/material.dart';\n";
-           case "MYCLIPPER" -> "import './myclipper.dart';\n";
+           case "MYCLIPPER" -> "import './Utils/myclipper.dart';\n";
            default -> "";
        }).collect(Collectors.joining());
    return genImports+ "\n\n\n";

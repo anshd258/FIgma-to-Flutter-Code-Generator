@@ -39,7 +39,11 @@ public class TextFlutterCGI implements FlutterCGI {
   }
 
   private String getTextStyle(FigmaTextNode fNode, NecleoDataNode necleoDataNode) {
-    necleoDataNode.imports.add("GOOGLE_FONTS");
+    if(!necleoDataNode.imports.contains("GOOGLE_FONTS")){
+      necleoDataNode.imports.add("GOOGLE_FONTS");
+      // necleoDataNode.packages.add("GOOGLE_FONTS");
+    }
+
     final String upperTextStyle = "style: GoogleFonts." + "inter" + "(\n";
     final String lowerTextStyle = "),\n";
     String genTextStyle = "";

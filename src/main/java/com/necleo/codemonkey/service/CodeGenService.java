@@ -1,5 +1,6 @@
 package com.necleo.codemonkey.service;
 
+import com.necleo.codemonkey.configuration.S3FileLoader;
 import com.necleo.codemonkey.enums.Language;
 import com.necleo.codemonkey.lib.engine.ast.AST2Text;
 import com.necleo.codemonkey.lib.engine.ast.AstMaker;
@@ -23,6 +24,8 @@ import org.springframework.stereotype.Service;
 public class CodeGenService {
 
   LanguageFactory languageFactory;
+
+  S3FileLoader s3FileLoader;
 
   @Lookup
   public AstMaker astMaker() {
@@ -48,6 +51,7 @@ public class CodeGenService {
     //    ASTNode astNode = astMaker().ast(screen);
     StringBuffer text = aST2Text().toText(astNode);
     log.info("Code gen : \n{}", text.toString());
+    s3FileLoader.uploadFile(text.toString(),"dart","screen1","/project/lib/Screen/");
     return text.toString();
   }
 }
