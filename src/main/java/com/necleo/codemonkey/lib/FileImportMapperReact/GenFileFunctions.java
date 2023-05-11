@@ -32,6 +32,7 @@ public class GenFileFunctions {
     for (String si : handleImportsArr) {
       imports += si;
     }
+
     String structure =
         topline
             + imports

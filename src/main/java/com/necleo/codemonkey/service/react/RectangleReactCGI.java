@@ -1,25 +1,38 @@
 package com.necleo.codemonkey.service.react;
 
 import com.necleo.codemonkey.configuration.S3FileLoader;
+import com.necleo.codemonkey.constant.MDCKey;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsImage;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSolid;
+import com.necleo.codemonkey.lib.utils.ReduceNumbersAfterDecimal;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
+
+import java.text.DecimalFormat;
 import java.util.Map;
 import java.util.Set;
+
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class RectangleReactCGI implements ReactCGI {
+
 
   S3FileLoader s3FileLoader;
 
-  String projectId = "FigmaLayersTreeDataConsumer.FinalProjectId";
+  ReduceNumbersAfterDecimal reduceNumbersAfterDecimal;
 
   @Override
   public Set<FigmaNodeMapper> getStrategy() {
@@ -86,13 +99,41 @@ public class RectangleReactCGI implements ReactCGI {
   }
 
   public String getBackgroundColour(FigmaRectangleNode fNode) {
-    final FillsSolid fills = (FillsSolid) fNode.getFills().get(0);
-    final String begin = "backgroundColor: 'rgb(";
-    final String end = ")',\n";
-    final String fNodeColourR = (255 * fills.getColor().getR()) + ",";
-    final String fNodeColourG = (255 * fills.getColor().getG()) + ",";
-    final String fNodeColourB = String.valueOf(255 * fills.getColor().getB());
-    return begin + fNodeColourR + fNodeColourG + fNodeColourB + end;
+    if (CollectionUtils.isEmpty(fNode.getFills()))
+      return "";
+    else {
+      String begin = "background: '";
+      String fNodeColourR = null;
+      String fNodeColourG = null;
+      String fNodeColourB = null;
+      String end = "), "+ "#FA6650" +"',\n";
+      String returnBackGround = "";
+      FillsSolid fills = (FillsSolid) fNode.getFills().get(0);
+      final String linearGrad = fills.getType().equals("SOLID") || fills.getType().equals("LINEAR") ? "linear-gradient(0deg, " : "";
+
+      for (int i = 0; i < fNode.getFills().size(); i++) {
+        if (fNode.getFills().size() == 1) {
+          FillsSolid fillsInScope = (FillsSolid) fNode.getFills().get(0);
+          fNodeColourR = reduceNumbersAfterDecimal.reducerDecimal(fillsInScope.getColor().getR()) + ",";
+          fNodeColourG = reduceNumbersAfterDecimal.reducerDecimal(fillsInScope.getColor().getG()) + ",";
+          fNodeColourB = reduceNumbersAfterDecimal.reducerDecimal(fillsInScope.getColor().getB());
+          return "backgroundColor: 'rgb(" + fNodeColourR + fNodeColourG + fNodeColourB + ")',\n";
+        }
+        FillsSolid fillsInScope = (FillsSolid) fNode.getFills().get(i);
+        fNodeColourR = reduceNumbersAfterDecimal.reducerDecimal(fillsInScope.getColor().getR()) + ",";
+        fNodeColourG = reduceNumbersAfterDecimal.reducerDecimal(fillsInScope.getColor().getG()) + ",";
+        fNodeColourB = reduceNumbersAfterDecimal.reducerDecimal(fillsInScope.getColor().getB()) + ",";
+        returnBackGround += "rgba(" + fNodeColourR + fNodeColourG + fNodeColourB + (new DecimalFormat("#.#")).format(fillsInScope.getOpacity()) + "),";
+        if(i+1 == fNode.getFills().size()){
+          int lastCommaIndex = returnBackGround.lastIndexOf(",");
+          returnBackGround = returnBackGround.substring(0, lastCommaIndex) + returnBackGround.substring(lastCommaIndex + 1);
+        }
+      }
+      String str = begin + linearGrad + returnBackGround + end;
+//      int lastCommaIndex = str.lastIndexOf(",")-2;
+//      return str.substring(0, lastCommaIndex) + str.substring(lastCommaIndex + 1);
+      return str;
+    }
   }
 
   public String getImageProps(FigmaRectangleNode fNode) {
@@ -126,7 +167,7 @@ public class RectangleReactCGI implements ReactCGI {
   public String getBackgroundImage(FigmaRectangleNode fNode) {
     final FillsImage fillsImage = (FillsImage) fNode.getFills().get(0);
     final String imageHash = fillsImage.getImageHash();
-    return "src={{uri: '" + s3FileLoader.getImageUrl(imageHash, projectId).toString() + "'}} \n";
+    return "src={{uri: '" + s3FileLoader.getImageUrl(imageHash, MDC.get(MDCKey.X_PROJECT_ID)) + "'}} \n";
   }
 
   public String getImgResize(FillsImage fillsImage) {
@@ -173,9 +214,9 @@ public class RectangleReactCGI implements ReactCGI {
   }
 
   public String border(FigmaRectangleNode fNode) {
-    final String fNodeColourR = (255 * fNode.getStrokes().get(0).getColor().getR()) + ",";
-    final String fNodeColourG = (255 * fNode.getStrokes().get(0).getColor().getG()) + ",";
-    final String fNodeColourB = String.valueOf(255 * fNode.getStrokes().get(0).getColor().getB());
+    final String fNodeColourR = reduceNumbersAfterDecimal.reducerDecimal(fNode.getStrokes().get(0).getColor().getR()) + ",";
+    final String fNodeColourG = reduceNumbersAfterDecimal.reducerDecimal(fNode.getStrokes().get(0).getColor().getG()) + ",";
+    final String fNodeColourB = reduceNumbersAfterDecimal.reducerDecimal(fNode.getStrokes().get(0).getColor().getB());
 
     final String upperBorder = "border: '";
     final String width = (fNode.getStrokeWeight()) + "px ";

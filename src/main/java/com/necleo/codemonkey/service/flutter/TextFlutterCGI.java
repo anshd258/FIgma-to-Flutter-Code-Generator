@@ -44,7 +44,7 @@ public class TextFlutterCGI implements FlutterCGI {
       // necleoDataNode.packages.add("GOOGLE_FONTS");
     }
 
-    final String upperTextStyle = "style: GoogleFonts." + "inter" + "(\n";
+    final String upperTextStyle = "style: GoogleFonts." + fNode.getFontName().getFamily().replace(" ", "").toLowerCase() + "(\n";
     final String lowerTextStyle = "),\n";
     String genTextStyle = "";
     if (fNode.getFills() != null) {
@@ -54,8 +54,8 @@ public class TextFlutterCGI implements FlutterCGI {
     if (fNode.getFontSize() != 0) {
       genTextStyle += getFontStyle(fNode);
       genTextStyle += getFontWeight(fNode);
-      //      genTextStyle += getLetterSpacing(fNode);
-      //      genTextStyle += getLineHeight(fNode);
+            genTextStyle += getLetterSpacing(fNode);
+//            genTextStyle += getLineHeight(fNode);
     }
     return upperTextStyle + genTextStyle + lowerTextStyle;
   }
@@ -64,9 +64,9 @@ public class TextFlutterCGI implements FlutterCGI {
     return "height:" + fNode.getLineHeight().getUnit() + ",\n";
   }
 
-  //  private String getLetterSpacing(FigmaTextNode fNode) {
-  //    return " letterSpacing:" + fNode.getLetterSpacing() +",\n";
-  //  }
+    private String getLetterSpacing(FigmaTextNode fNode) {
+      return " letterSpacing:" + fNode.getLetterSpacing().getValue() +",\n";
+    }
 
   private String getFontWeight(FigmaTextNode fNode) {
     return "fontWeight: FontWeight.w" + fNode.getFontWeight() + ",\n";
@@ -89,7 +89,7 @@ public class TextFlutterCGI implements FlutterCGI {
 
   private String getText(FigmaTextNode fNode) {
     if (fNode.getName() != null) {
-      return "'" + fNode.getName() + "',\n";
+      return "'" + fNode.getCharacters() + "',\n";
     }
     return "";
   }

@@ -7,20 +7,23 @@ import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.TagDataType;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import java.util.Map;
 import java.util.Set;
+
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class CheckBoxTagReactCGI implements ReactCGI {
-  RectangleReactCGI rectangleReactCGI = new RectangleReactCGI();
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+public class CheckBoxTagCGI implements ReactCGI {
+  RectangleReactCGI rectangleReactCGI;
 
   @Override
   public String generate(
-      FigmaNode figmaNode,
-      FigmaNode node,
-      Map<String, TagData> tagDataMap,
-      Set<String> importsFunctions) {
+          FigmaNode figmaNode, FigmaNode node, Map<String, TagData> tagDataMap, Set<String> importsFunctions) {
 
     return generat(figmaNode, importsFunctions);
   }
