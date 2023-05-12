@@ -15,6 +15,7 @@ public class NecleoDataNode {
   public TagData tagData;
   public Set<String> imports;
   public Set<String> packages;
+  public Set<String> assets;
   public Map<String,String> functionData;
 
   public Map<String,String> utilClass;
