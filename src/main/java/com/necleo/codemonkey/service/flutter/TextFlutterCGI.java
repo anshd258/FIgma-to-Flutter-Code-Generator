@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class TextFlutterCGI implements FlutterCGI {
 
+
+  SizeUtil sizeUtil = new SizeUtil();
   @Override
   public Set<FigmaNodeMapper> getStrategy() {
 
@@ -29,13 +31,19 @@ public class TextFlutterCGI implements FlutterCGI {
 
   public String generat(FigmaTextNode fNode, NecleoDataNode necleoDataNode) {
     String genCode = "";
-    final String upperText = "Text(\n";
-    final String lowerText = "),\n";
+    final String outterContainer = " Align(\n" +
+            "            alignment: Alignment.topLeft,\n" +
+            "            child: Container(";
+    String height = sizeUtil.getHeight(fNode);
+    String width = sizeUtil.getWidth(fNode);
+    final String upperText = "child: Text(\n";
+    final String lowerText = "),),),\n";
 
     genCode += getText(fNode);
+    genCode += getTextAlign(fNode);
     genCode += getTextStyle(fNode,necleoDataNode );
 
-    return upperText + genCode + lowerText;
+    return outterContainer + height + width + upperText + genCode + lowerText;
   }
 
   private String getTextStyle(FigmaTextNode fNode, NecleoDataNode necleoDataNode) {
@@ -60,9 +68,9 @@ public class TextFlutterCGI implements FlutterCGI {
     return upperTextStyle + genTextStyle + lowerTextStyle;
   }
 
-  private String getLineHeight(FigmaTextNode fNode) {
-    return "height:" + fNode.getLineHeight().getUnit() + ",\n";
-  }
+//  private String getLineHeight(FigmaTextNode fNode) {
+//    return "height:" + (fNode.getLineHeight().getValue() - fNode.getFontSize()) + ",\n";
+//  }
 
     private String getLetterSpacing(FigmaTextNode fNode) {
       return " letterSpacing:" + fNode.getLetterSpacing().getValue() +",\n";
@@ -73,7 +81,7 @@ public class TextFlutterCGI implements FlutterCGI {
   }
 
   private String getFontStyle(FigmaTextNode fNode) {
-    return "fontSize:" + fNode.getFontSize() + ",\n";
+    return "fontSize:" + (fNode.getFontSize() -1 )+ ",\n";
   }
 
   private String getColor(FillsSolid fills) {
@@ -85,6 +93,16 @@ public class TextFlutterCGI implements FlutterCGI {
     final String opacity = Float.toString(fills.getOpacity());
 
     return upperColor + red + green + blue + opacity + lowerColor;
+  }
+  private String getTextAlign(FigmaTextNode fNode){
+    String align = "textAlign: TextAlign. ";
+    String alignment = switch (fNode.getTextAlignHorizontal()) {
+      case "CENTER" -> "center";
+      case "LEFT" -> "left";
+      case "RIGHT" -> "right";
+      default -> "";
+    };
+    return align + alignment + ",\n";
   }
 
   private String getText(FigmaTextNode fNode) {

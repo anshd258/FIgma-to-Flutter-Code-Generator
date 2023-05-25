@@ -1,5 +1,6 @@
 package com.necleo.codemonkey.service.flutter;
 
+import static com.necleo.codemonkey.lib.types.enums.figmaEnums.PrimaryAxisAlignItems.SPACE_BETWEEN;
 import static com.necleo.codemonkey.lib.types.figma.properties.fills.enums.ScaleMode.FILL;
 
 import com.necleo.codemonkey.factory.FlutterFigmaNodeAbstractFactory;
@@ -69,10 +70,16 @@ public class FrameFlutterCGI implements FlutterCGI {
   private String getPadding(FigmaFrameNode figmaNode) {
     final String upperPadding = " padding: EdgeInsets.only(\n";
     final String lowerPadding = "),\n";
+    String bottom = "";
+    String rigt = "";
+    if(!(figmaNode.getChild().size() == 1 && figmaNode.getChild().get(0).getType().equals(FigmaNodeTypes.TEXT))){
+       rigt = "right:" + figmaNode.getPaddingRight() + ",";
+    bottom = "bottom:" + figmaNode.getPaddingBottom() + ",";
+    }
     String leftPaing = "left:" + figmaNode.getPaddingLeft() + ",";
-    String rigt = "right:" + figmaNode.getPaddingRight() + ",";
+
     String top = "top:" + figmaNode.getPaddingTop() + ",";
-    String bottom = "bottom:" + figmaNode.getPaddingBottom() + ",";
+
     return upperPadding + leftPaing + rigt + top + bottom + lowerPadding;
   }
 
@@ -91,6 +98,7 @@ public class FrameFlutterCGI implements FlutterCGI {
       genCode.append( flutterCGIOptional
               .map(flutterCGI -> flutterCGI.generate(necleoDataNodeTemp))
               .orElse(""));
+      return genCode.toString();
     }else {
       switch (figmaNode.getLayoutMode().name()) {
         case "NONE" -> {
@@ -153,7 +161,7 @@ public class FrameFlutterCGI implements FlutterCGI {
                   flutterCGIOptional
                       .map(flutterCGI -> flutterCGI.generate(necleoDataNodeTemp))
                       .orElse("");
-              genCode.append(flexibleUtil.getFlexible(genChild) );
+              genCode.append(genChild);
             } else {
               necleoDataNodeTemp.fNode = necleoDataNode.fNode.getChild().get(i);
               necleoDataNodeTemp.tagData = necleoDataNode.tagData;
@@ -162,8 +170,11 @@ public class FrameFlutterCGI implements FlutterCGI {
                   flutterCGIOptional
                       .map(flutterCGI -> flutterCGI.generate(necleoDataNodeTemp))
                       .orElse("");
-              gen += spacingUtil.getSpacing(figmaNode);
-              genCode.append(flexibleUtil.getFlexible(genChild));
+              if(!(figmaNode.getPrimaryAxisAlignItems().equals(SPACE_BETWEEN))){
+                gen += spacingUtil.getSpacing(figmaNode);
+              }
+
+              genCode.append(genChild);
               genCode.append(gen);
             }
           }
@@ -193,7 +204,7 @@ public class FrameFlutterCGI implements FlutterCGI {
                   flutterCGIOptional
                       .map(flutterCGI -> flutterCGI.generate(necleoDataNodeTemp))
                       .orElse("");
-              genCode.append(flexibleUtil.getFlexible(genChild));
+              genCode.append(genChild);
             } else {
               necleoDataNodeTemp.fNode = necleoDataNode.fNode.getChild().get(i);
               necleoDataNodeTemp.tagData = necleoDataNode.tagData;
@@ -202,8 +213,11 @@ public class FrameFlutterCGI implements FlutterCGI {
                   flutterCGIOptional
                       .map(flutterCGI -> flutterCGI.generate(necleoDataNodeTemp))
                       .orElse("");
-              gen += spacingUtil.getSpacing(figmaNode);
-              genCode.append(flexibleUtil.getFlexible(genChild));
+              if(!(figmaNode.getPrimaryAxisAlignItems().equals(SPACE_BETWEEN))){
+                gen += spacingUtil.getSpacing(figmaNode);
+              }
+
+              genCode.append(genChild);
               genCode.append(gen);
             }
           }

@@ -20,7 +20,7 @@ import lombok.extern.jackson.Jacksonized;
 public class FigmaRectangleNode extends FigmaNode {
   int opacity;
   boolean isMask;
-  List<Effect> effects;
+//  List<Effect> effects;
   String effectStyleId;
   // Corner Related Properties
   int cornerRadius;

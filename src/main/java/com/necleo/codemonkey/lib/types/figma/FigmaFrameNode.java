@@ -22,7 +22,7 @@ import lombok.extern.jackson.Jacksonized;
 public class FigmaFrameNode extends FigmaNode {
   int opacity;
   boolean isMask;
-  ArrayList<EffectType> effects;
+//  ArrayList<EffectType> effects;
   String effectsStyleId;
 
   // Corner Related Properties

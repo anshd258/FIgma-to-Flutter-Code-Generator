@@ -20,7 +20,7 @@ public class FigmaLineNode extends FigmaNode {
 
   int opacity;
   boolean isMask;
-  List<Effect> effects;
+//  List<Effect> effects;
   String effectsStyleId;
 
   // geometry related properties

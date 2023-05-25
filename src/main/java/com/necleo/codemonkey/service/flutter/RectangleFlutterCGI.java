@@ -234,7 +234,7 @@ public class RectangleFlutterCGI implements FlutterCGI {
 
     genCode += getStrokeAlignment(fNode);
     if (!(CollectionUtils.isEmpty(fNode.getStrokes()))) {
-      genCode += getColor(fNode.getStrokes().get(0));
+//      genCode += getColor(fNode.getStrokes().get(0));
     }
 
     genCode += getStrokeWidth(fNode);

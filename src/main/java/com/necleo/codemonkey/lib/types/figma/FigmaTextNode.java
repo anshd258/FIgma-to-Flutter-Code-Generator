@@ -25,7 +25,7 @@ public class FigmaTextNode extends FigmaNode {
   int opacity;
   BlendMode blendMode;
   boolean isMask;
-  List<Effect> effects;
+//  List<Effect> effects;
   String effectsStyleId;
   // geometry related properties
   List<Fills> fills;
@@ -49,7 +49,7 @@ public class FigmaTextNode extends FigmaNode {
 
   FontName fontName;
   int fontWeight;
-
+  String textAlignHorizontal;
   int fontSize;
   LineHeight lineHeight;
 
