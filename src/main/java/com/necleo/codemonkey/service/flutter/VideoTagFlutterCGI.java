@@ -7,6 +7,8 @@ import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import com.necleo.codemonkey.model.factory.NecleoDataNode;
 import java.util.Set;
+
+import com.necleo.codemonkey.service.flutter.utils.SizeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -27,28 +29,28 @@ public class VideoTagFlutterCGI implements FlutterCGI {
     if (!(necleoDataNode.fNode instanceof FigmaRectangleNode fNode)) {
       throw new IllegalArgumentException();
     }
-    return generat(fNode, necleoDataNode.tagData);
+    return generat(fNode, necleoDataNode.tagData, necleoDataNode);
   }
 
-  private String generat(FigmaRectangleNode fNode, TagData tagData) {
+  private String generat(FigmaRectangleNode fNode, TagData tagData, NecleoDataNode necleoDataNode) {
     String initState = getInitState(tagData.getTagData().getProps().getUrl());
     String disposeState = getDispose();
-    String genCode = getPlayer(fNode);
+    String genCode = getPlayer(fNode, necleoDataNode);
     return initState + disposeState + genCode;
   }
 
-  private String getPlayer(FigmaRectangleNode fNode) {
+  private String getPlayer(FigmaRectangleNode fNode, NecleoDataNode necleoDataNode) {
     final String upperContainer = "Container(\n";
     final String lowerContainer = "),\n";
     String genCode = "";
-    genCode += getSize(fNode);
+    genCode += getSize(fNode, necleoDataNode);
     genCode += getChild();
     return upperContainer + genCode + lowerContainer;
   }
 
-  private String getSize(FigmaRectangleNode fNode) {
-    String width = sizeUtil.getWidth(fNode);
-    String height = sizeUtil.getHeight(fNode);
+  private String getSize(FigmaRectangleNode fNode, NecleoDataNode necleoDataNode) {
+    String width = sizeUtil.getWidth(fNode, necleoDataNode.mainScreen,necleoDataNode);
+    String height = sizeUtil.getHeight(fNode, necleoDataNode.mainScreen,necleoDataNode);
     return width + height;
   }
 

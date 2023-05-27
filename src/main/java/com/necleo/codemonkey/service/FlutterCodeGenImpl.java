@@ -50,6 +50,7 @@ public class FlutterCodeGenImpl implements CodeGen {
   public ASTNode generate(List<FigmaNode> fNode, Map<String, TagData> tagDataMap) {
     NecleoDataNode necleoDataNode = new NecleoDataNode();
     necleoDataNode.fNode = fNode.get(0);
+    necleoDataNode.responsive = false;
     necleoDataNode.tagData = tagDataMap.get(fNode.get(0).getId());
     necleoDataNode.imports = new HashSet<String>();
     necleoDataNode.packages = new HashSet<String>();

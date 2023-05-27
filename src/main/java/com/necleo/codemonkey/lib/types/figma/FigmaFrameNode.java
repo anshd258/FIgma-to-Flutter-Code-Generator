@@ -2,6 +2,7 @@ package com.necleo.codemonkey.lib.types.figma;
 
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.*;
+import com.necleo.codemonkey.lib.types.figma.properties.Constrains;
 import com.necleo.codemonkey.lib.types.figma.properties.effects.EffectType;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.FillGeometry;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.Fills;

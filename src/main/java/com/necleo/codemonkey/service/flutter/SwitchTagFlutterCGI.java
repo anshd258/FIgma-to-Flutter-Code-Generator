@@ -11,6 +11,8 @@ import com.necleo.codemonkey.lib.types.figma.properties.strokes.Strokes;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import com.necleo.codemonkey.model.factory.NecleoDataNode;
 import java.util.Set;
+
+import com.necleo.codemonkey.service.flutter.utils.SizeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -29,10 +31,10 @@ public class SwitchTagFlutterCGI implements FlutterCGI {
     if (!(necleoDataNode.fNode instanceof FigmaRectangleNode fNode)) {
       throw new IllegalArgumentException();
     }
-    return generat(fNode);
+    return generat(fNode, necleoDataNode);
   }
 
-  private String generat(FigmaRectangleNode fNode) {
+  private String generat(FigmaRectangleNode fNode, NecleoDataNode necleoDataNode) {
     final String upperStateFullWidget =
         "class CustomSwitch extends StatefulWidget {\n"
             + "  \n"
@@ -52,12 +54,12 @@ public class SwitchTagFlutterCGI implements FlutterCGI {
 
     final String dispose = getDispose();
     String genCode = "";
-    genCode += getWidgetBuild(fNode);
+    genCode += getWidgetBuild(fNode,necleoDataNode);
 
     return upperStateFullWidget + initState + dispose + genCode + lowerStateFullWidget;
   }
 
-  private String getWidgetBuild(FigmaRectangleNode fNode) {
+  private String getWidgetBuild(FigmaRectangleNode fNode, NecleoDataNode necleoDataNode) {
     final String upperWidgetBuild =
         "@override\n"
             + "  Widget build(BuildContext context) {\n"
@@ -76,8 +78,8 @@ public class SwitchTagFlutterCGI implements FlutterCGI {
             + "        duration:";
     final String lowerWidgetBuild = " ),\n" + "    );\n" + "  }";
     String genCode = getDuration(300);
-    genCode += sizeUtil.getHeight(fNode);
-    genCode += sizeUtil.getWidth(fNode);
+    genCode += sizeUtil.getHeight(fNode, necleoDataNode.mainScreen,necleoDataNode);
+    genCode += sizeUtil.getWidth(fNode, necleoDataNode.mainScreen,necleoDataNode);
     genCode += getSwitchBoxDecoration(fNode);
 
     genCode += "child:" + getpadding(fNode);

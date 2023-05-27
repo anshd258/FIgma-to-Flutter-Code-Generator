@@ -9,6 +9,9 @@ import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSoli
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import com.necleo.codemonkey.model.factory.NecleoDataNode;
 import java.util.Set;
+
+import com.necleo.codemonkey.service.flutter.utils.ClipperUtil;
+import com.necleo.codemonkey.service.flutter.utils.SizeUtil;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -45,16 +48,16 @@ public class VectorFlutterCGI implements FlutterCGI {
     }
 
     genCode += "clipper: MyClipper(\"" + ((FigmaVectorNode) figmaNode).getFillGeometry().get(0).data + " \"),\n";
-    genCode += getChild((FigmaVectorNode) figmaNode, null);
+    genCode += getChild((FigmaVectorNode) figmaNode, null , necleoDataNode);
 
     return upperVector + genCode + bottomVector + "\n" ;
   }
 
-  private String getChild(FigmaVectorNode fNode, TagData tagData) {
+  private String getChild(FigmaVectorNode fNode, TagData tagData, NecleoDataNode necleoDataNode) {
     String genChild = "";
     genChild += "\nContainer( \n";
-    genChild += sizeUtil.getHeight(fNode);
-    genChild += sizeUtil.getWidth(fNode);
+    genChild += sizeUtil.getHeight(fNode, necleoDataNode.mainScreen,necleoDataNode);
+    genChild += sizeUtil.getWidth(fNode, necleoDataNode.mainScreen,necleoDataNode);
     if(!(fNode.getFills().isEmpty())){
       if (fNode.getFills().get(0).getType().equals("SOLID")) {
         final FillsSolid fills = (FillsSolid) fNode.getFills().get(0);

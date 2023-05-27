@@ -5,6 +5,7 @@ import com.necleo.codemonkey.lib.types.figma.FigmaLineNode;
 import com.necleo.codemonkey.lib.types.figma.properties.strokes.Color;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import com.necleo.codemonkey.model.factory.NecleoDataNode;
+import com.necleo.codemonkey.service.flutter.utils.SizeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -24,25 +25,25 @@ public class LineFlutterCGI implements FlutterCGI {
     if (!(necleoDataNode.fNode instanceof FigmaLineNode fNode)) {
       throw new IllegalArgumentException();
     }
-    return generat(fNode);
+    return generat(fNode, necleoDataNode);
   }
 
-  private String generat(FigmaLineNode fNode) {
+  private String generat(FigmaLineNode fNode, NecleoDataNode necleoDataNode) {
     String genCode = "";
     if (fNode.getDashPattern() != null) {
       //            genCode += getCotumPainter(fNode);
       //           genCode += getWidget(fNode);
     } else {
-      genCode += getDivider(fNode);
+      genCode += getDivider(fNode, necleoDataNode);
     }
 
     return genCode;
   }
 
-  private String getDivider(FigmaLineNode fNode) {
+  private String getDivider(FigmaLineNode fNode, NecleoDataNode necleoDataNode) {
     final String upperContainer = "Container(\n\t";
     final String lowerContainer = "),\n";
-    String genCode = sizeUtil.getWidth(fNode);
+    String genCode = sizeUtil.getWidth(fNode, necleoDataNode.mainScreen, necleoDataNode);
     genCode += "height:" + fNode.getStrokeWeight() + ",\n";
     genCode += getBoxDecoration(fNode);
     return upperContainer + genCode + lowerContainer;

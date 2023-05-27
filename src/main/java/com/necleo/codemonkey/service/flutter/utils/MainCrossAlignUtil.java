@@ -1,4 +1,4 @@
-package com.necleo.codemonkey.service.flutter;
+package com.necleo.codemonkey.service.flutter.utils;
 
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.CounterAxisAlignItems;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.PrimaryAxisAlignItems;

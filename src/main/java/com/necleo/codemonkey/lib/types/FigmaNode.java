@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.*;
+import com.necleo.codemonkey.lib.types.figma.properties.Constrains;
 import com.necleo.codemonkey.lib.types.figma.rect.Rect;
 import java.util.List;
 import lombok.AccessLevel;
@@ -48,6 +49,7 @@ public class FigmaNode {
   List<FigmaNode> child;
   String id;
   String name;
+  Constrains constrains;
   boolean removed;
   boolean visible;
   boolean locked;

@@ -6,6 +6,8 @@ import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSoli
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import com.necleo.codemonkey.model.factory.NecleoDataNode;
 import java.util.Set;
+
+import com.necleo.codemonkey.service.flutter.utils.SizeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -34,8 +36,8 @@ public class TextFlutterCGI implements FlutterCGI {
     final String outterContainer = " Align(\n" +
             "            alignment: Alignment.topLeft,\n" +
             "            child: Container(";
-    String height = sizeUtil.getHeight(fNode);
-    String width = sizeUtil.getWidth(fNode);
+    String height = sizeUtil.getHeight(fNode, necleoDataNode.mainScreen,necleoDataNode);
+    String width = sizeUtil.getWidth(fNode, necleoDataNode.mainScreen,necleoDataNode);
     final String upperText = "child: Text(\n";
     final String lowerText = "),),),\n";
 

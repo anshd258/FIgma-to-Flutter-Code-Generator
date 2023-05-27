@@ -5,7 +5,6 @@ import static com.necleo.codemonkey.lib.types.figma.properties.fills.enums.Scale
 
 import com.necleo.codemonkey.configuration.S3FileLoader;
 import com.necleo.codemonkey.factory.FlutterBoilerTypeAbstractFactory;
-import com.necleo.codemonkey.lib.types.enums.boilerplate.BoilerType;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.Color;
@@ -13,14 +12,13 @@ import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsGrad
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsImage;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSolid;
 import com.necleo.codemonkey.lib.types.figma.properties.strokes.Strokes;
-import com.necleo.codemonkey.model.factory.BoilerNodeMapper;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import com.necleo.codemonkey.model.factory.NecleoDataNode;
-import com.necleo.codemonkey.service.flutter.boilerplate.BoilerCGI;
 
 import java.net.URL;
-import java.util.Optional;
 import java.util.Set;
+
+import com.necleo.codemonkey.service.flutter.utils.SizeUtil;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -50,16 +48,16 @@ public class RectangleFlutterCGI implements FlutterCGI {
     if (!(necleoDataNode.fNode instanceof FigmaRectangleNode fNode)) {
       throw new IllegalArgumentException();
     }
-    return generat(fNode);
+    return generat(fNode, necleoDataNode);
   }
 
-  public String generat(FigmaRectangleNode figmaNode) {
+  public String generat(FigmaRectangleNode figmaNode,NecleoDataNode necleoDataNode) {
 
     String genCode = "";
 
     genCode += "\nContainer( \n";
-    genCode += sizeUtil.getHeight(figmaNode);
-    genCode += sizeUtil.getWidth(figmaNode);
+    genCode += sizeUtil.getHeight(figmaNode, necleoDataNode.mainScreen,necleoDataNode);
+    genCode += sizeUtil.getWidth(figmaNode, necleoDataNode.mainScreen,necleoDataNode);
     genCode += getBoxDecoration(figmaNode);
 
     genCode += "),\n";

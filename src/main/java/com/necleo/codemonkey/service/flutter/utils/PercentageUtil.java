@@ -1,4 +1,4 @@
-package com.necleo.codemonkey.service.flutter;
+package com.necleo.codemonkey.service.flutter.utils;
 
 public class PercentageUtil {
     public int getLeft(int x , int parentWidth){

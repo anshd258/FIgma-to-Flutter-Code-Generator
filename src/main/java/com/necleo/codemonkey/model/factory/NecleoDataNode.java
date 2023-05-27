@@ -11,6 +11,8 @@ import java.util.Set;
 public class NecleoDataNode {
 
   public FigmaNode fNode;
+  public Boolean  responsive ;
+  public FigmaNode mainScreen;
 
   public TagData tagData;
   public Set<String> imports;

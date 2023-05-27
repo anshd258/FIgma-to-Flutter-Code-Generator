@@ -1,4 +1,4 @@
-package com.necleo.codemonkey.service.flutter;
+package com.necleo.codemonkey.service.flutter.utils;
 
 import com.necleo.codemonkey.configuration.S3FileLoader;
 import lombok.extern.slf4j.Slf4j;

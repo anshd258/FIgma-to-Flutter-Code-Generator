@@ -5,6 +5,7 @@ import static com.necleo.codemonkey.lib.types.figma.properties.fills.enums.Scale
 
 import com.necleo.codemonkey.factory.FlutterFigmaNodeAbstractFactory;
 import com.necleo.codemonkey.lib.types.TagData;
+import com.necleo.codemonkey.lib.types.enums.ConstrainsValue;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.FigmaFrameNode;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.Color;
@@ -16,6 +17,8 @@ import com.necleo.codemonkey.model.factory.NecleoDataNode;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import com.necleo.codemonkey.service.flutter.utils.*;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -52,8 +55,8 @@ public class FrameFlutterCGI implements FlutterCGI {
     String genCode = "";
 
     genCode += "\nContainer( \n";
-    genCode += sizeUtil.getHeight(figmaNode);
-    genCode += sizeUtil.getWidth(figmaNode);
+    genCode += sizeUtil.getHeight(figmaNode, necleoDataNode.mainScreen, necleoDataNode);
+    genCode += sizeUtil.getWidth(figmaNode, necleoDataNode.mainScreen, necleoDataNode);
     genCode += getPadding(figmaNode);
     if (!(figmaNode.getFills().isEmpty())) {
       genCode += getBoxDecoration(figmaNode);
@@ -104,10 +107,15 @@ public class FrameFlutterCGI implements FlutterCGI {
         case "NONE" -> {
           final String upperStack = "Stack(\n";
           final String lowerStack = "),";
+          String center = "";
           genCode.append("children:[\n");
           for (int i = 0; i <= figmaNode.getChild().toArray().length - 1; i++) {
             String genChild = "";
             String gen = "";
+//            if( figmaNode.getChild().get(i).getConstrains().getVertical().equals(ConstrainsValue.CENTER) ||
+//                    figmaNode.getChild().get(i).getConstrains().getHorizontal().equals(ConstrainsValue.CENTER)){
+//              center = " alignment: Alignment.center,";
+//            }
             FigmaNodeMapper figmaNodeMapper =
                 new FigmaNodeMapper(figmaNode.getChild().get(i).getType(), null);
             Optional<FlutterCGI> flutterCGIOptional =
@@ -121,7 +129,7 @@ public class FrameFlutterCGI implements FlutterCGI {
                   flutterCGIOptional
                       .map(flutterCGI -> flutterCGI.generate(necleoDataNodeTemp))
                       .orElse("");
-              gen = positionUtil.getPosition(genChild, figmaNode.getChild().get(i));
+              gen = positionUtil.getPosition(genChild, figmaNode.getChild().get(i), figmaNode);
               genCode.append(gen);
             } else {
               necleoDataNodeTemp.fNode = necleoDataNode.fNode.getChild().get(i);
@@ -131,12 +139,14 @@ public class FrameFlutterCGI implements FlutterCGI {
                   flutterCGIOptional
                       .map(flutterCGI -> flutterCGI.generate(necleoDataNodeTemp))
                       .orElse("");
-              gen = positionUtil.getPosition(genChild, figmaNode.getChild().get(i));
+              gen = positionUtil.getPosition(genChild, figmaNode.getChild().get(i),figmaNode);
               genCode.append(gen);
             }
           }
+
+
           genCode.append("],\n");
-          return upperStack + genCode + lowerStack;
+          return upperStack + center + genCode + lowerStack;
         }
         case "HORIZONTAL" -> {
           final String upperRow = "Row(\n";

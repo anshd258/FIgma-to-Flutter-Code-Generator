@@ -1,4 +1,4 @@
-package com.necleo.codemonkey.service.flutter;
+package com.necleo.codemonkey.service.flutter.utils;
 
 public class FlexibleUtil {
     public String getFlexible(String genCode){
