@@ -4,6 +4,6 @@ import lombok.Getter;
 
 @Getter
 public class LetterSpacing {
-    String unit;
-    double value;
+  String unit;
+  double value;
 }

@@ -4,12 +4,12 @@ import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes
 import com.necleo.codemonkey.lib.types.figma.FigmaLineNode;
 import com.necleo.codemonkey.lib.types.figma.properties.strokes.Color;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
-import com.necleo.codemonkey.model.factory.NecleoDataNode;
+import com.necleo.codemonkey.model.factory.FlutterWI;
 import com.necleo.codemonkey.service.flutter.utils.SizeUtil;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
 @Service
 @Slf4j
 public class LineFlutterCGI implements FlutterCGI {
@@ -21,29 +21,30 @@ public class LineFlutterCGI implements FlutterCGI {
   }
 
   @Override
-  public String generate(NecleoDataNode necleoDataNode) {
-    if (!(necleoDataNode.fNode instanceof FigmaLineNode fNode)) {
+  public String generate(FlutterWI fultterNecleoDataNode) {
+    if (!(fultterNecleoDataNode.figmaNode instanceof FigmaLineNode fNode)) {
       throw new IllegalArgumentException();
     }
-    return generat(fNode, necleoDataNode);
+    return generat(fNode, fultterNecleoDataNode);
   }
 
-  private String generat(FigmaLineNode fNode, NecleoDataNode necleoDataNode) {
+  private String generat(FigmaLineNode fNode, FlutterWI fultterNecleoDataNode) {
     String genCode = "";
     if (fNode.getDashPattern() != null) {
       //            genCode += getCotumPainter(fNode);
       //           genCode += getWidget(fNode);
     } else {
-      genCode += getDivider(fNode, necleoDataNode);
+      genCode += getDivider(fNode, fultterNecleoDataNode);
     }
 
     return genCode;
   }
 
-  private String getDivider(FigmaLineNode fNode, NecleoDataNode necleoDataNode) {
+  private String getDivider(FigmaLineNode fNode, FlutterWI fultterNecleoDataNode) {
     final String upperContainer = "Container(\n\t";
     final String lowerContainer = "),\n";
-    String genCode = sizeUtil.getWidth(fNode, necleoDataNode.mainScreen, necleoDataNode);
+    String genCode =
+        sizeUtil.getWidth(fNode, fultterNecleoDataNode.mainScreen, fultterNecleoDataNode);
     genCode += "height:" + fNode.getStrokeWeight() + ",\n";
     genCode += getBoxDecoration(fNode);
     return upperContainer + genCode + lowerContainer;

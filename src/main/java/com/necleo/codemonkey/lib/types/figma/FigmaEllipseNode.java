@@ -20,7 +20,7 @@ public class FigmaEllipseNode extends FigmaNode {
 
   int opacity;
   boolean isMask;
-//  List<Effect> effects;
+  //  List<Effect> effects;
   String effectsStyleId;
 
   // Corner Related Properties

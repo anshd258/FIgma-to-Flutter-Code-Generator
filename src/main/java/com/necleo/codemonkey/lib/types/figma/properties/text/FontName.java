@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FontName {
-    private String family;
-    private String style;
+  private String family;
+  private String style;
 }

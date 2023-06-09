@@ -4,10 +4,10 @@ import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes
 import com.necleo.codemonkey.lib.types.figma.FigmaTextNode;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSolid;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
-import com.necleo.codemonkey.model.factory.NecleoDataNode;
-import java.util.Set;
-
+import com.necleo.codemonkey.model.factory.FlutterWI;
 import com.necleo.codemonkey.service.flutter.utils.SizeUtil;
+import java.util.Objects;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -15,8 +15,8 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class TextFlutterCGI implements FlutterCGI {
 
-
   SizeUtil sizeUtil = new SizeUtil();
+
   @Override
   public Set<FigmaNodeMapper> getStrategy() {
 
@@ -24,37 +24,43 @@ public class TextFlutterCGI implements FlutterCGI {
   }
 
   @Override
-  public String generate(NecleoDataNode necleoDataNode) {
-    if (!(necleoDataNode.fNode instanceof FigmaTextNode fNode)) {
+  public String generate(FlutterWI fultterNecleoDataNode) {
+    if (!(fultterNecleoDataNode.figmaNode instanceof FigmaTextNode fNode)) {
       throw new IllegalArgumentException();
     }
-    return generat(fNode, necleoDataNode);
+    return generat(fNode, fultterNecleoDataNode);
   }
 
-  public String generat(FigmaTextNode fNode, NecleoDataNode necleoDataNode) {
+  public String generat(FigmaTextNode fNode, FlutterWI fultterNecleoDataNode) {
     String genCode = "";
-    final String outterContainer = " Align(\n" +
-            "            alignment: Alignment.topLeft,\n" +
-            "            child: Container(";
-    String height = sizeUtil.getHeight(fNode, necleoDataNode.mainScreen,necleoDataNode);
-    String width = sizeUtil.getWidth(fNode, necleoDataNode.mainScreen,necleoDataNode);
+    final String outterContainer =
+        " Align(\n"
+            + "            alignment: Alignment.topLeft,\n"
+            + "            child: Container(";
+    String height =
+        sizeUtil.getHeight(fNode, fultterNecleoDataNode.mainScreen, fultterNecleoDataNode);
+    String width =
+        sizeUtil.getWidth(fNode, fultterNecleoDataNode.mainScreen, fultterNecleoDataNode);
     final String upperText = "child: Text(\n";
     final String lowerText = "),),),\n";
 
     genCode += getText(fNode);
     genCode += getTextAlign(fNode);
-    genCode += getTextStyle(fNode,necleoDataNode );
+    genCode += getTextStyle(fNode, fultterNecleoDataNode);
 
     return outterContainer + height + width + upperText + genCode + lowerText;
   }
 
-  private String getTextStyle(FigmaTextNode fNode, NecleoDataNode necleoDataNode) {
-    if(!necleoDataNode.imports.contains("GOOGLE_FONTS")){
-      necleoDataNode.imports.add("GOOGLE_FONTS");
-      // necleoDataNode.packages.add("GOOGLE_FONTS");
+  private String getTextStyle(FigmaTextNode fNode, FlutterWI fultterNecleoDataNode) {
+    if (!fultterNecleoDataNode.imports.contains("GOOGLE_FONTS")) {
+      fultterNecleoDataNode.imports.add("GOOGLE_FONTS");
+      // fultterNecleoDataNode.packages.add("GOOGLE_FONTS");
     }
 
-    final String upperTextStyle = "style: GoogleFonts." + fNode.getFontName().getFamily().replace(" ", "").toLowerCase() + "(\n";
+    final String upperTextStyle =
+        "style: GoogleFonts."
+            + fNode.getFontName().getFamily().replace(" ", "").toLowerCase()
+            + "(\n";
     final String lowerTextStyle = "),\n";
     String genTextStyle = "";
     if (fNode.getFills() != null) {
@@ -64,26 +70,26 @@ public class TextFlutterCGI implements FlutterCGI {
     if (fNode.getFontSize() != 0) {
       genTextStyle += getFontStyle(fNode);
       genTextStyle += getFontWeight(fNode);
-            genTextStyle += getLetterSpacing(fNode);
-//            genTextStyle += getLineHeight(fNode);
+      genTextStyle += getLetterSpacing(fNode);
+      //            genTextStyle += getLineHeight(fNode);
     }
     return upperTextStyle + genTextStyle + lowerTextStyle;
   }
 
-//  private String getLineHeight(FigmaTextNode fNode) {
-//    return "height:" + (fNode.getLineHeight().getValue() - fNode.getFontSize()) + ",\n";
-//  }
+  //  private String getLineHeight(FigmaTextNode fNode) {
+  //    return "height:" + (fNode.getLineHeight().getValue() - fNode.getFontSize()) + ",\n";
+  //  }
 
-    private String getLetterSpacing(FigmaTextNode fNode) {
-      return " letterSpacing:" + fNode.getLetterSpacing().getValue() +",\n";
-    }
+  private String getLetterSpacing(FigmaTextNode fNode) {
+    return " letterSpacing:" + fNode.getLetterSpacing().getValue() + ",\n";
+  }
 
   private String getFontWeight(FigmaTextNode fNode) {
     return "fontWeight: FontWeight.w" + fNode.getFontWeight() + ",\n";
   }
 
   private String getFontStyle(FigmaTextNode fNode) {
-    return "fontSize:" + (fNode.getFontSize() -1 )+ ",\n";
+    return "fontSize:" + (fNode.getFontSize() - 1) + ",\n";
   }
 
   private String getColor(FillsSolid fills) {
@@ -96,21 +102,28 @@ public class TextFlutterCGI implements FlutterCGI {
 
     return upperColor + red + green + blue + opacity + lowerColor;
   }
-  private String getTextAlign(FigmaTextNode fNode){
+
+  private String getTextAlign(FigmaTextNode fNode) {
     String align = "textAlign: TextAlign. ";
-    String alignment = switch (fNode.getTextAlignHorizontal()) {
-      case "CENTER" -> "center";
-      case "LEFT" -> "left";
-      case "RIGHT" -> "right";
-      default -> "";
-    };
+    String alignment =
+        switch (fNode.getTextAlignHorizontal()) {
+          case "CENTER" -> "center";
+          case "LEFT" -> "left";
+          case "RIGHT" -> "right";
+          default -> "";
+        };
     return align + alignment + ",\n";
   }
 
   private String getText(FigmaTextNode fNode) {
-    if (fNode.getName() != null) {
-      return "'" + fNode.getCharacters() + "',\n";
+
+    if (Objects.isNull(fNode.getCharacters())) {
+      return "";
     }
-    return "";
+
+    String s = """
+              '
+              """;
+    return "'" + fNode.getCharacters() + "',\n";
   }
 }

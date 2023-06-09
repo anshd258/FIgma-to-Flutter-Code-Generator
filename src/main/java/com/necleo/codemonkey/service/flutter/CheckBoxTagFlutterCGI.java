@@ -5,7 +5,7 @@ import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.TagDataType;
 import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSolid;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
-import com.necleo.codemonkey.model.factory.NecleoDataNode;
+import com.necleo.codemonkey.model.factory.FlutterWI;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,9 +19,9 @@ public class CheckBoxTagFlutterCGI implements FlutterCGI {
   }
 
   @Override
-  public String generate(NecleoDataNode necleoDataNode) {
+  public String generate(FlutterWI fultterNecleoDataNode) {
 
-    if (!(necleoDataNode.fNode instanceof FigmaRectangleNode fNode)) {
+    if (!(fultterNecleoDataNode.figmaNode instanceof FigmaRectangleNode fNode)) {
       throw new IllegalArgumentException();
     }
     return generat(fNode);

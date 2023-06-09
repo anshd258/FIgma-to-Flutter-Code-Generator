@@ -1,13 +1,13 @@
 package com.necleo.codemonkey.service.flutter;
 
-import com.necleo.codemonkey.factory.FlutterFigmaNodeAbstractFactory;
+import com.necleo.codemonkey.factory.FlutterFigmaWidgetFactory;
 import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.lib.types.Tagdata.Props;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.TagDataType;
 import com.necleo.codemonkey.lib.types.figma.FigmaTextNode;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
-import com.necleo.codemonkey.model.factory.NecleoDataNode;
+import com.necleo.codemonkey.model.factory.FlutterWI;
 import java.util.Optional;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
@@ -18,32 +18,35 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class LinkTagFlutterCGI implements FlutterCGI {
 
-  @Lazy FlutterFigmaNodeAbstractFactory flutterFigmaNodeFactory;
+  @Lazy
+  FlutterFigmaWidgetFactory flutterFigmaNodeFactory;
 
   @Override
-  public String generate(NecleoDataNode necleoDataNode) {
+  public String generate(FlutterWI fultterNecleoDataNode) {
 
-    if (!(necleoDataNode.fNode instanceof FigmaTextNode fNode)) {
+    if (!(fultterNecleoDataNode.figmaNode instanceof FigmaTextNode fNode)) {
       throw new IllegalArgumentException();
     }
-    return generat(fNode, necleoDataNode.tagData, necleoDataNode);
+    return generat(fNode, fultterNecleoDataNode.tagData, fultterNecleoDataNode);
   }
 
-  private String generat(FigmaTextNode fNode, TagData tagData, NecleoDataNode necleoDataNode) {
+  private String generat(
+      FigmaTextNode fNode, TagData tagData, FlutterWI fultterNecleoDataNode) {
     final String upperButton = " InkWell(\n";
     final String lowerButton = "),\n";
     String genCode = "";
     genCode += getLink(tagData);
-    genCode += getChild(fNode, tagData, necleoDataNode);
+    genCode += getChild(fNode, tagData, fultterNecleoDataNode);
     return upperButton + genCode + lowerButton;
   }
 
-  private String getChild(FigmaTextNode fNode, TagData tagData, NecleoDataNode necleoDataNode) {
+  private String getChild(
+      FigmaTextNode fNode, TagData tagData, FlutterWI fultterNecleoDataNode) {
     String genChild = "";
     FigmaNodeMapper figmaNodeMapper = new FigmaNodeMapper(fNode.getType(), null);
     Optional<FlutterCGI> flutterCGIOptional = flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
     genChild +=
-        flutterCGIOptional.map(flutterCGI -> flutterCGI.generate(necleoDataNode)).orElse("");
+        flutterCGIOptional.map(flutterCGI -> flutterCGI.generate(fultterNecleoDataNode)).orElse("");
 
     return "child:" + genChild + ",\n";
   }

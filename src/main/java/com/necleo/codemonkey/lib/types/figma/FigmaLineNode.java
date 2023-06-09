@@ -1,7 +1,6 @@
 package com.necleo.codemonkey.lib.types.figma;
 
 import com.necleo.codemonkey.lib.types.FigmaNode;
-import com.necleo.codemonkey.lib.types.enums.figmaEnums.Effect;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.FillGeometry;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.Fills;
 import com.necleo.codemonkey.lib.types.figma.properties.strokes.StrokeGeometry;
@@ -20,7 +19,7 @@ public class FigmaLineNode extends FigmaNode {
 
   int opacity;
   boolean isMask;
-//  List<Effect> effects;
+  //  List<Effect> effects;
   String effectsStyleId;
 
   // geometry related properties

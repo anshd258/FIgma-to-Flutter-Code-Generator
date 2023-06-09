@@ -10,12 +10,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EffectType {
-   private Effect type;
-   private EffectColor color;
-   private OffsetType offset;
-   private int radius;
-   private int spread;
-   private boolean visible;
-   private BlendMode blendMode;
-   private boolean showShadowBehindNode;
+  private Effect type;
+  private EffectColor color;
+  private OffsetType offset;
+  private int radius;
+  private int spread;
+  private boolean visible;
+  private BlendMode blendMode;
+  private boolean showShadowBehindNode;
 }

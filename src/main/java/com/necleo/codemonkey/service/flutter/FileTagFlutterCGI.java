@@ -1,11 +1,11 @@
 package com.necleo.codemonkey.service.flutter;
 
-import com.necleo.codemonkey.factory.FlutterFigmaNodeAbstractFactory;
+import com.necleo.codemonkey.factory.FlutterFigmaWidgetFactory;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.TagDataType;
 import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
-import com.necleo.codemonkey.model.factory.NecleoDataNode;
+import com.necleo.codemonkey.model.factory.FlutterWI;
 import java.util.Optional;
 import java.util.Set;
 import lombok.AccessLevel;
@@ -21,7 +21,8 @@ import org.springframework.stereotype.Service;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class FileTagFlutterCGI implements FlutterCGI {
 
-  @Lazy FlutterFigmaNodeAbstractFactory flutterFigmaNodeFactory;
+  @Lazy
+  FlutterFigmaWidgetFactory flutterFigmaNodeFactory;
 
   @Override
   public Set<FigmaNodeMapper> getStrategy() {
@@ -34,15 +35,15 @@ public class FileTagFlutterCGI implements FlutterCGI {
   }
 
   @Override
-  public String generate(NecleoDataNode necleoDataNode) {
-    if (!(necleoDataNode.fNode instanceof FigmaRectangleNode fNode)) {
+  public String generate(FlutterWI fultterNecleoDataNode) {
+    if (!(fultterNecleoDataNode.figmaNode instanceof FigmaRectangleNode fNode)) {
       throw new IllegalArgumentException();
     }
-    return generat(fNode, necleoDataNode);
+    return generat(fNode, fultterNecleoDataNode);
   }
 
-  private String generat(FigmaRectangleNode fNode, NecleoDataNode necleoDataNode) {
-    String widget = getWidget(fNode, necleoDataNode);
+  private String generat(FigmaRectangleNode fNode, FlutterWI fultterNecleoDataNode) {
+    String widget = getWidget(fNode, fultterNecleoDataNode);
     String function = getFunction();
 
     return widget + function;
@@ -68,23 +69,23 @@ public class FileTagFlutterCGI implements FlutterCGI {
     return fileNameAndPath;
   }
 
-  private String getWidget(FigmaRectangleNode fNode, NecleoDataNode necleoDataNode) {
+  private String getWidget(FigmaRectangleNode fNode, FlutterWI fultterNecleoDataNode) {
     final String upperButton = "GestureDetector(\n";
 
     final String lowerButton = "),\n\n";
     String genCode = "";
     genCode += getOnclick();
-    genCode += getChild(fNode, necleoDataNode);
+    genCode += getChild(fNode, fultterNecleoDataNode);
 
     return upperButton + genCode + lowerButton;
   }
 
-  private String getChild(FigmaRectangleNode fNode, NecleoDataNode necleoDataNode) {
+  private String getChild(FigmaRectangleNode fNode, FlutterWI fultterNecleoDataNode) {
     String genChild = "";
     FigmaNodeMapper figmaNodeMapper = new FigmaNodeMapper(fNode.getType(), null);
     Optional<FlutterCGI> flutterCGIOptional = flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
     genChild +=
-        flutterCGIOptional.map(flutterCGI -> flutterCGI.generate(necleoDataNode)).orElse("");
+        flutterCGIOptional.map(flutterCGI -> flutterCGI.generate(fultterNecleoDataNode)).orElse("");
     return "child:" + genChild + ",\n";
   }
 

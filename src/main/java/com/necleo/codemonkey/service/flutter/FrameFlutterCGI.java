@@ -3,9 +3,8 @@ package com.necleo.codemonkey.service.flutter;
 import static com.necleo.codemonkey.lib.types.enums.figmaEnums.PrimaryAxisAlignItems.SPACE_BETWEEN;
 import static com.necleo.codemonkey.lib.types.figma.properties.fills.enums.ScaleMode.FILL;
 
-import com.necleo.codemonkey.factory.FlutterFigmaNodeAbstractFactory;
+import com.necleo.codemonkey.factory.FlutterFigmaWidgetFactory;
 import com.necleo.codemonkey.lib.types.TagData;
-import com.necleo.codemonkey.lib.types.enums.ConstrainsValue;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.FigmaFrameNode;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.Color;
@@ -13,12 +12,11 @@ import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsGrad
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsImage;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSolid;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
-import com.necleo.codemonkey.model.factory.NecleoDataNode;
+import com.necleo.codemonkey.model.factory.FlutterWI;
+import com.necleo.codemonkey.service.flutter.utils.*;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import com.necleo.codemonkey.service.flutter.utils.*;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -36,7 +34,8 @@ public class FrameFlutterCGI implements FlutterCGI {
   FlexibleUtil flexibleUtil = new FlexibleUtil();
   SpacingUtil spacingUtil = new SpacingUtil();
   MainCrossAlignUtil mainCrossAlignUtil = new MainCrossAlignUtil();
-  @Lazy FlutterFigmaNodeAbstractFactory flutterFigmaNodeFactory;
+  @Lazy
+  FlutterFigmaWidgetFactory flutterFigmaNodeFactory;
 
   @Override
   public Set<FigmaNodeMapper> getStrategy() {
@@ -44,25 +43,28 @@ public class FrameFlutterCGI implements FlutterCGI {
   }
 
   @Override
-  public String generate(NecleoDataNode necleoDataNode) {
-    if (!(necleoDataNode.fNode instanceof FigmaFrameNode fNode)) {
+  public String generate(FlutterWI fultterNecleoDataNode) {
+    if (!(fultterNecleoDataNode.figmaNode instanceof FigmaFrameNode fNode)) {
       throw new IllegalArgumentException();
     }
-    return generat(fNode, necleoDataNode.tagData, necleoDataNode);
+    return generat(fNode, fultterNecleoDataNode.tagData, fultterNecleoDataNode);
   }
 
-  private String generat(FigmaFrameNode figmaNode, TagData tagData, NecleoDataNode necleoDataNode) {
+  private String generat(
+      FigmaFrameNode figmaNode, TagData tagData, FlutterWI fultterNecleoDataNode) {
     String genCode = "";
 
     genCode += "\nContainer( \n";
-    genCode += sizeUtil.getHeight(figmaNode, necleoDataNode.mainScreen, necleoDataNode);
-    genCode += sizeUtil.getWidth(figmaNode, necleoDataNode.mainScreen, necleoDataNode);
+    genCode +=
+        sizeUtil.getHeight(figmaNode, fultterNecleoDataNode.mainScreen, fultterNecleoDataNode);
+    genCode +=
+        sizeUtil.getWidth(figmaNode, fultterNecleoDataNode.mainScreen, fultterNecleoDataNode);
     genCode += getPadding(figmaNode);
     if (!(figmaNode.getFills().isEmpty())) {
       genCode += getBoxDecoration(figmaNode);
     }
 
-    genCode += "child:" + getchild(figmaNode, tagData, necleoDataNode) + "\n";
+    genCode += "child:" + getchild(figmaNode, tagData, fultterNecleoDataNode) + "\n";
 
     genCode += "),\n";
     System.out.println(genCode); // end indent
@@ -75,9 +77,10 @@ public class FrameFlutterCGI implements FlutterCGI {
     final String lowerPadding = "),\n";
     String bottom = "";
     String rigt = "";
-    if(!(figmaNode.getChild().size() == 1 && figmaNode.getChild().get(0).getType().equals(FigmaNodeTypes.TEXT))){
-       rigt = "right:" + figmaNode.getPaddingRight() + ",";
-    bottom = "bottom:" + figmaNode.getPaddingBottom() + ",";
+    if (!(figmaNode.getChild().size() == 1
+        && figmaNode.getChild().get(0).getType().equals(FigmaNodeTypes.TEXT))) {
+      rigt = "right:" + figmaNode.getPaddingRight() + ",";
+      bottom = "bottom:" + figmaNode.getPaddingBottom() + ",";
     }
     String leftPaing = "left:" + figmaNode.getPaddingLeft() + ",";
 
@@ -87,22 +90,23 @@ public class FrameFlutterCGI implements FlutterCGI {
   }
 
   private String getchild(
-      FigmaFrameNode figmaNode, TagData tagData, NecleoDataNode necleoDataNode) {
+      FigmaFrameNode figmaNode, TagData tagData, FlutterWI fultterNecleoDataNode) {
     StringBuilder genCode = new StringBuilder();
-    NecleoDataNode necleoDataNodeTemp = new NecleoDataNode();
-    if(figmaNode.getChild().size() == 1){
-        FigmaNodeMapper figmaNodeMapper =
-              new FigmaNodeMapper(figmaNode.getChild().get(0).getType(), null);
+    FlutterWI fultterNecleoDataNodeTemp = new FlutterWI();
+    if (figmaNode.getChild().size() == 1) {
+      FigmaNodeMapper figmaNodeMapper =
+          new FigmaNodeMapper(figmaNode.getChild().get(0).getType(), null);
       Optional<FlutterCGI> flutterCGIOptional =
-              flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
-      necleoDataNodeTemp.fNode = necleoDataNode.fNode.getChild().get(0);
-      necleoDataNodeTemp.tagData = necleoDataNode.tagData;
-      necleoDataNodeTemp.imports = necleoDataNode.imports;
-      genCode.append( flutterCGIOptional
-              .map(flutterCGI -> flutterCGI.generate(necleoDataNodeTemp))
+          flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
+      fultterNecleoDataNodeTemp.figmaNode = fultterNecleoDataNode.figmaNode.getChild().get(0);
+      fultterNecleoDataNodeTemp.tagData = fultterNecleoDataNode.tagData;
+      fultterNecleoDataNodeTemp.imports = fultterNecleoDataNode.imports;
+      genCode.append(
+          flutterCGIOptional
+              .map(flutterCGI -> flutterCGI.generate(fultterNecleoDataNodeTemp))
               .orElse(""));
       return genCode.toString();
-    }else {
+    } else {
       switch (figmaNode.getLayoutMode().name()) {
         case "NONE" -> {
           final String upperStack = "Stack(\n";
@@ -112,38 +116,41 @@ public class FrameFlutterCGI implements FlutterCGI {
           for (int i = 0; i <= figmaNode.getChild().toArray().length - 1; i++) {
             String genChild = "";
             String gen = "";
-//            if( figmaNode.getChild().get(i).getConstrains().getVertical().equals(ConstrainsValue.CENTER) ||
-//                    figmaNode.getChild().get(i).getConstrains().getHorizontal().equals(ConstrainsValue.CENTER)){
-//              center = " alignment: Alignment.center,";
-//            }
+            //            if(
+            // figmaNode.getChild().get(i).getConstrains().getVertical().equals(ConstrainsValue.CENTER) ||
+            //
+            // figmaNode.getChild().get(i).getConstrains().getHorizontal().equals(ConstrainsValue.CENTER)){
+            //              center = " alignment: Alignment.center,";
+            //            }
             FigmaNodeMapper figmaNodeMapper =
                 new FigmaNodeMapper(figmaNode.getChild().get(i).getType(), null);
             Optional<FlutterCGI> flutterCGIOptional =
                 flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
             if (i < figmaNode.getChild().toArray().length - 1) {
-              necleoDataNodeTemp.fNode = necleoDataNode.fNode.getChild().get(i);
-              necleoDataNodeTemp.tagData = necleoDataNode.tagData;
-              necleoDataNodeTemp.imports = necleoDataNode.imports;
+              fultterNecleoDataNodeTemp.figmaNode =
+                  fultterNecleoDataNode.figmaNode.getChild().get(i);
+              fultterNecleoDataNodeTemp.tagData = fultterNecleoDataNode.tagData;
+              fultterNecleoDataNodeTemp.imports = fultterNecleoDataNode.imports;
 
               genChild +=
                   flutterCGIOptional
-                      .map(flutterCGI -> flutterCGI.generate(necleoDataNodeTemp))
+                      .map(flutterCGI -> flutterCGI.generate(fultterNecleoDataNodeTemp))
                       .orElse("");
               gen = positionUtil.getPosition(genChild, figmaNode.getChild().get(i), figmaNode);
               genCode.append(gen);
             } else {
-              necleoDataNodeTemp.fNode = necleoDataNode.fNode.getChild().get(i);
-              necleoDataNodeTemp.tagData = necleoDataNode.tagData;
-              necleoDataNodeTemp.imports = necleoDataNode.imports;
+              fultterNecleoDataNodeTemp.figmaNode =
+                  fultterNecleoDataNode.figmaNode.getChild().get(i);
+              fultterNecleoDataNodeTemp.tagData = fultterNecleoDataNode.tagData;
+              fultterNecleoDataNodeTemp.imports = fultterNecleoDataNode.imports;
               genChild +=
                   flutterCGIOptional
-                      .map(flutterCGI -> flutterCGI.generate(necleoDataNodeTemp))
+                      .map(flutterCGI -> flutterCGI.generate(fultterNecleoDataNodeTemp))
                       .orElse("");
-              gen = positionUtil.getPosition(genChild, figmaNode.getChild().get(i),figmaNode);
+              gen = positionUtil.getPosition(genChild, figmaNode.getChild().get(i), figmaNode);
               genCode.append(gen);
             }
           }
-
 
           genCode.append("],\n");
           return upperStack + center + genCode + lowerStack;
@@ -164,23 +171,25 @@ public class FrameFlutterCGI implements FlutterCGI {
             Optional<FlutterCGI> flutterCGIOptional =
                 flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
             if (i == (figmaNode.getChild().size() - 1)) {
-              necleoDataNodeTemp.fNode = necleoDataNode.fNode.getChild().get(i);
-              necleoDataNodeTemp.tagData = necleoDataNode.tagData;
-              necleoDataNodeTemp.imports = necleoDataNode.imports;
+              fultterNecleoDataNodeTemp.figmaNode =
+                  fultterNecleoDataNode.figmaNode.getChild().get(i);
+              fultterNecleoDataNodeTemp.tagData = fultterNecleoDataNode.tagData;
+              fultterNecleoDataNodeTemp.imports = fultterNecleoDataNode.imports;
               genChild +=
                   flutterCGIOptional
-                      .map(flutterCGI -> flutterCGI.generate(necleoDataNodeTemp))
+                      .map(flutterCGI -> flutterCGI.generate(fultterNecleoDataNodeTemp))
                       .orElse("");
               genCode.append(genChild);
             } else {
-              necleoDataNodeTemp.fNode = necleoDataNode.fNode.getChild().get(i);
-              necleoDataNodeTemp.tagData = necleoDataNode.tagData;
-              necleoDataNodeTemp.imports = necleoDataNode.imports;
+              fultterNecleoDataNodeTemp.figmaNode =
+                  fultterNecleoDataNode.figmaNode.getChild().get(i);
+              fultterNecleoDataNodeTemp.tagData = fultterNecleoDataNode.tagData;
+              fultterNecleoDataNodeTemp.imports = fultterNecleoDataNode.imports;
               genChild +=
                   flutterCGIOptional
-                      .map(flutterCGI -> flutterCGI.generate(necleoDataNodeTemp))
+                      .map(flutterCGI -> flutterCGI.generate(fultterNecleoDataNodeTemp))
                       .orElse("");
-              if(!(figmaNode.getPrimaryAxisAlignItems().equals(SPACE_BETWEEN))){
+              if (!(figmaNode.getPrimaryAxisAlignItems().equals(SPACE_BETWEEN))) {
                 gen += spacingUtil.getSpacing(figmaNode);
               }
 
@@ -207,23 +216,25 @@ public class FrameFlutterCGI implements FlutterCGI {
             Optional<FlutterCGI> flutterCGIOptional =
                 flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
             if (i == (figmaNode.getChild().size() - 1)) {
-              necleoDataNodeTemp.fNode = necleoDataNode.fNode.getChild().get(i);
-              necleoDataNodeTemp.tagData = necleoDataNode.tagData;
-              necleoDataNodeTemp.imports = necleoDataNode.imports;
+              fultterNecleoDataNodeTemp.figmaNode =
+                  fultterNecleoDataNode.figmaNode.getChild().get(i);
+              fultterNecleoDataNodeTemp.tagData = fultterNecleoDataNode.tagData;
+              fultterNecleoDataNodeTemp.imports = fultterNecleoDataNode.imports;
               genChild +=
                   flutterCGIOptional
-                      .map(flutterCGI -> flutterCGI.generate(necleoDataNodeTemp))
+                      .map(flutterCGI -> flutterCGI.generate(fultterNecleoDataNodeTemp))
                       .orElse("");
               genCode.append(genChild);
             } else {
-              necleoDataNodeTemp.fNode = necleoDataNode.fNode.getChild().get(i);
-              necleoDataNodeTemp.tagData = necleoDataNode.tagData;
-              necleoDataNodeTemp.imports = necleoDataNode.imports;
+              fultterNecleoDataNodeTemp.figmaNode =
+                  fultterNecleoDataNode.figmaNode.getChild().get(i);
+              fultterNecleoDataNodeTemp.tagData = fultterNecleoDataNode.tagData;
+              fultterNecleoDataNodeTemp.imports = fultterNecleoDataNode.imports;
               genChild +=
                   flutterCGIOptional
-                      .map(flutterCGI -> flutterCGI.generate(necleoDataNodeTemp))
+                      .map(flutterCGI -> flutterCGI.generate(fultterNecleoDataNodeTemp))
                       .orElse("");
-              if(!(figmaNode.getPrimaryAxisAlignItems().equals(SPACE_BETWEEN))){
+              if (!(figmaNode.getPrimaryAxisAlignItems().equals(SPACE_BETWEEN))) {
                 gen += spacingUtil.getSpacing(figmaNode);
               }
 

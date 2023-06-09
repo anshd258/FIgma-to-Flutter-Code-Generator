@@ -9,7 +9,7 @@ aws:
   s3:
     bucket:
       name: ${AWS_S3_BUCKET_NAME:timon-assets-dev}
-      file: ${AWS_S3_BUCKET_NAME:necleo-code-gen}
+      file: ${AWS_S3_BUCKET_NAME:necleo-code-generate}
 
 server:
   port: 8080
@@ -28,7 +28,7 @@ cloud:
     region:
       static: ${REGION:ap-south-1}
     sqs:
-      codeGenQueueName: ${QUEUE_NAME:code-gen-queue}
+      codeGenQueueName: ${QUEUE_NAME:code-generate-queue}
 
 security:
   basic:

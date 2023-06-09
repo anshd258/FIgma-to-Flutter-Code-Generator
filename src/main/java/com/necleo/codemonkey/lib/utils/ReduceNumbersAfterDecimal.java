@@ -1,6 +1,5 @@
 package com.necleo.codemonkey.lib.utils;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 @Component
