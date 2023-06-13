@@ -33,13 +33,11 @@ public class TextFlutterCGI implements FlutterCGI {
 
   public String generat(FigmaTextNode fNode, NecleoDataNode necleoDataNode) {
     String genCode = "";
-    final String outterContainer = " Align(\n" +
-            "            alignment: Alignment.topLeft,\n" +
-            "            child: Container(";
+    final String outterContainer = "  Container(";
     String height = sizeUtil.getHeight(fNode, necleoDataNode.mainScreen,necleoDataNode);
     String width = sizeUtil.getWidth(fNode, necleoDataNode.mainScreen,necleoDataNode);
     final String upperText = "child: Text(\n";
-    final String lowerText = "),),),\n";
+    final String lowerText = "),),\n";
 
     genCode += getText(fNode);
     genCode += getTextAlign(fNode);
@@ -83,7 +81,7 @@ public class TextFlutterCGI implements FlutterCGI {
   }
 
   private String getFontStyle(FigmaTextNode fNode) {
-    return "fontSize:" + (fNode.getFontSize() -1 )+ ",\n";
+    return "fontSize:" + (fNode.getFontSize() -2 )+ ",\n";
   }
 
   private String getColor(FillsSolid fills) {
@@ -109,7 +107,7 @@ public class TextFlutterCGI implements FlutterCGI {
 
   private String getText(FigmaTextNode fNode) {
     if (fNode.getName() != null) {
-      return "'" + fNode.getCharacters() + "',\n";
+      return "\"\"\"" + fNode.getCharacters() + "\"\"\",\n";
     }
     return "";
   }

@@ -67,6 +67,7 @@ public class FigmaFrameNode extends FigmaNode {
   boolean strokesIncludedInLayout;
 
   // layoutGrids - need to check
+  LayoutAlign layoutAlign;
   String gridStyleId;
   boolean clipsContent;
 

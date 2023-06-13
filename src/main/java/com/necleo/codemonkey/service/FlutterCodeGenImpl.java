@@ -51,6 +51,7 @@ public class FlutterCodeGenImpl implements CodeGen {
     NecleoDataNode necleoDataNode = new NecleoDataNode();
     necleoDataNode.fNode = fNode.get(0);
     necleoDataNode.responsive = false;
+    necleoDataNode.mainScreen = fNode.get(0);
     necleoDataNode.tagData = tagDataMap.get(fNode.get(0).getId());
     necleoDataNode.imports = new HashSet<String>();
     necleoDataNode.packages = new HashSet<String>();

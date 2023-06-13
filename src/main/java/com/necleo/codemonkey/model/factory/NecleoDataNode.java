@@ -13,6 +13,7 @@ public class NecleoDataNode {
   public FigmaNode fNode;
   public Boolean  responsive ;
   public FigmaNode mainScreen;
+  public FigmaNode parentNode;
 
   public TagData tagData;
   public Set<String> imports;

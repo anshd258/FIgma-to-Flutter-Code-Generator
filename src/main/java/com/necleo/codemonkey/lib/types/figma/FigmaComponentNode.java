@@ -22,7 +22,7 @@ public class FigmaComponentNode extends FigmaNode {
   List<Effect> effects;
   String effectsStyleId;
 
-  // Corner Related Properties
+  // Corner Related Properties\
 
   int cornerRadius;
   int cornerSmoothing;

@@ -5,11 +5,11 @@ import com.necleo.codemonkey.model.factory.NecleoDataNode;
 
 public class SizeUtil {
   public String getHeight(FigmaNode fNode, FigmaNode mainScreen, NecleoDataNode necleoDataNode ) {
-    if(fNode.getConstrains() != null){
-      switch (fNode.getConstrains().getVertical()) {
+    if(fNode.getConstraints() != null){
+      switch (fNode.getConstraints().getVertical()) {
         case STRETCH, SCALE -> {
           necleoDataNode.responsive = true;
-          return "height:" + ((fNode.getHeight() / mainScreen.getHeight()) * 100) + ".h,\n";
+          return "height:" + (((double) fNode.getHeight() / necleoDataNode.mainScreen.getHeight()) * 100) + ".h,\n";
         }
         default -> {
           return "height:" + Integer.toString(fNode.getHeight()) + ",\n";
@@ -26,12 +26,12 @@ public class SizeUtil {
   }
 
   public String getWidth(FigmaNode fNode, FigmaNode mainScreen , NecleoDataNode necleoDataNode) {
-    if(fNode.getConstrains() != null)
+    if(fNode.getConstraints() != null)
     {
-      switch (fNode.getConstrains().getHorizontal()) {
+      switch (fNode.getConstraints().getHorizontal()) {
         case STRETCH, SCALE -> {
           necleoDataNode.responsive = true;
-          return "width:" + ((fNode.getWidth() / mainScreen.getWidth()) * 100) + ".w,\n";
+          return "width:" + (((double) fNode.getWidth() / necleoDataNode.mainScreen.getWidth()) * 100) + ".w,\n";
         }
         default -> {
           return "width:" + Integer.toString(fNode.getWidth()) + ",\n";

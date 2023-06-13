@@ -21,7 +21,7 @@ import lombok.extern.jackson.Jacksonized;
  * Type declaration of figma screen <br>
  * <br>
  * {@link #type} figma node type <br>
- * {@link #children} figma node children
+ *  figma node children
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type", visible = true)
 @JsonSubTypes({
@@ -49,7 +49,7 @@ public class FigmaNode {
   List<FigmaNode> child;
   String id;
   String name;
-  Constrains constrains;
+  Constrains constraints;
   boolean removed;
   boolean visible;
   boolean locked;

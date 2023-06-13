@@ -2,10 +2,13 @@ package com.necleo.codemonkey.service.flutter;
 
 import static com.necleo.codemonkey.lib.types.enums.figmaEnums.PrimaryAxisAlignItems.SPACE_BETWEEN;
 import static com.necleo.codemonkey.lib.types.figma.properties.fills.enums.ScaleMode.FILL;
+import static com.necleo.codemonkey.lib.types.figma.properties.fills.enums.ScaleMode.STRETCH;
 
 import com.necleo.codemonkey.factory.FlutterFigmaNodeAbstractFactory;
+import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.lib.types.enums.ConstrainsValue;
+import com.necleo.codemonkey.lib.types.enums.figmaEnums.LayoutAlign;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.FigmaFrameNode;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.Color;
@@ -55,8 +58,11 @@ public class FrameFlutterCGI implements FlutterCGI {
     String genCode = "";
 
     genCode += "\nContainer( \n";
-    genCode += sizeUtil.getHeight(figmaNode, necleoDataNode.mainScreen, necleoDataNode);
-    genCode += sizeUtil.getWidth(figmaNode, necleoDataNode.mainScreen, necleoDataNode);
+    if(!(figmaNode.getLayoutAlign().equals(LayoutAlign.STRETCH))){
+      genCode += sizeUtil.getHeight(figmaNode, necleoDataNode.mainScreen, necleoDataNode);
+      genCode += sizeUtil.getWidth(figmaNode, necleoDataNode.mainScreen, necleoDataNode);
+    }
+
     genCode += getPadding(figmaNode);
     if (!(figmaNode.getFills().isEmpty())) {
       genCode += getBoxDecoration(figmaNode);
@@ -65,7 +71,11 @@ public class FrameFlutterCGI implements FlutterCGI {
     genCode += "child:" + getchild(figmaNode, tagData, necleoDataNode) + "\n";
 
     genCode += "),\n";
-    System.out.println(genCode); // end indent
+    System.out.println(genCode);
+
+    if(figmaNode.getLayoutAlign().equals(LayoutAlign.STRETCH)){
+      genCode = flexibleUtil.getFlexible(genCode);
+    }// end indent
 
     return genCode;
   }
@@ -88,21 +98,23 @@ public class FrameFlutterCGI implements FlutterCGI {
 
   private String getchild(
       FigmaFrameNode figmaNode, TagData tagData, NecleoDataNode necleoDataNode) {
+
     StringBuilder genCode = new StringBuilder();
     NecleoDataNode necleoDataNodeTemp = new NecleoDataNode();
-    if(figmaNode.getChild().size() == 1){
-        FigmaNodeMapper figmaNodeMapper =
-              new FigmaNodeMapper(figmaNode.getChild().get(0).getType(), null);
-      Optional<FlutterCGI> flutterCGIOptional =
-              flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
-      necleoDataNodeTemp.fNode = necleoDataNode.fNode.getChild().get(0);
-      necleoDataNodeTemp.tagData = necleoDataNode.tagData;
-      necleoDataNodeTemp.imports = necleoDataNode.imports;
-      genCode.append( flutterCGIOptional
-              .map(flutterCGI -> flutterCGI.generate(necleoDataNodeTemp))
-              .orElse(""));
-      return genCode.toString();
-    }else {
+//    if(figmaNode.getChild().size() == 1){
+//        FigmaNodeMapper figmaNodeMapper =
+//              new FigmaNodeMapper(figmaNode.getChild().get(0).getType(), null);
+//      Optional<FlutterCGI> flutterCGIOptional =
+//              flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
+//      necleoDataNodeTemp.fNode = necleoDataNode.fNode.getChild().get(0);
+//      necleoDataNodeTemp.tagData = necleoDataNode.tagData;
+//      necleoDataNodeTemp.imports = necleoDataNode.imports;
+//      necleoDataNodeTemp.mainScreen = necleoDataNode.mainScreen;
+//      genCode.append( flutterCGIOptional
+//              .map(flutterCGI -> flutterCGI.generate(necleoDataNodeTemp))
+//              .orElse(""));
+//      return genCode.toString();
+//    }else {
       switch (figmaNode.getLayoutMode().name()) {
         case "NONE" -> {
           final String upperStack = "Stack(\n";
@@ -124,22 +136,26 @@ public class FrameFlutterCGI implements FlutterCGI {
               necleoDataNodeTemp.fNode = necleoDataNode.fNode.getChild().get(i);
               necleoDataNodeTemp.tagData = necleoDataNode.tagData;
               necleoDataNodeTemp.imports = necleoDataNode.imports;
+              necleoDataNodeTemp.mainScreen = necleoDataNode.mainScreen;
 
               genChild +=
                   flutterCGIOptional
                       .map(flutterCGI -> flutterCGI.generate(necleoDataNodeTemp))
                       .orElse("");
-              gen = positionUtil.getPosition(genChild, figmaNode.getChild().get(i), figmaNode);
+              FigmaNode fNode = figmaNode.getChild().get(i);
+              gen = positionUtil.getPosition(genChild, fNode, figmaNode , necleoDataNode);
               genCode.append(gen);
             } else {
               necleoDataNodeTemp.fNode = necleoDataNode.fNode.getChild().get(i);
               necleoDataNodeTemp.tagData = necleoDataNode.tagData;
               necleoDataNodeTemp.imports = necleoDataNode.imports;
+              necleoDataNodeTemp.mainScreen = necleoDataNode.mainScreen;
               genChild +=
                   flutterCGIOptional
                       .map(flutterCGI -> flutterCGI.generate(necleoDataNodeTemp))
                       .orElse("");
-              gen = positionUtil.getPosition(genChild, figmaNode.getChild().get(i),figmaNode);
+              FigmaNode fNode = figmaNode.getChild().get(i);
+              gen = positionUtil.getPosition(genChild, fNode,figmaNode, necleoDataNode);
               genCode.append(gen);
             }
           }
@@ -167,6 +183,7 @@ public class FrameFlutterCGI implements FlutterCGI {
               necleoDataNodeTemp.fNode = necleoDataNode.fNode.getChild().get(i);
               necleoDataNodeTemp.tagData = necleoDataNode.tagData;
               necleoDataNodeTemp.imports = necleoDataNode.imports;
+              necleoDataNodeTemp.mainScreen = necleoDataNode.mainScreen;
               genChild +=
                   flutterCGIOptional
                       .map(flutterCGI -> flutterCGI.generate(necleoDataNodeTemp))
@@ -176,6 +193,7 @@ public class FrameFlutterCGI implements FlutterCGI {
               necleoDataNodeTemp.fNode = necleoDataNode.fNode.getChild().get(i);
               necleoDataNodeTemp.tagData = necleoDataNode.tagData;
               necleoDataNodeTemp.imports = necleoDataNode.imports;
+              necleoDataNodeTemp.mainScreen = necleoDataNode.mainScreen;
               genChild +=
                   flutterCGIOptional
                       .map(flutterCGI -> flutterCGI.generate(necleoDataNodeTemp))
@@ -210,6 +228,7 @@ public class FrameFlutterCGI implements FlutterCGI {
               necleoDataNodeTemp.fNode = necleoDataNode.fNode.getChild().get(i);
               necleoDataNodeTemp.tagData = necleoDataNode.tagData;
               necleoDataNodeTemp.imports = necleoDataNode.imports;
+              necleoDataNodeTemp.mainScreen = necleoDataNode.mainScreen;
               genChild +=
                   flutterCGIOptional
                       .map(flutterCGI -> flutterCGI.generate(necleoDataNodeTemp))
@@ -219,6 +238,7 @@ public class FrameFlutterCGI implements FlutterCGI {
               necleoDataNodeTemp.fNode = necleoDataNode.fNode.getChild().get(i);
               necleoDataNodeTemp.tagData = necleoDataNode.tagData;
               necleoDataNodeTemp.imports = necleoDataNode.imports;
+              necleoDataNodeTemp.mainScreen = necleoDataNode.mainScreen;
               genChild +=
                   flutterCGIOptional
                       .map(flutterCGI -> flutterCGI.generate(necleoDataNodeTemp))
@@ -235,7 +255,7 @@ public class FrameFlutterCGI implements FlutterCGI {
           return upperColumn + genCode + lowerColumn;
         }
       }
-    }
+  //  }
 
     return "";
   }
