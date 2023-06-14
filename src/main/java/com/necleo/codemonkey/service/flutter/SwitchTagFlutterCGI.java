@@ -2,6 +2,8 @@ package com.necleo.codemonkey.service.flutter;
 
 import static com.necleo.codemonkey.lib.types.figma.properties.fills.enums.ScaleMode.FILL;
 
+import com.necleo.codemonkey.flutter.index.FlutterGI;
+import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.TagDataType;
 import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
@@ -9,10 +11,9 @@ import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsImag
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSolid;
 import com.necleo.codemonkey.lib.types.figma.properties.strokes.Strokes;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
-import com.necleo.codemonkey.model.factory.NecleoDataNode;
-import java.util.Set;
-
+import com.necleo.codemonkey.model.factory.FlutterWI;
 import com.necleo.codemonkey.service.flutter.utils.SizeUtil;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -27,14 +28,20 @@ public class SwitchTagFlutterCGI implements FlutterCGI {
   }
 
   @Override
-  public String generate(NecleoDataNode necleoDataNode) {
-    if (!(necleoDataNode.fNode instanceof FigmaRectangleNode fNode)) {
+  public String generate(FigmaNode figmaNode, FigmaNode parentFigmaNode, FlutterGI flutterGI, FlutterWI flutterWI) {
+    if (!(figmaNode instanceof FigmaRectangleNode fNode)) {
       throw new IllegalArgumentException();
     }
-    return generat(fNode, necleoDataNode);
+    return generat(fNode, flutterWI,flutterGI);
   }
 
-  private String generat(FigmaRectangleNode fNode, NecleoDataNode necleoDataNode) {
+  @Override
+  public String generate(FlutterWI fultterNecleoDataNode, FigmaNode figmaNode) {
+    return null;
+  }
+
+
+  private String generat(FigmaRectangleNode fNode, FlutterWI fultterNecleoDataNode, FlutterGI flutterGI) {
     final String upperStateFullWidget =
         "class CustomSwitch extends StatefulWidget {\n"
             + "  \n"
@@ -54,12 +61,13 @@ public class SwitchTagFlutterCGI implements FlutterCGI {
 
     final String dispose = getDispose();
     String genCode = "";
-    genCode += getWidgetBuild(fNode,necleoDataNode);
+    genCode += getWidgetBuild(fNode, fultterNecleoDataNode, flutterGI);
 
     return upperStateFullWidget + initState + dispose + genCode + lowerStateFullWidget;
   }
 
-  private String getWidgetBuild(FigmaRectangleNode fNode, NecleoDataNode necleoDataNode) {
+  private String getWidgetBuild(
+      FigmaRectangleNode fNode, FlutterWI fultterNecleoDataNode, FlutterGI flutterGI) {
     final String upperWidgetBuild =
         "@override\n"
             + "  Widget build(BuildContext context) {\n"
@@ -78,8 +86,8 @@ public class SwitchTagFlutterCGI implements FlutterCGI {
             + "        duration:";
     final String lowerWidgetBuild = " ),\n" + "    );\n" + "  }";
     String genCode = getDuration(300);
-    genCode += sizeUtil.getHeight(fNode, necleoDataNode.mainScreen,necleoDataNode);
-    genCode += sizeUtil.getWidth(fNode, necleoDataNode.mainScreen,necleoDataNode);
+    genCode += sizeUtil.getHeight(fNode, fultterNecleoDataNode.getMainScreen(), flutterGI);
+    genCode += sizeUtil.getWidth(fNode, fultterNecleoDataNode.getMainScreen(), flutterGI);
     genCode += getSwitchBoxDecoration(fNode);
 
     genCode += "child:" + getpadding(fNode);
@@ -371,4 +379,6 @@ public class SwitchTagFlutterCGI implements FlutterCGI {
     genCode += getStyle(fNode.getStrokes().get(0));
     return upperBorder + genCode + bottomBorder;
   }
+
+
 }

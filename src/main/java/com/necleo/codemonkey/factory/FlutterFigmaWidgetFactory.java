@@ -10,9 +10,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class FlutterFigmaNodeAbstractFactory extends AbstractFactory<FigmaNodeMapper, FlutterCGI> {
+public class FlutterFigmaWidgetFactory extends AbstractFactory<FigmaNodeMapper, FlutterCGI> {
 
-  public FlutterFigmaNodeAbstractFactory(List<FlutterCGI> beans) {
+  public FlutterFigmaWidgetFactory(List<FlutterCGI> beans) {
     super(beans, new SetMapper<>());
   }
 }

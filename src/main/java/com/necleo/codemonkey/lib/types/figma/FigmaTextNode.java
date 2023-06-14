@@ -9,9 +9,8 @@ import com.necleo.codemonkey.lib.types.figma.properties.fills.FillGeometry;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.Fills;
 import com.necleo.codemonkey.lib.types.figma.properties.strokes.StrokeGeometry;
 import com.necleo.codemonkey.lib.types.figma.properties.strokes.Strokes;
-import java.util.List;
-
 import com.necleo.codemonkey.lib.types.figma.properties.text.FontName;
+import java.util.List;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
@@ -25,7 +24,7 @@ public class FigmaTextNode extends FigmaNode {
   int opacity;
   BlendMode blendMode;
   boolean isMask;
-//  List<Effect> effects;
+  //  List<Effect> effects;
   String effectsStyleId;
   // geometry related properties
   List<Fills> fills;

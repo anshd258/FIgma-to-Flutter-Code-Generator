@@ -8,7 +8,6 @@ import com.necleo.codemonkey.lib.types.figma.FigmaTextNode;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSolid;
 import com.necleo.codemonkey.lib.utils.ReduceNumbersAfterDecimal;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
-
 import java.text.DecimalFormat;
 import java.util.Map;
 import java.util.Set;
@@ -23,7 +22,9 @@ public class TextReactCGI implements ReactCGI {
   @Override
   public Set<FigmaNodeMapper> getStrategy() {
 
-    return Set.of(new FigmaNodeMapper(FigmaNodeTypes.TEXT, null), new FigmaNodeMapper(FigmaNodeTypes.TEXT, TagDataType.TEXT));
+    return Set.of(
+        new FigmaNodeMapper(FigmaNodeTypes.TEXT, null),
+        new FigmaNodeMapper(FigmaNodeTypes.TEXT, TagDataType.TEXT));
   }
 
   @Override
@@ -82,24 +83,30 @@ public class TextReactCGI implements ReactCGI {
               + ", "
               + fNode.getStrokeWeight()
               + "px, rgb("
-              + reduceNumbersAfterDecimal.reducerDecimal(fNode.getStrokes().get(0).getColor().getR())
+              + reduceNumbersAfterDecimal.reducerDecimal(
+                  fNode.getStrokes().get(0).getColor().getR())
               + ", "
-              + reduceNumbersAfterDecimal.reducerDecimal(fNode.getStrokes().get(0).getColor().getG())
+              + reduceNumbersAfterDecimal.reducerDecimal(
+                  fNode.getStrokes().get(0).getColor().getG())
               + ", "
-              + reduceNumbersAfterDecimal.reducerDecimal(fNode.getStrokes().get(0).getColor().getB())
+              + reduceNumbersAfterDecimal.reducerDecimal(
+                  fNode.getStrokes().get(0).getColor().getB())
               + ")',\n";
     }
     style += getAlignment(fNode);
     style += getFont(fNode);
     style += getWidthHeight(fNode);
-//    style += "position: 'absolute',\n";
-    style += "letterSpacing: '" + (new DecimalFormat("#.#")).format(fNode.getLetterSpacing().getValue()) + "px',\n";
+    //    style += "position: 'absolute',\n";
+    style +=
+        "letterSpacing: '"
+            + (new DecimalFormat("#.#")).format(fNode.getLetterSpacing().getValue())
+            + "px',\n";
 
     return style;
   }
 
   private String getWidthHeight(FigmaTextNode fNode) {
-    return "width: '" + fNode.getWidth() + "px',\n" + "height: '" + fNode.getHeight() + "px',\n" ;
+    return "width: '" + fNode.getWidth() + "px',\n" + "height: '" + fNode.getHeight() + "px',\n";
   }
 
   public String getData(FigmaTextNode fNode) {
@@ -112,10 +119,10 @@ public class TextReactCGI implements ReactCGI {
   public String getFont(FigmaTextNode fNode) {
     String font = "";
     font += "fontWeight: '" + fNode.getFontWeight() + "',\n ";
-//    if (!(fNode.getFontName() instanceof Object))
-//      font += "fontFace: 'Sans-Serif',\n";
-//    else
-      font += "fontFace: '" + fNode.getFontName().getFamily() + "',\n";
+    //    if (!(fNode.getFontName() instanceof Object))
+    //      font += "fontFace: 'Sans-Serif',\n";
+    //    else
+    font += "fontFace: '" + fNode.getFontName().getFamily() + "',\n";
     font += "fontSize: '" + fNode.getFontSize() + "px',\n";
 
     return font;

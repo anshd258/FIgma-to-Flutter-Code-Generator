@@ -5,13 +5,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.jackson.Jacksonized;
+
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 @Jacksonized
 public class EffectColor {
-        double r;
-        double g;
-        double b;
-        double a;
+  double r;
+  double g;
+  double b;
+  double a;
 }

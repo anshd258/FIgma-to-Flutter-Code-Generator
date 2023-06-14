@@ -4,7 +4,9 @@ import static com.necleo.codemonkey.constant.MDCKey.X_PROJECT_ID;
 import static com.necleo.codemonkey.lib.types.figma.properties.fills.enums.ScaleMode.FILL;
 
 import com.necleo.codemonkey.configuration.S3FileLoader;
-import com.necleo.codemonkey.factory.FlutterBoilerTypeAbstractFactory;
+import com.necleo.codemonkey.factory.FlutterBoilerPLateFactory;
+import com.necleo.codemonkey.flutter.index.FlutterGI;
+import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.Color;
@@ -13,12 +15,10 @@ import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsImag
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSolid;
 import com.necleo.codemonkey.lib.types.figma.properties.strokes.Strokes;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
-import com.necleo.codemonkey.model.factory.NecleoDataNode;
-
+import com.necleo.codemonkey.model.factory.FlutterWI;
+import com.necleo.codemonkey.service.flutter.utils.SizeUtil;
 import java.net.URL;
 import java.util.Set;
-
-import com.necleo.codemonkey.service.flutter.utils.SizeUtil;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -34,30 +34,38 @@ import org.springframework.util.CollectionUtils;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class RectangleFlutterCGI implements FlutterCGI {
 
-    S3FileLoader s3FileLoader;
+  S3FileLoader s3FileLoader;
   SizeUtil sizeUtil = new SizeUtil();
-  @Lazy FlutterBoilerTypeAbstractFactory flutterBoilerTypeAbstractFactory;
+  @Lazy
+  FlutterBoilerPLateFactory flutterBoilerPLateFactory;
 
   @Override
   public Set<FigmaNodeMapper> getStrategy() {
     return Set.of(new FigmaNodeMapper(FigmaNodeTypes.RECTANGLE, null));
   }
-
   @Override
-  public String generate(NecleoDataNode necleoDataNode) {
-    if (!(necleoDataNode.fNode instanceof FigmaRectangleNode fNode)) {
+  public String generate(FigmaNode figmaNode, FigmaNode parentFigmaNode, FlutterGI flutterGI, FlutterWI flutterWI) {
+    if (!(figmaNode instanceof FigmaRectangleNode fNode)) {
       throw new IllegalArgumentException();
     }
-    return generat(fNode, necleoDataNode);
+    return generat(fNode, flutterWI, flutterGI);
   }
 
-  public String generat(FigmaRectangleNode figmaNode,NecleoDataNode necleoDataNode) {
+  @Override
+  public String generate(FlutterWI fultterNecleoDataNode, FigmaNode figmaNode) {
+    return null;
+  }
+
+
+  public String generat(FigmaRectangleNode figmaNode, FlutterWI fultterNecleoDataNode, FlutterGI flutterGI) {
 
     String genCode = "";
 
     genCode += "\nContainer( \n";
-    genCode += sizeUtil.getHeight(figmaNode, necleoDataNode.mainScreen,necleoDataNode);
-    genCode += sizeUtil.getWidth(figmaNode, necleoDataNode.mainScreen,necleoDataNode);
+    genCode +=
+        sizeUtil.getHeight(figmaNode, fultterNecleoDataNode.getMainScreen(), flutterGI);
+    genCode +=
+        sizeUtil.getWidth(figmaNode, fultterNecleoDataNode.getMainScreen(), flutterGI);
     genCode += getBoxDecoration(figmaNode);
 
     genCode += "),\n";
@@ -112,10 +120,10 @@ public class RectangleFlutterCGI implements FlutterCGI {
       genBoxDecoration += border(fNode);
     }
 
-//    if (!(fNode.getEffects().isEmpty())){
-//      if(fNode.getEffects().get(0).)
-//      genBoxDecoration +=
-//    }
+    //    if (!(fNode.getEffects().isEmpty())){
+    //      if(fNode.getEffects().get(0).)
+    //      genBoxDecoration +=
+    //    }
     return upperBoxDecoration + genBoxDecoration + bottomBoxDecoration;
   }
 
@@ -190,7 +198,7 @@ public class RectangleFlutterCGI implements FlutterCGI {
     String imageHash = fills.getImageHash();
     String projectId = MDC.get(X_PROJECT_ID);
 
-        URL s3ImageUrl = s3FileLoader.getImageUrl(imageHash, projectId);
+    URL s3ImageUrl = s3FileLoader.getImageUrl(imageHash, projectId);
     final String upperImage = " image: NetworkImage(\n";
     final String lowerImage = "),\n";
     final String imageUrl = "'" + s3ImageUrl.toString() + "'";
@@ -232,7 +240,7 @@ public class RectangleFlutterCGI implements FlutterCGI {
 
     genCode += getStrokeAlignment(fNode);
     if (!(CollectionUtils.isEmpty(fNode.getStrokes()))) {
-//      genCode += getColor(fNode.getStrokes().get(0));
+      //      genCode += getColor(fNode.getStrokes().get(0));
     }
 
     genCode += getStrokeWidth(fNode);
@@ -242,4 +250,6 @@ public class RectangleFlutterCGI implements FlutterCGI {
 
     return upperBorder + genCode + bottomBorder;
   }
+
+
 }

@@ -12,9 +12,9 @@ import org.springframework.stereotype.Service;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AST2Text {
 
-  public StringBuffer toText(ASTNode astNode) {
-    StringBuffer stringBuffer =
-        new StringBuffer(Optional.ofNullable(astNode.getValue()).orElse(""));
+  public StringBuilder toText(ASTNode astNode) {
+    StringBuilder stringBuffer =
+        new StringBuilder(Optional.ofNullable(astNode.getValue()).orElse(""));
     for (ASTNode child : astNode.getChildren()) {
       stringBuffer.append(toText(child));
     }

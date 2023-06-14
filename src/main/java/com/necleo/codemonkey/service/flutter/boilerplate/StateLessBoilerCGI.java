@@ -2,10 +2,10 @@ package com.necleo.codemonkey.service.flutter.boilerplate;
 
 import com.necleo.codemonkey.lib.types.enums.boilerplate.BoilerType;
 import com.necleo.codemonkey.model.factory.BoilerNodeMapper;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
 @Service
 @Slf4j
 public class StateLessBoilerCGI implements BoilerCGI {
@@ -18,10 +18,9 @@ public class StateLessBoilerCGI implements BoilerCGI {
   public String generate(String genCode) {
     String genWidget = "";
     genWidget += getUpperStateLessWidget();
-    genWidget += genCode.substring(0,genCode.length()-2) + "\n";
+    genWidget += genCode.substring(0, genCode.length() - 2) + "\n";
     genWidget += getLowerStateLessWidget();
     return genWidget;
-    
   }
 
   private String getLowerStateLessWidget() {

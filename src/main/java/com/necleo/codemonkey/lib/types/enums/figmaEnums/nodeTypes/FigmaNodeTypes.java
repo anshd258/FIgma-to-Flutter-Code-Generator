@@ -10,5 +10,7 @@ public enum FigmaNodeTypes {
   TEXT,
 
   FRAME,
-  STAR
+  STAR,
+  COMPONENT,
+  COMPONENT_SET
 }

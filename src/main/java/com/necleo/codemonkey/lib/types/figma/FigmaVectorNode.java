@@ -1,7 +1,6 @@
 package com.necleo.codemonkey.lib.types.figma;
 
 import com.necleo.codemonkey.lib.types.FigmaNode;
-import com.necleo.codemonkey.lib.types.enums.figmaEnums.Effect;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.StrokeAlign;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.StrokeJoin;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.FillGeometry;
@@ -23,7 +22,7 @@ public class FigmaVectorNode extends FigmaNode {
 
   int opacity;
   boolean isMask;
-//  List<Effect> effects;
+  //  List<Effect> effects;
   String effectsStyleId;
 
   // Corner Related Properties

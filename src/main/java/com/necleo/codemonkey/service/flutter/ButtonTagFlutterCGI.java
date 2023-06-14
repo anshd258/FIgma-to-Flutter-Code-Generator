@@ -1,12 +1,13 @@
 package com.necleo.codemonkey.service.flutter;
 
-import com.necleo.codemonkey.factory.FlutterFigmaNodeAbstractFactory;
+import com.necleo.codemonkey.factory.FlutterFigmaWidgetFactory;
+import com.necleo.codemonkey.flutter.index.FlutterGI;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.TagDataType;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
-import com.necleo.codemonkey.model.factory.NecleoDataNode;
+import com.necleo.codemonkey.model.factory.FlutterWI;
 import java.util.Optional;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
@@ -18,23 +19,30 @@ import org.springframework.stereotype.Service;
 // @RequiredArgsConstructor
 // @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class ButtonTagFlutterCGI implements FlutterCGI {
-  @Lazy FlutterFigmaNodeAbstractFactory flutterFigmaNodeFactory;
+  @Lazy
+  FlutterFigmaWidgetFactory flutterFigmaNodeFactory;
 
-  //  FlutterFigmaNodeAbstractFactory flutterFigmaNodeFactory;
-
+  //  FlutterFigmaWidgetFactory flutterFigmaNodeFactory;
   @Override
-  public String generate(NecleoDataNode necleoDataNode) {
-
-    return generat(necleoDataNode.fNode, necleoDataNode.tagData, necleoDataNode);
+  public String generate(FigmaNode figmaNode, FigmaNode parentFigmaNode, FlutterGI flutterGI, FlutterWI flutterWI) {
+    return generat(
+            figmaNode, flutterWI.getTagData().get(figmaNode.getId()), flutterWI,flutterGI);
   }
 
-  private String generat(FigmaNode fNode, TagData tagData, NecleoDataNode necleoDataNode) {
+  @Override
+  public String generate(FlutterWI fultterNecleoDataNode, FigmaNode figmaNode) {
+    return null;
+  }
+
+
+  private String generat(
+      FigmaNode fNode, TagData tagData, FlutterWI fultterNecleoDataNode, FlutterGI flutterGI) {
     final String upperButton = "GestureDetector(\n";
 
     final String lowerButton = "),\n";
     String genCode = "";
     genCode += getFunction();
-    genCode += getChild(fNode, tagData, necleoDataNode);
+    genCode += getChild(fNode, tagData, fultterNecleoDataNode,flutterGI);
     //    BoilerNodeMapper  boilerNodeMapper = new BoilerNodeMapper(BoilerType.STATELESS,null);
     //    Optional<BoilerCGI> flutterBoilerCGIOptional =
     // flutterBoilerTypeAbstractFactory.getProcessor(boilerNodeMapper);
@@ -43,12 +51,13 @@ public class ButtonTagFlutterCGI implements FlutterCGI {
     return upperButton + genCode + lowerButton;
   }
 
-  private String getChild(FigmaNode fNode, TagData tagData, NecleoDataNode necleoDataNode) {
+  private String getChild(
+      FigmaNode fNode, TagData tagData, FlutterWI fultterNecleoDataNode, FlutterGI flutterGI) {
     String genChild = "";
     FigmaNodeMapper figmaNodeMapper = new FigmaNodeMapper(fNode.getType(), null);
     Optional<FlutterCGI> flutterCGIOptional = flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
     genChild +=
-        flutterCGIOptional.map(flutterCGI -> flutterCGI.generate(necleoDataNode)).orElse("");
+        flutterCGIOptional.map(flutterCGI -> flutterCGI.generate(fNode,fNode,flutterGI,fultterNecleoDataNode)).orElse("");
 
     return "child:" + genChild + ",\n";
   }
@@ -67,4 +76,6 @@ public class ButtonTagFlutterCGI implements FlutterCGI {
         new FigmaNodeMapper(FigmaNodeTypes.VECTOR, TagDataType.BUTTON),
         new FigmaNodeMapper(FigmaNodeTypes.LINE, TagDataType.BUTTON));
   }
+
+
 }

@@ -7,7 +7,6 @@ import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.TagDataType;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import java.util.Map;
 import java.util.Set;
-
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Service;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class DropDownTagCGI implements ReactCGI {
   RectangleReactCGI rectangleReactCGI;
-
 
   @Override
   public String generate(

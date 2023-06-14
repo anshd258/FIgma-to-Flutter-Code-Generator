@@ -1,14 +1,15 @@
 package com.necleo.codemonkey.service.flutter;
 
+import com.necleo.codemonkey.flutter.index.FlutterGI;
+import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.TagDataType;
 import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
-import com.necleo.codemonkey.model.factory.NecleoDataNode;
-import java.util.Set;
-
+import com.necleo.codemonkey.model.factory.FlutterWI;
 import com.necleo.codemonkey.service.flutter.utils.SizeUtil;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -24,33 +25,43 @@ public class VideoTagFlutterCGI implements FlutterCGI {
         new FigmaNodeMapper(FigmaNodeTypes.RECTANGLE, TagDataType.YOUTUBE));
   }
 
+
   @Override
-  public String generate(NecleoDataNode necleoDataNode) {
-    if (!(necleoDataNode.fNode instanceof FigmaRectangleNode fNode)) {
+  public String generate(FigmaNode figmaNode, FigmaNode parentFigmaNode, FlutterGI flutterGI, FlutterWI flutterWI) {
+    if (!(figmaNode instanceof FigmaRectangleNode fNode)) {
       throw new IllegalArgumentException();
     }
-    return generat(fNode, necleoDataNode.tagData, necleoDataNode);
+    return generat(fNode, flutterWI.getTagData().get(figmaNode.getId()), flutterWI,flutterGI);
   }
 
-  private String generat(FigmaRectangleNode fNode, TagData tagData, NecleoDataNode necleoDataNode) {
+  @Override
+  public String generate(FlutterWI fultterNecleoDataNode, FigmaNode figmaNode) {
+    return null;
+  }
+
+
+  private String generat(
+      FigmaRectangleNode fNode, TagData tagData, FlutterWI fultterNecleoDataNode, FlutterGI flutterGI) {
     String initState = getInitState(tagData.getTagData().getProps().getUrl());
     String disposeState = getDispose();
-    String genCode = getPlayer(fNode, necleoDataNode);
+    String genCode = getPlayer(fNode, fultterNecleoDataNode,flutterGI);
     return initState + disposeState + genCode;
   }
 
-  private String getPlayer(FigmaRectangleNode fNode, NecleoDataNode necleoDataNode) {
+  private String getPlayer(FigmaRectangleNode fNode, FlutterWI fultterNecleoDataNode, FlutterGI flutterGI) {
     final String upperContainer = "Container(\n";
     final String lowerContainer = "),\n";
     String genCode = "";
-    genCode += getSize(fNode, necleoDataNode);
+    genCode += getSize(fNode, fultterNecleoDataNode,flutterGI);
     genCode += getChild();
     return upperContainer + genCode + lowerContainer;
   }
 
-  private String getSize(FigmaRectangleNode fNode, NecleoDataNode necleoDataNode) {
-    String width = sizeUtil.getWidth(fNode, necleoDataNode.mainScreen,necleoDataNode);
-    String height = sizeUtil.getHeight(fNode, necleoDataNode.mainScreen,necleoDataNode);
+  private String getSize(FigmaRectangleNode fNode, FlutterWI fultterNecleoDataNode, FlutterGI flutterGI) {
+    String width =
+        sizeUtil.getWidth(fNode, fultterNecleoDataNode.getMainScreen(), flutterGI);
+    String height =
+        sizeUtil.getHeight(fNode, fultterNecleoDataNode.getMainScreen(), flutterGI);
     return width + height;
   }
 
@@ -86,4 +97,6 @@ public class VideoTagFlutterCGI implements FlutterCGI {
     }
     return upperInitState + uri + lowerInitState;
   }
+
+
 }

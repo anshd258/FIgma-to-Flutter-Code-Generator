@@ -1,49 +1,33 @@
 package com.necleo.codemonkey.service.flutter.utils;
 
 import com.necleo.codemonkey.lib.types.FigmaNode;
-import com.necleo.codemonkey.lib.types.figma.properties.Constrains;
-import com.necleo.codemonkey.model.factory.NecleoDataNode;
 
 public class PositionUtil {
 
-  public String getPosition(String genCode, FigmaNode fNode, FigmaNode ParentNode, NecleoDataNode necleoDataNode) {
+  public String getPosition(String genCode, FigmaNode figmaNode, FigmaNode ParentNode) {
     final String upperPosition = "  Positioned(";
     final String lowerPosition = "),\n";
     String constrain1 = "";
     String constrain2 = "";
-    if(fNode.getConstraints() != null){
-      switch(fNode.getConstraints().getHorizontal()){
-
-        case MAX ->  constrain1 = "right" + ( ParentNode.getWidth() - (fNode.getWidth() + fNode.getX())) + ",\n";
-        case MIN ->   constrain1 = "left:" + fNode.getX() + ",\n";
-        case SCALE ->  constrain1 = "left:" + (((double) fNode.getX() / necleoDataNode.mainScreen.getWidth())*100) + ".w,\n";
-        case CENTER -> constrain1 = "";
-        default -> {
-
-          constrain1 = "left:" + fNode.getX() + ",\n";
-        }
-
+    if (figmaNode.getConstraints() != null) {
+      switch (figmaNode.getConstraints().getHorizontal()) {
+        case MAX -> constrain1 =
+            "right" + (ParentNode.getWidth() - (figmaNode.getWidth() + figmaNode.getX()));
+        case MIN -> constrain1 = "left:" + figmaNode.getX() + ",\n";
+        default -> constrain1 = "";
       }
-      switch(fNode.getConstraints().getVertical()){
-
-        case MAX ->  constrain2 = "bottom:" + ( ParentNode.getHeight() - (fNode.getHeight() + fNode.getY())) + ",\n";
-        case MIN ->    constrain2 = "top:" + fNode.getY() + ",\n";
-        case SCALE ->  constrain2 = "top:" + (((double) fNode.getY() / necleoDataNode.mainScreen.getHeight())*100) + ".h,\n";
-        case CENTER-> constrain2 = "";
-        default -> {
-
-          constrain2 = "top:" + fNode.getY() + ",\n";
-        }
-
+      switch (figmaNode.getConstraints().getVertical()) {
+        case MAX -> constrain2 =
+            "bottom" + (ParentNode.getHeight() - (figmaNode.getHeight() + figmaNode.getY()));
+        case MIN -> constrain2 = "top:" + figmaNode.getY() + ",\n";
+        default -> constrain2 = "";
       }
-    }else{
-      constrain1 = "left:" + fNode.getX() + ",\n";
-      constrain2 = "top:" + fNode.getY() + ",\n";
+    } else {
+      constrain1 = "left:" + figmaNode.getX() + ",\n";
+      constrain2 = "top:" + figmaNode.getY() + ",\n";
     }
 
-
-
     String child = "child:" + genCode + "\n";
-    return upperPosition + constrain1 + constrain2 + child  + lowerPosition;
+    return upperPosition + constrain1 + constrain2 + child + lowerPosition;
   }
 }

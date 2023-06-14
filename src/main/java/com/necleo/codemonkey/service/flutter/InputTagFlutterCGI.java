@@ -1,14 +1,15 @@
 package com.necleo.codemonkey.service.flutter;
 
+import com.necleo.codemonkey.flutter.index.FlutterGI;
+import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.TagDataType;
 import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
 import com.necleo.codemonkey.lib.types.figma.properties.strokes.Strokes;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
-import com.necleo.codemonkey.model.factory.NecleoDataNode;
-import java.util.Set;
-
+import com.necleo.codemonkey.model.factory.FlutterWI;
 import com.necleo.codemonkey.service.flutter.utils.SizeUtil;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -21,21 +22,25 @@ public class InputTagFlutterCGI implements FlutterCGI {
   public Set<FigmaNodeMapper> getStrategy() {
     return Set.of(new FigmaNodeMapper(FigmaNodeTypes.RECTANGLE, TagDataType.INPUT));
   }
-
   @Override
-  public String generate(NecleoDataNode necleoDataNode) {
-
-    if (!(necleoDataNode.fNode instanceof FigmaRectangleNode fNode)) {
+  public String generate(FigmaNode figmaNode, FigmaNode parentFigmaNode, FlutterGI flutterGI, FlutterWI flutterWI) {
+    if (!(figmaNode instanceof FigmaRectangleNode fNode)) {
       throw new IllegalArgumentException();
     }
-    return generat(fNode,necleoDataNode);
+    return generat(fNode, flutterWI,flutterGI);
   }
 
-  private String generat(FigmaRectangleNode fNode,NecleoDataNode necleoDataNode) {
+  @Override
+  public String generate(FlutterWI fultterNecleoDataNode, FigmaNode figmaNode) {
+    return null;
+  }
+
+
+  private String generat(FigmaRectangleNode fNode, FlutterWI fultterNecleoDataNode,FlutterGI flutterGI) {
     final String upperSizedBox = "SizedBox(\n";
     final String lowerSizedBox = ")\n";
     String genCode = "";
-    genCode += getSize(fNode, necleoDataNode);
+    genCode += getSize(fNode, fultterNecleoDataNode,flutterGI);
     genCode += genTextField(fNode);
     return upperSizedBox + genCode + lowerSizedBox;
   }
@@ -125,10 +130,12 @@ public class InputTagFlutterCGI implements FlutterCGI {
         + bottomBorderRadius;
   }
 
-  private String getSize(FigmaRectangleNode fNode, NecleoDataNode necleoDataNode) {
+  private String getSize(FigmaRectangleNode fNode, FlutterWI fultterNecleoDataNode, FlutterGI flutterGI) {
     String genSize = "";
-    genSize += sizeUtil.getHeight(fNode, necleoDataNode.mainScreen, necleoDataNode);
-    genSize += sizeUtil.getWidth(fNode, necleoDataNode.mainScreen,necleoDataNode );
+    genSize += sizeUtil.getHeight(fNode, fultterNecleoDataNode.getMainScreen(), flutterGI);
+    genSize += sizeUtil.getWidth(fNode, fultterNecleoDataNode.getMainScreen(), flutterGI);
     return genSize;
   }
+
+
 }

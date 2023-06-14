@@ -2,6 +2,8 @@ package com.necleo.codemonkey.service.flutter;
 
 import static com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes.RECTANGLE;
 
+import com.necleo.codemonkey.flutter.index.FlutterGI;
+import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.TagData;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.TagDataType;
@@ -9,10 +11,9 @@ import com.necleo.codemonkey.lib.types.figma.FigmaFrameNode;
 import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSolid;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
-import com.necleo.codemonkey.model.factory.NecleoDataNode;
-import java.util.Set;
-
+import com.necleo.codemonkey.model.factory.FlutterWI;
 import com.necleo.codemonkey.service.flutter.utils.SizeUtil;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -25,16 +26,22 @@ public class SliderTagFlutterCGI implements FlutterCGI {
   public Set<FigmaNodeMapper> getStrategy() {
     return Set.of(new FigmaNodeMapper(FigmaNodeTypes.FRAME, TagDataType.SLIDER));
   }
-
   @Override
-  public String generate(NecleoDataNode necleoDataNode) {
-    if (!(necleoDataNode.fNode instanceof FigmaFrameNode fNode)) {
+  public String generate(FigmaNode figmaNode, FigmaNode parentFigmaNode, FlutterGI flutterGI, FlutterWI flutterWI) {
+    if (!(figmaNode instanceof FigmaFrameNode fNode)) {
       throw new IllegalArgumentException();
     }
-    return generat(fNode, necleoDataNode.tagData, necleoDataNode);
+    return generat(fNode, flutterWI.getTagData().get(figmaNode.getId()),flutterWI, flutterGI);
   }
 
-  private String generat(FigmaFrameNode fNode, TagData tagData, NecleoDataNode necleoDataNode) {
+  @Override
+  public String generate(FlutterWI fultterNecleoDataNode, FigmaNode figmaNode) {
+    return null;
+  }
+
+
+  private String generat(
+      FigmaFrameNode fNode, TagData tagData, FlutterWI fultterNecleoDataNode,FlutterGI flutterGI ) {
     final String upperBoxing = "SizedBox(\n";
     final String lowerBoxing = ");";
     String genCode = "";
@@ -42,7 +49,7 @@ public class SliderTagFlutterCGI implements FlutterCGI {
       if (!(fNode.getChild().get(0) instanceof FigmaRectangleNode fNode1)) {
         throw new IllegalArgumentException();
       }
-      genCode += getSize(fNode1, necleoDataNode);
+      genCode += getSize(fNode1, fultterNecleoDataNode, flutterGI);
     }
 
     genCode += getSliderTheam(fNode);
@@ -165,11 +172,13 @@ public class SliderTagFlutterCGI implements FlutterCGI {
     return upperFunction + genCode + lowerFunction;
   }
 
-  private String getSize(FigmaRectangleNode fNode, NecleoDataNode necleoDataNode) {
+  private String getSize(FigmaRectangleNode fNode, FlutterWI fultterNecleoDataNode, FlutterGI flutterGI) {
     String genSize = "";
-    genSize += sizeUtil.getWidth(fNode, necleoDataNode.mainScreen,necleoDataNode);
+    genSize += sizeUtil.getWidth(fNode, fultterNecleoDataNode.getMainScreen(), flutterGI);
 
-    genSize += sizeUtil.getHeight(fNode, necleoDataNode.mainScreen,necleoDataNode);
+    genSize += sizeUtil.getHeight(fNode, fultterNecleoDataNode.getMainScreen(), flutterGI);
     return genSize;
   }
+
+
 }

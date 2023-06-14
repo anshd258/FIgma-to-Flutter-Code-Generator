@@ -1,14 +1,14 @@
-//package com.necleo.codemonkey.lib.utils;
+// package com.necleo.codemonkey.lib.utils;
 //
-//javafx.util.Pair;
+// javafx.util.Pair;
 //
-//import java.util.List;
+// import java.util.List;
 //
 
-//import org.springframework.stereotype.Component;
+// import org.springframework.stereotype.Component;
 //
-//@Component
-//public class ConvertJsxCssToBasicCss {
+// @Component
+// public class ConvertJsxCssToBasicCss {
 //    public String convertJSXStyleToCSS(List<Pair<String, String>> jsxStyle) {
 //        StringBuilder css = new StringBuilder();
 //
@@ -18,7 +18,8 @@
 //
 //            if (property != null && value != null) {
 //                // Convert camelCase to kebab-case
-//                String kebabCaseProperty = property.replaceAll("([a-z])([A-Z])", "$1-$2").toLowerCase();
+//                String kebabCaseProperty = property.replaceAll("([a-z])([A-Z])",
+// "$1-$2").toLowerCase();
 //                css.append(kebabCaseProperty).append(": ").append(value).append(";");
 //            }
 //        }
@@ -26,4 +27,4 @@
 //        return css.toString();
 //    }
 //
-//}
+// }

@@ -1,11 +1,13 @@
 package com.necleo.codemonkey.service.flutter;
 
+import com.necleo.codemonkey.flutter.index.FlutterGI;
+import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.TagDataType;
 import com.necleo.codemonkey.lib.types.figma.FigmaRectangleNode;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSolid;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
-import com.necleo.codemonkey.model.factory.NecleoDataNode;
+import com.necleo.codemonkey.model.factory.FlutterWI;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,15 +19,19 @@ public class CheckBoxTagFlutterCGI implements FlutterCGI {
   public Set<FigmaNodeMapper> getStrategy() {
     return Set.of(new FigmaNodeMapper(FigmaNodeTypes.RECTANGLE, TagDataType.CHECKBOX));
   }
-
   @Override
-  public String generate(NecleoDataNode necleoDataNode) {
-
-    if (!(necleoDataNode.fNode instanceof FigmaRectangleNode fNode)) {
+  public String generate(FigmaNode figmaNode, FigmaNode parentFigmaNode, FlutterGI flutterGI, FlutterWI flutterWI) {
+    if (!(figmaNode instanceof FigmaRectangleNode fNode)) {
       throw new IllegalArgumentException();
     }
     return generat(fNode);
   }
+
+  @Override
+  public String generate(FlutterWI fultterNecleoDataNode, FigmaNode figmaNode) {
+    return null;
+  }
+
 
   private String generat(FigmaRectangleNode fNode) {
     final String upperTheme =
@@ -83,4 +89,6 @@ public class CheckBoxTagFlutterCGI implements FlutterCGI {
 
     return upperColor + red + green + blue + opacity + lowerColor;
   }
+
+
 }

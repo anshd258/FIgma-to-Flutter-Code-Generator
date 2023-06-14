@@ -65,17 +65,6 @@ public class FigmaLayersTreeDataConsumer {
 
   private void loadS3AndConsume(String bucketName, String key) throws IOException {
     String jsonData = s3FileLoader.getJsonData(bucketName, key);
-//    log.info(jsonData);
-
-//    Map<String, Object> o = objectMapper.readValue(jsonData, new TypeReference<>() {});
-//
-//    Map<String, Object> screen =
-//        new HashMap<>(
-//            Map.of(
-//                "screen",
-//                ((List<Object>) o.get("screen"))));
-//
-//    screen.put("tag_data", o.get("tag_data"));
 
     FigmaNodeConsumerRequest figmaNodes =
         objectMapper.readValue(jsonData, FigmaNodeConsumerRequest.class);
@@ -87,6 +76,6 @@ public class FigmaLayersTreeDataConsumer {
               .collect(Collectors.toMap(TagData::getFigmaNodeId, tagData -> tagData));
     }
 
-    codeGenService.gen(figmaNodes.getScreen(), tagDataMap);
+    codeGenService.generate(figmaNodes.getScreen(), tagDataMap);
   }
 }
