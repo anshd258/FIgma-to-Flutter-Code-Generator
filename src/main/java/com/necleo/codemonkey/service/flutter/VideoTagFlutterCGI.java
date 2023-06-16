@@ -25,13 +25,13 @@ public class VideoTagFlutterCGI implements FlutterCGI {
         new FigmaNodeMapper(FigmaNodeTypes.RECTANGLE, TagDataType.YOUTUBE));
   }
 
-
   @Override
-  public String generate(FigmaNode figmaNode, FigmaNode parentFigmaNode, FlutterGI flutterGI, FlutterWI flutterWI) {
+  public String generate(
+      FigmaNode figmaNode, FigmaNode parentFigmaNode, FlutterGI flutterGI, FlutterWI flutterWI) {
     if (!(figmaNode instanceof FigmaRectangleNode fNode)) {
       throw new IllegalArgumentException();
     }
-    return generat(fNode, flutterWI.getTagData().get(figmaNode.getId()), flutterWI,flutterGI);
+    return generat(fNode, flutterWI.getTagData().get(figmaNode.getId()), flutterWI, flutterGI);
   }
 
   @Override
@@ -39,29 +39,31 @@ public class VideoTagFlutterCGI implements FlutterCGI {
     return null;
   }
 
-
   private String generat(
-      FigmaRectangleNode fNode, TagData tagData, FlutterWI fultterNecleoDataNode, FlutterGI flutterGI) {
+      FigmaRectangleNode fNode,
+      TagData tagData,
+      FlutterWI fultterNecleoDataNode,
+      FlutterGI flutterGI) {
     String initState = getInitState(tagData.getTagData().getProps().getUrl());
     String disposeState = getDispose();
-    String genCode = getPlayer(fNode, fultterNecleoDataNode,flutterGI);
+    String genCode = getPlayer(fNode, fultterNecleoDataNode, flutterGI);
     return initState + disposeState + genCode;
   }
 
-  private String getPlayer(FigmaRectangleNode fNode, FlutterWI fultterNecleoDataNode, FlutterGI flutterGI) {
+  private String getPlayer(
+      FigmaRectangleNode fNode, FlutterWI fultterNecleoDataNode, FlutterGI flutterGI) {
     final String upperContainer = "Container(\n";
     final String lowerContainer = "),\n";
     String genCode = "";
-    genCode += getSize(fNode, fultterNecleoDataNode,flutterGI);
+    genCode += getSize(fNode, fultterNecleoDataNode, flutterGI);
     genCode += getChild();
     return upperContainer + genCode + lowerContainer;
   }
 
-  private String getSize(FigmaRectangleNode fNode, FlutterWI fultterNecleoDataNode, FlutterGI flutterGI) {
-    String width =
-        sizeUtil.getWidth(fNode, fultterNecleoDataNode.getMainScreen(), flutterGI);
-    String height =
-        sizeUtil.getHeight(fNode, fultterNecleoDataNode.getMainScreen(), flutterGI);
+  private String getSize(
+      FigmaRectangleNode fNode, FlutterWI fultterNecleoDataNode, FlutterGI flutterGI) {
+    String width = sizeUtil.getWidth(fNode, fultterNecleoDataNode.getMainScreen(), flutterGI);
+    String height = sizeUtil.getHeight(fNode, fultterNecleoDataNode.getMainScreen(), flutterGI);
     return width + height;
   }
 
@@ -97,6 +99,4 @@ public class VideoTagFlutterCGI implements FlutterCGI {
     }
     return upperInitState + uri + lowerInitState;
   }
-
-
 }

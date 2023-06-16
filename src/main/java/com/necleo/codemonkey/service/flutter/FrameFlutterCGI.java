@@ -36,8 +36,7 @@ public class FrameFlutterCGI implements FlutterCGI {
   FlexibleUtil flexibleUtil = new FlexibleUtil();
   SpacingUtil spacingUtil = new SpacingUtil();
   MainCrossAlignUtil mainCrossAlignUtil = new MainCrossAlignUtil();
-  @Lazy
-  FlutterFigmaWidgetFactory flutterFigmaNodeFactory;
+  @Lazy FlutterFigmaWidgetFactory flutterFigmaNodeFactory;
 
   @Override
   public Set<FigmaNodeMapper> getStrategy() {
@@ -45,7 +44,8 @@ public class FrameFlutterCGI implements FlutterCGI {
   }
 
   @Override
-  public String generate(FigmaNode figmaNode, FigmaNode parentFigmaNode, FlutterGI flutterGI, FlutterWI flutterWI) {
+  public String generate(
+      FigmaNode figmaNode, FigmaNode parentFigmaNode, FlutterGI flutterGI, FlutterWI flutterWI) {
     if (!(figmaNode instanceof FigmaFrameNode fNode)) {
       throw new IllegalArgumentException();
     }
@@ -57,22 +57,22 @@ public class FrameFlutterCGI implements FlutterCGI {
     return null;
   }
 
-
   private String generat(
-      FigmaFrameNode figmaNode, TagData tagData, FlutterWI fultterNecleoDataNode, FlutterGI flutterGI) {
+      FigmaFrameNode figmaNode,
+      TagData tagData,
+      FlutterWI fultterNecleoDataNode,
+      FlutterGI flutterGI) {
     String genCode = "";
 
     genCode += "\nContainer( \n";
-    genCode +=
-        sizeUtil.getHeight(figmaNode, fultterNecleoDataNode.getMainScreen(), flutterGI);
-    genCode +=
-        sizeUtil.getWidth(figmaNode, fultterNecleoDataNode.getMainScreen(), flutterGI);
+    genCode += sizeUtil.getHeight(figmaNode, fultterNecleoDataNode.getMainScreen(), flutterGI);
+    genCode += sizeUtil.getWidth(figmaNode, fultterNecleoDataNode.getMainScreen(), flutterGI);
     genCode += getPadding(figmaNode);
     if (!(figmaNode.getFills().isEmpty())) {
       genCode += getBoxDecoration(figmaNode);
     }
 
-    genCode += "child:" + getchild(figmaNode, tagData, fultterNecleoDataNode,  flutterGI) + "\n";
+    genCode += "child:" + getchild(figmaNode, tagData, fultterNecleoDataNode, flutterGI) + "\n";
 
     genCode += "),\n";
     System.out.println(genCode); // end indent
@@ -98,9 +98,13 @@ public class FrameFlutterCGI implements FlutterCGI {
   }
 
   private String getchild(
-      FigmaFrameNode figmaNode, TagData tagData, FlutterWI fultterNecleoDataNode, FlutterGI  flutterGI) {
-    StringBuilder genCode = new StringBuilder();
 
+      FigmaFrameNode figmaNode,
+      TagData tagData,
+      FlutterWI fultterNecleoDataNode,
+      FlutterGI flutterGI) {
+    StringBuilder genCode = new StringBuilder();
+    Boolean flexCheck = false;
     if (figmaNode.getChild().size() == 1) {
       FigmaNodeMapper figmaNodeMapper =
           new FigmaNodeMapper(figmaNode.getChild().get(0).getType(), null);
@@ -109,7 +113,10 @@ public class FrameFlutterCGI implements FlutterCGI {
 
       genCode.append(
           flutterCGIOptional
-              .map(flutterCGI -> flutterCGI.generate( figmaNode.getChild().get(0), figmaNode, flutterGI, fultterNecleoDataNode))
+              .map(
+                  flutterCGI ->
+                      flutterCGI.generate(
+                          figmaNode.getChild().get(0), figmaNode, flutterGI, fultterNecleoDataNode))
               .orElse(""));
       return genCode.toString();
     } else {
@@ -134,11 +141,16 @@ public class FrameFlutterCGI implements FlutterCGI {
                 flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
             if (i < figmaNode.getChild().toArray().length - 1) {
 
-
               int finalI = i;
               genChild +=
                   flutterCGIOptional
-                      .map(flutterCGI -> flutterCGI.generate(figmaNode.getChild().get(finalI), figmaNode, flutterGI, fultterNecleoDataNode))
+                      .map(
+                          flutterCGI ->
+                              flutterCGI.generate(
+                                  figmaNode.getChild().get(finalI),
+                                  figmaNode,
+                                  flutterGI,
+                                  fultterNecleoDataNode))
                       .orElse("");
               gen = positionUtil.getPosition(genChild, figmaNode.getChild().get(i), figmaNode);
               genCode.append(gen);
@@ -147,7 +159,13 @@ public class FrameFlutterCGI implements FlutterCGI {
               int finalI1 = i;
               genChild +=
                   flutterCGIOptional
-                      .map(flutterCGI -> flutterCGI.generate(figmaNode.getChild().get(finalI1), figmaNode, flutterGI, fultterNecleoDataNode))
+                      .map(
+                          flutterCGI ->
+                              flutterCGI.generate(
+                                  figmaNode.getChild().get(finalI1),
+                                  figmaNode,
+                                  flutterGI,
+                                  fultterNecleoDataNode))
                       .orElse("");
               gen = positionUtil.getPosition(genChild, figmaNode.getChild().get(i), figmaNode);
               genCode.append(gen);
@@ -177,7 +195,13 @@ public class FrameFlutterCGI implements FlutterCGI {
               int finalI = i;
               genChild +=
                   flutterCGIOptional
-                      .map(flutterCGI -> flutterCGI.generate(figmaNode.getChild().get(finalI), figmaNode, flutterGI, fultterNecleoDataNode))
+                      .map(
+                          flutterCGI ->
+                              flutterCGI.generate(
+                                  figmaNode.getChild().get(finalI),
+                                  figmaNode,
+                                  flutterGI,
+                                  fultterNecleoDataNode))
                       .orElse("");
               genCode.append(genChild);
             } else {
@@ -185,7 +209,13 @@ public class FrameFlutterCGI implements FlutterCGI {
               int finalI1 = i;
               genChild +=
                   flutterCGIOptional
-                      .map(flutterCGI -> flutterCGI.generate(figmaNode.getChild().get(finalI1), figmaNode, flutterGI, fultterNecleoDataNode))
+                      .map(
+                          flutterCGI ->
+                              flutterCGI.generate(
+                                  figmaNode.getChild().get(finalI1),
+                                  figmaNode,
+                                  flutterGI,
+                                  fultterNecleoDataNode))
                       .orElse("");
               if (!(figmaNode.getPrimaryAxisAlignItems().equals(SPACE_BETWEEN))) {
                 gen += spacingUtil.getSpacing(figmaNode);
@@ -218,7 +248,13 @@ public class FrameFlutterCGI implements FlutterCGI {
               int finalI = i;
               genChild +=
                   flutterCGIOptional
-                      .map(flutterCGI -> flutterCGI.generate(figmaNode.getChild().get(finalI), figmaNode, flutterGI, fultterNecleoDataNode))
+                      .map(
+                          flutterCGI ->
+                              flutterCGI.generate(
+                                  figmaNode.getChild().get(finalI),
+                                  figmaNode,
+                                  flutterGI,
+                                  fultterNecleoDataNode))
                       .orElse("");
               genCode.append(genChild);
             } else {
@@ -226,7 +262,13 @@ public class FrameFlutterCGI implements FlutterCGI {
               int finalI1 = i;
               genChild +=
                   flutterCGIOptional
-                      .map(flutterCGI -> flutterCGI.generate(figmaNode.getChild().get(finalI1), figmaNode, flutterGI, fultterNecleoDataNode))
+                      .map(
+                          flutterCGI ->
+                              flutterCGI.generate(
+                                  figmaNode.getChild().get(finalI1),
+                                  figmaNode,
+                                  flutterGI,
+                                  fultterNecleoDataNode))
                       .orElse("");
               if (!(figmaNode.getPrimaryAxisAlignItems().equals(SPACE_BETWEEN))) {
                 gen += spacingUtil.getSpacing(figmaNode);
@@ -437,9 +479,11 @@ public class FrameFlutterCGI implements FlutterCGI {
   private String border(FigmaFrameNode fNode) {
     final String upperBorder = " border: Border.all(";
     final String bottomBorder = "),\n";
-    final String width = "width:" + fNode.getStrokeWeight() + ",\n";
+    String width = "";
+    if (!(fNode.getStrokes().isEmpty())) {
+      width = "width:" + fNode.getStrokeWeight() + ",\n";
+    }
+
     return upperBorder + width + bottomBorder;
   }
-
-
 }

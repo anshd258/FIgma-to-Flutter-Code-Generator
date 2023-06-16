@@ -10,5 +10,4 @@ public interface CodeGen {
   Language getLanguage();
 
   void generate(List<FigmaNode> fNode, Map<String, TagData> tagDataMap);
-
 }

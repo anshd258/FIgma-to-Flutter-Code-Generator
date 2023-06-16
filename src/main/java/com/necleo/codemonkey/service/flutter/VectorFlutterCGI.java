@@ -32,10 +32,10 @@ public class VectorFlutterCGI implements FlutterCGI {
     return Set.of(new FigmaNodeMapper(FigmaNodeTypes.VECTOR, null));
   }
 
-
   @Override
-  public String generate(FigmaNode figmaNode, FigmaNode parentFigmaNode, FlutterGI flutterGI, FlutterWI flutterWI) {
-    return generat(figmaNode, flutterWI,flutterGI);
+  public String generate(
+      FigmaNode figmaNode, FigmaNode parentFigmaNode, FlutterGI flutterGI, FlutterWI flutterWI) {
+    return generat(figmaNode, flutterWI, flutterGI);
   }
 
   @Override
@@ -43,8 +43,8 @@ public class VectorFlutterCGI implements FlutterCGI {
     return null;
   }
 
-
-  private String generat(FigmaNode figmaNode, FlutterWI fultterNecleoDataNode, FlutterGI flutterGI) {
+  private String generat(
+      FigmaNode figmaNode, FlutterWI fultterNecleoDataNode, FlutterGI flutterGI) {
     final String upperVector = "ClipPath(\n";
     final String bottomVector = ")\n";
     String genCode = "";
@@ -64,7 +64,10 @@ public class VectorFlutterCGI implements FlutterCGI {
   }
 
   private String getChild(
-      FigmaVectorNode fNode, TagData tagData, FlutterWI fultterNecleoDataNode, FlutterGI flutterGI) {
+      FigmaVectorNode fNode,
+      TagData tagData,
+      FlutterWI fultterNecleoDataNode,
+      FlutterGI flutterGI) {
     String genChild = "";
     genChild += "\nContainer( \n";
     genChild += sizeUtil.getHeight(fNode, fultterNecleoDataNode.getMainScreen(), flutterGI);
@@ -91,6 +94,4 @@ public class VectorFlutterCGI implements FlutterCGI {
 
     return upperColor + red + green + blue + opacity + lowerColor;
   }
-
-
 }

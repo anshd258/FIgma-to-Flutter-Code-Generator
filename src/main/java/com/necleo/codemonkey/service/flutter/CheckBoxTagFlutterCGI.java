@@ -19,8 +19,10 @@ public class CheckBoxTagFlutterCGI implements FlutterCGI {
   public Set<FigmaNodeMapper> getStrategy() {
     return Set.of(new FigmaNodeMapper(FigmaNodeTypes.RECTANGLE, TagDataType.CHECKBOX));
   }
+
   @Override
-  public String generate(FigmaNode figmaNode, FigmaNode parentFigmaNode, FlutterGI flutterGI, FlutterWI flutterWI) {
+  public String generate(
+      FigmaNode figmaNode, FigmaNode parentFigmaNode, FlutterGI flutterGI, FlutterWI flutterWI) {
     if (!(figmaNode instanceof FigmaRectangleNode fNode)) {
       throw new IllegalArgumentException();
     }
@@ -31,7 +33,6 @@ public class CheckBoxTagFlutterCGI implements FlutterCGI {
   public String generate(FlutterWI fultterNecleoDataNode, FigmaNode figmaNode) {
     return null;
   }
-
 
   private String generat(FigmaRectangleNode fNode) {
     final String upperTheme =
@@ -89,6 +90,4 @@ public class CheckBoxTagFlutterCGI implements FlutterCGI {
 
     return upperColor + red + green + blue + opacity + lowerColor;
   }
-
-
 }

@@ -2,12 +2,11 @@ package com.necleo.codemonkey.model.factory;
 
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.TagData;
+import com.necleo.codemonkey.lib.types.enums.boilerplate.BoilerType;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import com.necleo.codemonkey.lib.types.enums.boilerplate.BoilerType;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -32,7 +31,5 @@ public class FlutterWI {
 
   @Builder.Default Map<String, String> functionData = new HashMap<>();
 
-  @Setter
-  @NonFinal
-  BoilerType boilerType;
+  @Setter @NonFinal BoilerType boilerType;
 }

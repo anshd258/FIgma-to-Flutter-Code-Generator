@@ -22,9 +22,7 @@ import lombok.extern.jackson.Jacksonized;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class FlutterGI {
 
-  @NonFinal
-  @Setter
-  @Builder.Default boolean responsive = false;
+  @NonFinal @Setter @Builder.Default boolean responsive = false;
   @Builder.Default Set<String> pubSpecPackages = new HashSet<>();
   @Builder.Default Set<String> assets = new HashSet<>();
   @Builder.Default Map<String, String> utilClass = new HashMap<>();

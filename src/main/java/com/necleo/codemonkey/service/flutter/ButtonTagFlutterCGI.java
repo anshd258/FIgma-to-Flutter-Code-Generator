@@ -19,21 +19,19 @@ import org.springframework.stereotype.Service;
 // @RequiredArgsConstructor
 // @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class ButtonTagFlutterCGI implements FlutterCGI {
-  @Lazy
-  FlutterFigmaWidgetFactory flutterFigmaNodeFactory;
+  @Lazy FlutterFigmaWidgetFactory flutterFigmaNodeFactory;
 
   //  FlutterFigmaWidgetFactory flutterFigmaNodeFactory;
   @Override
-  public String generate(FigmaNode figmaNode, FigmaNode parentFigmaNode, FlutterGI flutterGI, FlutterWI flutterWI) {
-    return generat(
-            figmaNode, flutterWI.getTagData().get(figmaNode.getId()), flutterWI,flutterGI);
+  public String generate(
+      FigmaNode figmaNode, FigmaNode parentFigmaNode, FlutterGI flutterGI, FlutterWI flutterWI) {
+    return generat(figmaNode, flutterWI.getTagData().get(figmaNode.getId()), flutterWI, flutterGI);
   }
 
   @Override
   public String generate(FlutterWI fultterNecleoDataNode, FigmaNode figmaNode) {
     return null;
   }
-
 
   private String generat(
       FigmaNode fNode, TagData tagData, FlutterWI fultterNecleoDataNode, FlutterGI flutterGI) {
@@ -42,7 +40,7 @@ public class ButtonTagFlutterCGI implements FlutterCGI {
     final String lowerButton = "),\n";
     String genCode = "";
     genCode += getFunction();
-    genCode += getChild(fNode, tagData, fultterNecleoDataNode,flutterGI);
+    genCode += getChild(fNode, tagData, fultterNecleoDataNode, flutterGI);
     //    BoilerNodeMapper  boilerNodeMapper = new BoilerNodeMapper(BoilerType.STATELESS,null);
     //    Optional<BoilerCGI> flutterBoilerCGIOptional =
     // flutterBoilerTypeAbstractFactory.getProcessor(boilerNodeMapper);
@@ -57,7 +55,9 @@ public class ButtonTagFlutterCGI implements FlutterCGI {
     FigmaNodeMapper figmaNodeMapper = new FigmaNodeMapper(fNode.getType(), null);
     Optional<FlutterCGI> flutterCGIOptional = flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
     genChild +=
-        flutterCGIOptional.map(flutterCGI -> flutterCGI.generate(fNode,fNode,flutterGI,fultterNecleoDataNode)).orElse("");
+        flutterCGIOptional
+            .map(flutterCGI -> flutterCGI.generate(fNode, fNode, flutterGI, fultterNecleoDataNode))
+            .orElse("");
 
     return "child:" + genChild + ",\n";
   }
@@ -76,6 +76,4 @@ public class ButtonTagFlutterCGI implements FlutterCGI {
         new FigmaNodeMapper(FigmaNodeTypes.VECTOR, TagDataType.BUTTON),
         new FigmaNodeMapper(FigmaNodeTypes.LINE, TagDataType.BUTTON));
   }
-
-
 }

@@ -26,7 +26,8 @@ public class TextFlutterCGI implements FlutterCGI {
   }
 
   @Override
-  public String generate(FigmaNode figmaNode, FigmaNode parentFigmaNode, FlutterGI flutterGI, FlutterWI flutterWI) {
+  public String generate(
+      FigmaNode figmaNode, FigmaNode parentFigmaNode, FlutterGI flutterGI, FlutterWI flutterWI) {
     if (!(figmaNode instanceof FigmaTextNode fNode)) {
       throw new IllegalArgumentException();
     }
@@ -38,17 +39,14 @@ public class TextFlutterCGI implements FlutterCGI {
     return null;
   }
 
-
   public String generat(FigmaTextNode fNode, FlutterWI fultterNecleoDataNode, FlutterGI flutterGI) {
     String genCode = "";
     final String outterContainer =
         " Align(\n"
             + "            alignment: Alignment.topLeft,\n"
             + "            child: Container(";
-    String height =
-        sizeUtil.getHeight(fNode, fultterNecleoDataNode.getMainScreen(), flutterGI);
-    String width =
-        sizeUtil.getWidth(fNode, fultterNecleoDataNode.getMainScreen(), flutterGI);
+    String height = sizeUtil.getHeight(fNode, fultterNecleoDataNode.getMainScreen(), flutterGI);
+    String width = sizeUtil.getWidth(fNode, fultterNecleoDataNode.getMainScreen(), flutterGI);
     final String upperText = "child: Text(\n";
     final String lowerText = "),),),\n";
 

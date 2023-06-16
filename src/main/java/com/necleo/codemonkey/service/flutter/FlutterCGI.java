@@ -8,7 +8,8 @@ import com.necleo.codemonkey.model.factory.FlutterWI;
 import java.util.Set;
 
 public interface FlutterCGI extends Factory<Set<FigmaNodeMapper>> {
-  String generate(FigmaNode figmaNode, FigmaNode parentFigmaNode, FlutterGI flutterGI, FlutterWI flutterWI);
+  String generate(
+      FigmaNode figmaNode, FigmaNode parentFigmaNode, FlutterGI flutterGI, FlutterWI flutterWI);
 
   String generate(FlutterWI fultterNecleoDataNode, FigmaNode figmaNode);
 }

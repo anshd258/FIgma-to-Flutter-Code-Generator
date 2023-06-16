@@ -15,7 +15,7 @@ import lombok.extern.jackson.Jacksonized;
 @SuperBuilder
 @Jacksonized
 public class FigmaNodeConsumerRequest {
-
+  @JsonProperty("screen")
   List<FigmaNode> screen;
 
   @JsonProperty("tag_data")

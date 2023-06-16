@@ -53,17 +53,13 @@ public class FlutterCodeGenImpl implements CodeGen {
   @Override
   public void generate(List<FigmaNode> figmaNodes, Map<String, TagData> tagDataMap) {
     FlutterGI flutterGI = loadFlutterGI().getIndex();
-        figmaNodes
-            .forEach(figmaNode -> generate(figmaNode, flutterGI, tagDataMap));
+    figmaNodes.forEach(figmaNode -> generate(figmaNode, flutterGI, tagDataMap));
     handlePubSpec(flutterGI);
     handleMainAppFile();
-
   }
 
-  private void generate(
-      FigmaNode figmaNode, FlutterGI flutterGI, Map<String, TagData> tagDataMap) {
-    FlutterWI dataNode =
-        FlutterWI.builder().mainScreen(figmaNode).tagData(tagDataMap).build();
+  private void generate(FigmaNode figmaNode, FlutterGI flutterGI, Map<String, TagData> tagDataMap) {
+    FlutterWI dataNode = FlutterWI.builder().mainScreen(figmaNode).tagData(tagDataMap).build();
     String genCode = generateWidget(figmaNode, flutterGI, dataNode);
     String widget = wrapFile(genCode);
     String imports = importHandler.getPackageImports(dataNode.getImports());
@@ -85,7 +81,7 @@ public class FlutterCodeGenImpl implements CodeGen {
     String pubSpec =
         pubspecHandler.generatePubSpec(flutterGI.getPubSpecPackages(), "test app", "loren ipsum ");
 
-    //todo: refactor below line
+    // todo: refactor below line
     s3FileLoader.uploadFile(pubSpec, "yaml", "pubspec", "/project/");
   }
 
@@ -97,11 +93,11 @@ public class FlutterCodeGenImpl implements CodeGen {
     return boilerCGIOptional.map(boilerCGI -> boilerCGI.generate(genCode)).orElse("");
   }
 
-  private String generateWidget(
-      FigmaNode figmaNode, FlutterGI flutterGI, FlutterWI dataNode) {
+  private String generateWidget(FigmaNode figmaNode, FlutterGI flutterGI, FlutterWI dataNode) {
     dataNode.getImports().add(MATERIAL_APP.name());
     Optional<FlutterCGI> flutterCGIOptional =
-        flutterFigmaWidgetFactory.getProcessor(FigmaNodeMapper.of(figmaNode, dataNode.getTagData()));
+        flutterFigmaWidgetFactory.getProcessor(
+            FigmaNodeMapper.of(figmaNode, dataNode.getTagData()));
     return flutterCGIOptional
         .map(flutterCGI -> flutterCGI.generate(figmaNode, null, flutterGI, dataNode))
         .orElse("");

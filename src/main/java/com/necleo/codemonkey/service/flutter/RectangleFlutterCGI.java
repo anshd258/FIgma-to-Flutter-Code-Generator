@@ -26,7 +26,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 @Service
 @Slf4j
@@ -36,15 +35,16 @@ public class RectangleFlutterCGI implements FlutterCGI {
 
   S3FileLoader s3FileLoader;
   SizeUtil sizeUtil = new SizeUtil();
-  @Lazy
-  FlutterBoilerPLateFactory flutterBoilerPLateFactory;
+  @Lazy FlutterBoilerPLateFactory flutterBoilerPLateFactory;
 
   @Override
   public Set<FigmaNodeMapper> getStrategy() {
     return Set.of(new FigmaNodeMapper(FigmaNodeTypes.RECTANGLE, null));
   }
+
   @Override
-  public String generate(FigmaNode figmaNode, FigmaNode parentFigmaNode, FlutterGI flutterGI, FlutterWI flutterWI) {
+  public String generate(
+      FigmaNode figmaNode, FigmaNode parentFigmaNode, FlutterGI flutterGI, FlutterWI flutterWI) {
     if (!(figmaNode instanceof FigmaRectangleNode fNode)) {
       throw new IllegalArgumentException();
     }
@@ -56,16 +56,14 @@ public class RectangleFlutterCGI implements FlutterCGI {
     return null;
   }
 
-
-  public String generat(FigmaRectangleNode figmaNode, FlutterWI fultterNecleoDataNode, FlutterGI flutterGI) {
+  public String generat(
+      FigmaRectangleNode figmaNode, FlutterWI fultterNecleoDataNode, FlutterGI flutterGI) {
 
     String genCode = "";
 
     genCode += "\nContainer( \n";
-    genCode +=
-        sizeUtil.getHeight(figmaNode, fultterNecleoDataNode.getMainScreen(), flutterGI);
-    genCode +=
-        sizeUtil.getWidth(figmaNode, fultterNecleoDataNode.getMainScreen(), flutterGI);
+    genCode += sizeUtil.getHeight(figmaNode, fultterNecleoDataNode.getMainScreen(), flutterGI);
+    genCode += sizeUtil.getWidth(figmaNode, fultterNecleoDataNode.getMainScreen(), flutterGI);
     genCode += getBoxDecoration(figmaNode);
 
     genCode += "),\n";
@@ -152,6 +150,7 @@ public class RectangleFlutterCGI implements FlutterCGI {
   }
 
   private String getStrokeWidth(FigmaRectangleNode fNode) {
+
     return "width:" + fNode.getStrokeWeight() + ",\n";
   }
 
@@ -236,20 +235,11 @@ public class RectangleFlutterCGI implements FlutterCGI {
   private String border(FigmaRectangleNode fNode) {
     final String upperBorder = " border: Border.all(";
     final String bottomBorder = "),\n";
-    String genCode = "";
-
-    genCode += getStrokeAlignment(fNode);
-    if (!(CollectionUtils.isEmpty(fNode.getStrokes()))) {
-      //      genCode += getColor(fNode.getStrokes().get(0));
+    String width = "";
+    if (!(fNode.getStrokes().isEmpty())) {
+      width = "width:" + fNode.getStrokeWeight() + ",\n";
     }
 
-    genCode += getStrokeWidth(fNode);
-    if (!(CollectionUtils.isEmpty(fNode.getStrokes()))) {
-      genCode += getStyle(fNode.getStrokes().get(0));
-    }
-
-    return upperBorder + genCode + bottomBorder;
+    return upperBorder + width + bottomBorder;
   }
-
-
 }

@@ -28,11 +28,12 @@ public class SwitchTagFlutterCGI implements FlutterCGI {
   }
 
   @Override
-  public String generate(FigmaNode figmaNode, FigmaNode parentFigmaNode, FlutterGI flutterGI, FlutterWI flutterWI) {
+  public String generate(
+      FigmaNode figmaNode, FigmaNode parentFigmaNode, FlutterGI flutterGI, FlutterWI flutterWI) {
     if (!(figmaNode instanceof FigmaRectangleNode fNode)) {
       throw new IllegalArgumentException();
     }
-    return generat(fNode, flutterWI,flutterGI);
+    return generat(fNode, flutterWI, flutterGI);
   }
 
   @Override
@@ -40,8 +41,8 @@ public class SwitchTagFlutterCGI implements FlutterCGI {
     return null;
   }
 
-
-  private String generat(FigmaRectangleNode fNode, FlutterWI fultterNecleoDataNode, FlutterGI flutterGI) {
+  private String generat(
+      FigmaRectangleNode fNode, FlutterWI fultterNecleoDataNode, FlutterGI flutterGI) {
     final String upperStateFullWidget =
         "class CustomSwitch extends StatefulWidget {\n"
             + "  \n"
@@ -379,6 +380,4 @@ public class SwitchTagFlutterCGI implements FlutterCGI {
     genCode += getStyle(fNode.getStrokes().get(0));
     return upperBorder + genCode + bottomBorder;
   }
-
-
 }

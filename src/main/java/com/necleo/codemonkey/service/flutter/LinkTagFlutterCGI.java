@@ -20,15 +20,15 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class LinkTagFlutterCGI implements FlutterCGI {
 
-  @Lazy
-  FlutterFigmaWidgetFactory flutterFigmaNodeFactory;
+  @Lazy FlutterFigmaWidgetFactory flutterFigmaNodeFactory;
 
   @Override
-  public String generate(FigmaNode figmaNode, FigmaNode parentFigmaNode, FlutterGI flutterGI, FlutterWI flutterWI) {
+  public String generate(
+      FigmaNode figmaNode, FigmaNode parentFigmaNode, FlutterGI flutterGI, FlutterWI flutterWI) {
     if (!(figmaNode instanceof FigmaTextNode fNode)) {
       throw new IllegalArgumentException();
     }
-    return generat(fNode, flutterWI.getTagData().get(figmaNode.getId()), flutterWI,flutterGI);
+    return generat(fNode, flutterWI.getTagData().get(figmaNode.getId()), flutterWI, flutterGI);
   }
 
   @Override
@@ -36,14 +36,13 @@ public class LinkTagFlutterCGI implements FlutterCGI {
     return null;
   }
 
-
   private String generat(
-      FigmaTextNode fNode, TagData tagData, FlutterWI fultterNecleoDataNode,FlutterGI flutterGI) {
+      FigmaTextNode fNode, TagData tagData, FlutterWI fultterNecleoDataNode, FlutterGI flutterGI) {
     final String upperButton = " InkWell(\n";
     final String lowerButton = "),\n";
     String genCode = "";
     genCode += getLink(tagData);
-    genCode += getChild(fNode, tagData, fultterNecleoDataNode,flutterGI);
+    genCode += getChild(fNode, tagData, fultterNecleoDataNode, flutterGI);
     return upperButton + genCode + lowerButton;
   }
 
@@ -53,7 +52,9 @@ public class LinkTagFlutterCGI implements FlutterCGI {
     FigmaNodeMapper figmaNodeMapper = new FigmaNodeMapper(fNode.getType(), null);
     Optional<FlutterCGI> flutterCGIOptional = flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
     genChild +=
-        flutterCGIOptional.map(flutterCGI -> flutterCGI.generate(fNode,fNode,flutterGI,fultterNecleoDataNode)).orElse("");
+        flutterCGIOptional
+            .map(flutterCGI -> flutterCGI.generate(fNode, fNode, flutterGI, fultterNecleoDataNode))
+            .orElse("");
 
     return "child:" + genChild + ",\n";
   }
@@ -92,6 +93,4 @@ public class LinkTagFlutterCGI implements FlutterCGI {
   public Set<FigmaNodeMapper> getStrategy() {
     return Set.of(new FigmaNodeMapper(FigmaNodeTypes.TEXT, TagDataType.LINK));
   }
-
-
 }

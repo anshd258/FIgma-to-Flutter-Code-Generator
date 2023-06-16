@@ -21,12 +21,14 @@ public class LineFlutterCGI implements FlutterCGI {
   public Set<FigmaNodeMapper> getStrategy() {
     return Set.of(new FigmaNodeMapper(FigmaNodeTypes.LINE, null));
   }
+
   @Override
-  public String generate(FigmaNode figmaNode, FigmaNode parentFigmaNode, FlutterGI flutterGI, FlutterWI flutterWI) {
+  public String generate(
+      FigmaNode figmaNode, FigmaNode parentFigmaNode, FlutterGI flutterGI, FlutterWI flutterWI) {
     if (!(figmaNode instanceof FigmaLineNode fNode)) {
       throw new IllegalArgumentException();
     }
-    return generat(fNode, flutterWI,flutterGI);
+    return generat(fNode, flutterWI, flutterGI);
   }
 
   @Override
@@ -34,24 +36,24 @@ public class LineFlutterCGI implements FlutterCGI {
     return null;
   }
 
-
-  private String generat(FigmaLineNode fNode, FlutterWI fultterNecleoDataNode,FlutterGI flutterGI) {
+  private String generat(
+      FigmaLineNode fNode, FlutterWI fultterNecleoDataNode, FlutterGI flutterGI) {
     String genCode = "";
     if (fNode.getDashPattern() != null) {
       //            genCode += getCotumPainter(fNode);
       //           genCode += getWidget(fNode);
     } else {
-      genCode += getDivider(fNode, fultterNecleoDataNode,flutterGI);
+      genCode += getDivider(fNode, fultterNecleoDataNode, flutterGI);
     }
 
     return genCode;
   }
 
-  private String getDivider(FigmaLineNode fNode, FlutterWI fultterNecleoDataNode,FlutterGI flutterGI) {
+  private String getDivider(
+      FigmaLineNode fNode, FlutterWI fultterNecleoDataNode, FlutterGI flutterGI) {
     final String upperContainer = "Container(\n\t";
     final String lowerContainer = "),\n";
-    String genCode =
-        sizeUtil.getWidth(fNode, fultterNecleoDataNode.getMainScreen(), flutterGI);
+    String genCode = sizeUtil.getWidth(fNode, fultterNecleoDataNode.getMainScreen(), flutterGI);
     genCode += "height:" + fNode.getStrokeWeight() + ",\n";
     genCode += getBoxDecoration(fNode);
     return upperContainer + genCode + lowerContainer;
@@ -92,8 +94,6 @@ public class LineFlutterCGI implements FlutterCGI {
 
     return upperColor + red + green + blue + opacity + lowerColor;
   }
-
-
 
   //    private String getWidget(FigmaLineNode fNode) {
   //    }

@@ -26,12 +26,14 @@ public class SliderTagFlutterCGI implements FlutterCGI {
   public Set<FigmaNodeMapper> getStrategy() {
     return Set.of(new FigmaNodeMapper(FigmaNodeTypes.FRAME, TagDataType.SLIDER));
   }
+
   @Override
-  public String generate(FigmaNode figmaNode, FigmaNode parentFigmaNode, FlutterGI flutterGI, FlutterWI flutterWI) {
+  public String generate(
+      FigmaNode figmaNode, FigmaNode parentFigmaNode, FlutterGI flutterGI, FlutterWI flutterWI) {
     if (!(figmaNode instanceof FigmaFrameNode fNode)) {
       throw new IllegalArgumentException();
     }
-    return generat(fNode, flutterWI.getTagData().get(figmaNode.getId()),flutterWI, flutterGI);
+    return generat(fNode, flutterWI.getTagData().get(figmaNode.getId()), flutterWI, flutterGI);
   }
 
   @Override
@@ -39,9 +41,8 @@ public class SliderTagFlutterCGI implements FlutterCGI {
     return null;
   }
 
-
   private String generat(
-      FigmaFrameNode fNode, TagData tagData, FlutterWI fultterNecleoDataNode,FlutterGI flutterGI ) {
+      FigmaFrameNode fNode, TagData tagData, FlutterWI fultterNecleoDataNode, FlutterGI flutterGI) {
     final String upperBoxing = "SizedBox(\n";
     final String lowerBoxing = ");";
     String genCode = "";
@@ -172,13 +173,12 @@ public class SliderTagFlutterCGI implements FlutterCGI {
     return upperFunction + genCode + lowerFunction;
   }
 
-  private String getSize(FigmaRectangleNode fNode, FlutterWI fultterNecleoDataNode, FlutterGI flutterGI) {
+  private String getSize(
+      FigmaRectangleNode fNode, FlutterWI fultterNecleoDataNode, FlutterGI flutterGI) {
     String genSize = "";
     genSize += sizeUtil.getWidth(fNode, fultterNecleoDataNode.getMainScreen(), flutterGI);
 
     genSize += sizeUtil.getHeight(fNode, fultterNecleoDataNode.getMainScreen(), flutterGI);
     return genSize;
   }
-
-
 }

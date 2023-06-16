@@ -22,12 +22,14 @@ public class InputTagFlutterCGI implements FlutterCGI {
   public Set<FigmaNodeMapper> getStrategy() {
     return Set.of(new FigmaNodeMapper(FigmaNodeTypes.RECTANGLE, TagDataType.INPUT));
   }
+
   @Override
-  public String generate(FigmaNode figmaNode, FigmaNode parentFigmaNode, FlutterGI flutterGI, FlutterWI flutterWI) {
+  public String generate(
+      FigmaNode figmaNode, FigmaNode parentFigmaNode, FlutterGI flutterGI, FlutterWI flutterWI) {
     if (!(figmaNode instanceof FigmaRectangleNode fNode)) {
       throw new IllegalArgumentException();
     }
-    return generat(fNode, flutterWI,flutterGI);
+    return generat(fNode, flutterWI, flutterGI);
   }
 
   @Override
@@ -35,12 +37,12 @@ public class InputTagFlutterCGI implements FlutterCGI {
     return null;
   }
 
-
-  private String generat(FigmaRectangleNode fNode, FlutterWI fultterNecleoDataNode,FlutterGI flutterGI) {
+  private String generat(
+      FigmaRectangleNode fNode, FlutterWI fultterNecleoDataNode, FlutterGI flutterGI) {
     final String upperSizedBox = "SizedBox(\n";
     final String lowerSizedBox = ")\n";
     String genCode = "";
-    genCode += getSize(fNode, fultterNecleoDataNode,flutterGI);
+    genCode += getSize(fNode, fultterNecleoDataNode, flutterGI);
     genCode += genTextField(fNode);
     return upperSizedBox + genCode + lowerSizedBox;
   }
@@ -130,12 +132,11 @@ public class InputTagFlutterCGI implements FlutterCGI {
         + bottomBorderRadius;
   }
 
-  private String getSize(FigmaRectangleNode fNode, FlutterWI fultterNecleoDataNode, FlutterGI flutterGI) {
+  private String getSize(
+      FigmaRectangleNode fNode, FlutterWI fultterNecleoDataNode, FlutterGI flutterGI) {
     String genSize = "";
     genSize += sizeUtil.getHeight(fNode, fultterNecleoDataNode.getMainScreen(), flutterGI);
     genSize += sizeUtil.getWidth(fNode, fultterNecleoDataNode.getMainScreen(), flutterGI);
     return genSize;
   }
-
-
 }

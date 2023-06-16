@@ -2,11 +2,9 @@ package com.necleo.codemonkey.service.flutter.utils;
 
 import com.necleo.codemonkey.flutter.index.FlutterGI;
 import com.necleo.codemonkey.lib.types.FigmaNode;
-import com.necleo.codemonkey.model.factory.FlutterWI;
 
 public class SizeUtil {
-  public String getHeight(
-      FigmaNode fNode, FigmaNode mainScreen, FlutterGI flutterGI) {
+  public String getHeight(FigmaNode fNode, FigmaNode mainScreen, FlutterGI flutterGI) {
     if (fNode.getConstraints() != null) {
       switch (fNode.getConstraints().getVertical()) {
         case STRETCH, SCALE -> {
@@ -23,8 +21,7 @@ public class SizeUtil {
     }
   }
 
-  public String getWidth(
-          FigmaNode fNode, FigmaNode mainScreen, FlutterGI flutterGI) {
+  public String getWidth(FigmaNode fNode, FigmaNode mainScreen, FlutterGI flutterGI) {
     if (fNode.getConstraints() != null) {
       switch (fNode.getConstraints().getHorizontal()) {
         case STRETCH, SCALE -> {

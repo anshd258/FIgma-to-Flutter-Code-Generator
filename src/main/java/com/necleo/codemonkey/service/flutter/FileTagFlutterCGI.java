@@ -23,8 +23,7 @@ import org.springframework.stereotype.Service;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class FileTagFlutterCGI implements FlutterCGI {
 
-  @Lazy
-  FlutterFigmaWidgetFactory flutterFigmaNodeFactory;
+  @Lazy FlutterFigmaWidgetFactory flutterFigmaNodeFactory;
 
   @Override
   public Set<FigmaNodeMapper> getStrategy() {
@@ -37,11 +36,12 @@ public class FileTagFlutterCGI implements FlutterCGI {
   }
 
   @Override
-  public String generate(FigmaNode figmaNode, FigmaNode parentFigmaNode, FlutterGI flutterGI, FlutterWI flutterWI) {
+  public String generate(
+      FigmaNode figmaNode, FigmaNode parentFigmaNode, FlutterGI flutterGI, FlutterWI flutterWI) {
     if (!(figmaNode instanceof FigmaRectangleNode fNode)) {
       throw new IllegalArgumentException();
     }
-    return generat(fNode, flutterWI,flutterGI);
+    return generat(fNode, flutterWI, flutterGI);
   }
 
   @Override
@@ -49,9 +49,9 @@ public class FileTagFlutterCGI implements FlutterCGI {
     return null;
   }
 
-
-  private String generat(FigmaRectangleNode fNode, FlutterWI fultterNecleoDataNode,FlutterGI flutterGI) {
-    String widget = getWidget(fNode, fultterNecleoDataNode,flutterGI);
+  private String generat(
+      FigmaRectangleNode fNode, FlutterWI fultterNecleoDataNode, FlutterGI flutterGI) {
+    String widget = getWidget(fNode, fultterNecleoDataNode, flutterGI);
     String function = getFunction();
 
     return widget + function;
@@ -77,23 +77,27 @@ public class FileTagFlutterCGI implements FlutterCGI {
     return fileNameAndPath;
   }
 
-  private String getWidget(FigmaRectangleNode fNode, FlutterWI fultterNecleoDataNode,FlutterGI flutterGI) {
+  private String getWidget(
+      FigmaRectangleNode fNode, FlutterWI fultterNecleoDataNode, FlutterGI flutterGI) {
     final String upperButton = "GestureDetector(\n";
 
     final String lowerButton = "),\n\n";
     String genCode = "";
     genCode += getOnclick();
-    genCode += getChild(fNode, fultterNecleoDataNode,flutterGI);
+    genCode += getChild(fNode, fultterNecleoDataNode, flutterGI);
 
     return upperButton + genCode + lowerButton;
   }
 
-  private String getChild(FigmaRectangleNode fNode, FlutterWI fultterNecleoDataNode,FlutterGI flutterGI) {
+  private String getChild(
+      FigmaRectangleNode fNode, FlutterWI fultterNecleoDataNode, FlutterGI flutterGI) {
     String genChild = "";
     FigmaNodeMapper figmaNodeMapper = new FigmaNodeMapper(fNode.getType(), null);
     Optional<FlutterCGI> flutterCGIOptional = flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
     genChild +=
-        flutterCGIOptional.map(flutterCGI -> flutterCGI.generate(fNode,fNode,flutterGI,fultterNecleoDataNode)).orElse("");
+        flutterCGIOptional
+            .map(flutterCGI -> flutterCGI.generate(fNode, fNode, flutterGI, fultterNecleoDataNode))
+            .orElse("");
     return "child:" + genChild + ",\n";
   }
 
@@ -101,6 +105,4 @@ public class FileTagFlutterCGI implements FlutterCGI {
     String genFunction = "await _openFileExplorer();";
     return " onTap: () async{" + genFunction + "},\n";
   }
-
-
 }
