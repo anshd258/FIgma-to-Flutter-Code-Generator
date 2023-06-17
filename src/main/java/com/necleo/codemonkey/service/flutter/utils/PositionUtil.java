@@ -1,10 +1,11 @@
 package com.necleo.codemonkey.service.flutter.utils;
 
 import com.necleo.codemonkey.lib.types.FigmaNode;
+import com.necleo.codemonkey.model.factory.FlutterWI;
 
 public class PositionUtil {
-
-  public String getPosition(String genCode, FigmaNode figmaNode, FigmaNode ParentNode) {
+  PercentageUtil percentageUtil = new PercentageUtil();
+  public String getPosition(String genCode, FigmaNode figmaNode, FigmaNode ParentNode, FlutterWI FlutterWI) {
     final String upperPosition = "  Positioned(";
     final String lowerPosition = "),\n";
     String constrain1 = "";
@@ -14,12 +15,14 @@ public class PositionUtil {
         case MAX -> constrain1 =
             "right" + (ParentNode.getWidth() - (figmaNode.getWidth() + figmaNode.getX()));
         case MIN -> constrain1 = "left:" + figmaNode.getX() + ",\n";
+        case SCALE -> constrain1 = "left:" + percentageUtil.getLeft(figmaNode.getX(), FlutterWI.getMainScreen().getWidth()) + ".w,\n";
         default -> constrain1 = "";
       }
       switch (figmaNode.getConstraints().getVertical()) {
         case MAX -> constrain2 =
             "bottom" + (ParentNode.getHeight() - (figmaNode.getHeight() + figmaNode.getY()));
         case MIN -> constrain2 = "top:" + figmaNode.getY() + ",\n";
+        case SCALE -> constrain2 = "top:" + percentageUtil.getTop(figmaNode.getY(), FlutterWI.getMainScreen().getHeight()) + ".h,\n";
         default -> constrain2 = "";
       }
     } else {

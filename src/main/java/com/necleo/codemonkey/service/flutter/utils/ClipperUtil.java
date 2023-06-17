@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class ClipperUtil {
 
-  S3FileLoader s3FileLoader;
+
 
   public void getClipperPath() {
 
@@ -35,6 +35,6 @@ public class ClipperUtil {
                           @override
                           bool shouldReclip(CustomClipper<Path> oldClipper) => false;
                         }""";
-    s3FileLoader.uploadFile(upperClipper + lowerClipper, "dart", "myclipper", "/project/lib/Utils");
+
   }
 }

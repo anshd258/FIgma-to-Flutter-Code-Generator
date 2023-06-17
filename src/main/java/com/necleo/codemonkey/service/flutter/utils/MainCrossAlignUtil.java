@@ -1,5 +1,6 @@
 package com.necleo.codemonkey.service.flutter.utils;
 
+import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.CounterAxisAlignItems;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.PrimaryAxisAlignItems;
 
@@ -20,15 +21,18 @@ public class MainCrossAlignUtil {
     return "\n mainAxisAlignment: MainAxisAlignment." + mainAlignType + ",";
   }
 
-  public String getCrossAxisAlignment(CounterAxisAlignItems counterAxisAlignItems) {
+  public String getCrossAxisAlignment(
+      CounterAxisAlignItems counterAxisAlignItems, FigmaNode figmaNode) {
+    String mainAlignType = "";
 
-    String mainAlignType =
+    mainAlignType =
         switch (counterAxisAlignItems) {
           case MIN -> "start";
           case CENTER -> "center";
           case MAX -> "end";
           default -> "";
         };
+
     if (mainAlignType.equals("")) {
       return "";
     }

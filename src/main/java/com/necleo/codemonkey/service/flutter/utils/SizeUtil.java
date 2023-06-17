@@ -9,7 +9,7 @@ public class SizeUtil {
       switch (fNode.getConstraints().getVertical()) {
         case STRETCH, SCALE -> {
           flutterGI.setResponsive(true);
-          return "height:" + ((fNode.getHeight() / mainScreen.getHeight()) * 100) + ".h,\n";
+          return "height:" + (((float) fNode.getHeight() / mainScreen.getHeight()) * 100) + ".h,\n";
         }
         default -> {
           return "height:" + Integer.toString(fNode.getHeight()) + ",\n";
@@ -26,7 +26,7 @@ public class SizeUtil {
       switch (fNode.getConstraints().getHorizontal()) {
         case STRETCH, SCALE -> {
           flutterGI.setResponsive(true);
-          return "width:" + ((fNode.getWidth() / mainScreen.getWidth()) * 100) + ".w,\n";
+          return "width:" + (((float)  fNode.getWidth() / mainScreen.getWidth()) * 100) + ".w,\n";
         }
         default -> {
           return "width:" + Integer.toString(fNode.getWidth()) + ",\n";

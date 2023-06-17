@@ -1,21 +1,21 @@
 package com.necleo.codemonkey.service.flutter.utils;
 
 public class PercentageUtil {
-  public int getLeft(int x, int parentWidth) {
-    return (x / parentWidth) * 100;
+  public float getLeft(int x, int parentWidth) {
+    return ((float) x / parentWidth) * 100;
   }
 
-  public int getTop(int y, int parentHeight) {
-    return (y / parentHeight) * 100;
+  public float getTop(int y, int parentHeight) {
+    return ((float)y / parentHeight) * 100;
   }
 
-  public int getRight(int x, int parentWidth, int childWidth) {
+  public float getRight(int x, int parentWidth, int childWidth) {
 
-    return ((parentWidth - childWidth - x) / parentWidth) * 100;
+    return ((float)(parentWidth - childWidth - x) / parentWidth) * 100;
   }
 
-  public int getBottom(int y, int parentHeight, int childHeight) {
+  public float getBottom(int y, int parentHeight, int childHeight) {
 
-    return ((parentHeight - childHeight - y) / parentHeight) * 100;
+    return ((float)(parentHeight - childHeight - y) / parentHeight) * 100;
   }
 }

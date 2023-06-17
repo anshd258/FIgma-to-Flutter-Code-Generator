@@ -3,6 +3,7 @@ package com.necleo.codemonkey.consumer;
 import static com.necleo.codemonkey.constant.MDCKey.X_PROJECT_ID;
 
 import com.amazonaws.services.s3.event.S3EventNotification;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.necleo.codemonkey.configuration.S3FileLoader;
 import com.necleo.codemonkey.consumer.request.FigmaNodeConsumerRequest;
@@ -65,9 +66,27 @@ public class FigmaLayersTreeDataConsumer {
 
   private void loadS3AndConsume(String bucketName, String key) throws IOException {
     String jsonData = s3FileLoader.getJsonData(bucketName, key);
+    //    var json = objectMapper.readValue(jsonData, new
+    // TypeReference<Map<String,List<Map<String,Object>>>>() {
+    //    });
+    //   var mainData = objectMapper.convertValue(json.get("screen"), new
+    // TypeReference<FigmaNodeConsumerRequest>() {
+    //    });
+    //   var figmaNodes = FigmaNodeConsumerRequest.builder().screen(mainData).build();
+    //    FigmaNodeConsumerRequest figmaNodes =
+    //        objectMapper.readValue(, FigmaNodeConsumerRequest.class);
+    Map<String, Object> o = objectMapper.readValue(jsonData, new TypeReference<>() {});
+
+    Map<String, Object> screen =
+        new HashMap<>(
+            Map.of(
+                "screen",
+                ((Map<String, Object>) ((List<Object>) o.get("screen")).get(0)).get("selection")));
+
+    screen.put("tag_data", o.get("tag_data"));
 
     FigmaNodeConsumerRequest figmaNodes =
-        objectMapper.readValue(jsonData, FigmaNodeConsumerRequest.class);
+        objectMapper.convertValue(screen, new TypeReference<>() {});
 
     Map<String, TagData> tagDataMap = new HashMap<>();
     if (!ObjectUtils.isEmpty(figmaNodes.getTagData())) {

@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.necleo.codemonkey.lib.types.enums.figmaEnums.CounterAxisSizingMode;
+import com.necleo.codemonkey.lib.types.enums.figmaEnums.LayoutAlign;
+import com.necleo.codemonkey.lib.types.enums.figmaEnums.PrimaryAxisSizingMode;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.*;
 import com.necleo.codemonkey.lib.types.figma.properties.Constrains;
@@ -60,6 +63,10 @@ public class FigmaNode {
   int rotation;
   int width;
   int height;
+  PrimaryAxisSizingMode primaryAxisSizingMode;
+  CounterAxisSizingMode counterAxisSizingMode;
+  LayoutAlign layoutAlign;
+  int layoutGrow;
   Rect absoluteRenderBounds;
   Rect absoluteBoundingBox;
 }

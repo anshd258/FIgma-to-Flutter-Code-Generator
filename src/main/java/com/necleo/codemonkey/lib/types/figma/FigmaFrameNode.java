@@ -59,6 +59,7 @@ public class FigmaFrameNode extends FigmaNode {
   int paddingTop;
   int paddingBottom;
   int itemSpacing;
+  int layoutGrow;
   boolean itemReverseZIndex;
   boolean strokesIncludedInLayout;
 

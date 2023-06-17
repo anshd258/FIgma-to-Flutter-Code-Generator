@@ -63,7 +63,8 @@ public class FlutterCodeGenImpl implements CodeGen {
     String genCode = generateWidget(figmaNode, flutterGI, dataNode);
     String widget = wrapFile(genCode);
     String imports = importHandler.getPackageImports(dataNode.getImports());
-    log.info("generated files : {}", imports + widget);
+    String finalCode =  imports + widget;
+
   }
 
   private void handleMainAppFile() {

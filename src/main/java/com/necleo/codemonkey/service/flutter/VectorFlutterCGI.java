@@ -46,7 +46,7 @@ public class VectorFlutterCGI implements FlutterCGI {
   private String generat(
       FigmaNode figmaNode, FlutterWI fultterNecleoDataNode, FlutterGI flutterGI) {
     final String upperVector = "ClipPath(\n";
-    final String bottomVector = ")\n";
+    final String bottomVector = "),\n";
     String genCode = "";
     if (!fultterNecleoDataNode.getImports().contains("MYCLIPPER")) {
       fultterNecleoDataNode.getImports().add("MYCLIPPER");
@@ -55,7 +55,7 @@ public class VectorFlutterCGI implements FlutterCGI {
     }
 
     genCode +=
-        "clipper: MyClipper(\""
+        "clipper: MyClipper(pathData:\""
             + ((FigmaVectorNode) figmaNode).getFillGeometry().get(0).data
             + " \"),\n";
     genCode += getChild((FigmaVectorNode) figmaNode, null, fultterNecleoDataNode, flutterGI);
@@ -81,7 +81,7 @@ public class VectorFlutterCGI implements FlutterCGI {
       }
     }
 
-    return "child:" + genChild + ",\n";
+    return "child:" + genChild + "),\n";
   }
 
   private String color(FillsSolid fills) {
