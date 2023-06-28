@@ -69,7 +69,6 @@ public class LineFlutterCGI implements FlutterCGI {
       genBoxDecoration +=
           "color:" + color(fNode.getStrokes().get(0).getColor(), fNode.getOpacity()) + ",\n";
     }
-    System.out.println(fNode.getFills().get(0).getType());
 
     if (fNode.getStrokeCap().equals("ROUND")) {
       genBoxDecoration += borderRadius(fNode);

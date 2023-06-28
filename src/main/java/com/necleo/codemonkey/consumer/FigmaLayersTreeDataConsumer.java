@@ -37,7 +37,8 @@ public class FigmaLayersTreeDataConsumer {
 
   /**
    * The message is converted from String to an Object of S3 Event Notification Class. <br>
-   * Then List of records are extracted and for each record the {@link #handleRecord} function is called.
+   * Then List of records are extracted and for each record the {@link #handleRecord} function is
+   * called.
    */
   @SqsListener(
       value = "${cloud.aws.sqs.codeGenQueueName}",
@@ -54,9 +55,11 @@ public class FigmaLayersTreeDataConsumer {
   }
 
   /**
-   * We extract the bucket name and key from the record object, and then extract the project id from the key. <br>
+   * We extract the bucket name and key from the record object, and then extract the project id from
+   * the key. <br>
    * We map the project id to "X_PROJECT_ID" key in MDC context. <br>
-   * We then try to run the method {@link #loadS3AndConsume(String, String)} and after that finally remove the key "X_PROJECT_ID" from the MDC context.
+   * We then try to run the method {@link #loadS3AndConsume(String, String)} and after that finally
+   * remove the key "X_PROJECT_ID" from the MDC context.
    */
   @SneakyThrows
   private void handleRecord(S3EventNotification.S3EventNotificationRecord record) {
@@ -73,13 +76,16 @@ public class FigmaLayersTreeDataConsumer {
     }
   }
 
-
   /**
    * We get the JSON Data as String and convert it into a Map named "o". <br>
-   * A Map named screen is created which has the list of selected screen data as Map mapped to key "screen" and the key "tag_data" is added with a valued of "tag_data" from the Map o. <br>
-   * Now this Map screen is converted to Object of Figma Node Consumer Request Class called FigmaNodes. <br>
-   * If the List of Tag Data in FigmaNodes in not empty then a Map with key as Figma Node Id and value as the Map of Tag Data is created called Tag Data Map. <br>
-   * Now the generate function from {@link #codeGenService} Class is called which takes the list of screens from FigmaNodes and the Tag Data Map.
+   * A Map named screen is created which has the list of selected screen data as Map mapped to key
+   * "screen" and the key "tag_data" is added with a valued of "tag_data" from the Map o. <br>
+   * Now this Map screen is converted to Object of Figma Node Consumer Request Class called
+   * FigmaNodes. <br>
+   * If the List of Tag Data in FigmaNodes in not empty then a Map with key as Figma Node Id and
+   * value as the Map of Tag Data is created called Tag Data Map. <br>
+   * Now the generate function from {@link #codeGenService} Class is called which takes the list of
+   * screens from FigmaNodes and the Tag Data Map.
    */
   private void loadS3AndConsume(String bucketName, String key) throws IOException {
     String jsonData = s3FileLoader.getJsonData(bucketName, key);

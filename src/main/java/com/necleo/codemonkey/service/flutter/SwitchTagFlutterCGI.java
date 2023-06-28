@@ -202,7 +202,7 @@ public class SwitchTagFlutterCGI implements FlutterCGI {
         genBoxDecoration += color(fills);
       }
     }
-    System.out.println(fNode.getFills().get(0).getType());
+
     if (fNode.getFills().get(0).getType().equals("IMAGE")) {
       final FillsImage fills = (FillsImage) fNode.getFills().get(0);
 
@@ -319,7 +319,7 @@ public class SwitchTagFlutterCGI implements FlutterCGI {
         genBoxDecoration += wGgetcolor(fills);
       }
     }
-    System.out.println(fNode.getFills().get(0).getType());
+
     if (fNode.getFills().get(0).getType().equals("IMAGE")) {
       final FillsImage fills = (FillsImage) fNode.getFills().get(0);
 

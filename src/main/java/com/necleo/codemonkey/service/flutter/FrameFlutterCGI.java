@@ -2,11 +2,9 @@ package com.necleo.codemonkey.service.flutter;
 
 import static com.necleo.codemonkey.lib.types.figma.properties.fills.enums.ScaleMode.FILL;
 
-import com.necleo.codemonkey.factory.FlutterFigmaWidgetFactory;
 import com.necleo.codemonkey.flutter.index.FlutterGI;
 import com.necleo.codemonkey.lib.types.FigmaNode;
-import com.necleo.codemonkey.lib.types.TagData;
-import com.necleo.codemonkey.lib.types.enums.figmaEnums.*;
+import com.necleo.codemonkey.lib.types.enums.figmaEnums.LayoutMode;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.FigmaFrameNode;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.Color;
@@ -15,14 +13,12 @@ import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsImag
 import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSolid;
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import com.necleo.codemonkey.model.factory.FlutterWI;
-import com.necleo.codemonkey.service.flutter.utils.*;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,14 +26,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class FrameFlutterCGI implements FlutterCGI {
-  SizeUtil sizeUtil = new SizeUtil();
-  PositionUtil positionUtil = new PositionUtil();
-  FlexibleUtil flexibleUtil = new FlexibleUtil();
-  SpacingUtil spacingUtil = new SpacingUtil();
-  MainCrossAlignUtil mainCrossAlignUtil = new MainCrossAlignUtil();
+
   AutoLayoutFrameCGI autoLayoutFrameCGI;
-  @Lazy
-  FlutterFigmaWidgetFactory flutterFigmaNodeFactory;
+
   @Override
   public Set<FigmaNodeMapper> getStrategy() {
     return Set.of(new FigmaNodeMapper(FigmaNodeTypes.FRAME, null));
@@ -49,7 +40,22 @@ public class FrameFlutterCGI implements FlutterCGI {
     if (!(figmaNode instanceof FigmaFrameNode fNode)) {
       throw new IllegalArgumentException();
     }
-    return generateWidgetCode(fNode, flutterWI.getTagData().get(figmaNode.getId()), flutterWI, flutterGI, parentFigmaNode);
+
+    StringBuilder genCode = new StringBuilder();
+
+    String startContainer = "\n\tContainer(\n\t";
+
+    genCode.append(startContainer);
+
+    if (!fNode.getLayoutMode().equals(LayoutMode.NONE)) {
+      genCode.append(getPadding(fNode));
+    }
+    if (!fNode.getFills().isEmpty()) {
+      genCode.append(getBoxDecoration(fNode));
+    }
+
+    return autoLayoutFrameCGI.generateAutoLayoutFrame(
+        genCode, fNode, flutterWI, flutterGI, parentFigmaNode);
   }
 
   @Override
@@ -57,45 +63,48 @@ public class FrameFlutterCGI implements FlutterCGI {
     return null;
   }
 
-  private String generateWidgetCode(
-      FigmaFrameNode figmaNode,
-      TagData tagData,
-      FlutterWI flutterNecleoDataNode,
-      FlutterGI flutterGI,
-      FigmaNode parentFigmaNode) {
-
-    StringBuilder genCode = new StringBuilder();
-    Boolean flexCheck = false;
-
-    String startContainer = "\n\tContainer(\n\t";
-
-    genCode.append(startContainer);
-
-    if( !(figmaNode.getLayoutMode().equals(LayoutMode.NONE))) {
-      genCode.append(getPadding(figmaNode));
-    }
-    if (!(figmaNode.getFills().isEmpty())) {
-      genCode.append(getBoxDecoration(figmaNode));
-    }
-
-    return autoLayoutFrameCGI.generateAutoLayoutFrame(genCode, figmaNode, flutterNecleoDataNode, tagData, flutterGI, parentFigmaNode);
-  }
-
   private String getPadding(FigmaFrameNode figmaNode) {
-    final String upperPadding = " padding: EdgeInsets.only(\n";
-    final String lowerPadding = "),\n";
-    String bottom = "";
-    String right = "";
-    if (!(figmaNode.getChild().size() == 1
-        && figmaNode.getChild().get(0).getType().equals(FigmaNodeTypes.TEXT))) {
-      right = "right:" + figmaNode.getPaddingRight() + ",";
-      bottom = "bottom:" + figmaNode.getPaddingBottom() + ",";
+    if (figmaNode.getPaddingRight() == figmaNode.getPaddingLeft()
+        && figmaNode.getPaddingTop() == figmaNode.getPaddingBottom()
+        && figmaNode.getPaddingRight() == figmaNode.getPaddingTop()) {
+      return """
+            padding: EdgeInsets.all(%s),
+              """
+          .formatted(figmaNode.getPaddingRight());
     }
-    String leftPaing = "left:" + figmaNode.getPaddingLeft() + ",";
+    if (figmaNode.getPaddingRight() == figmaNode.getPaddingLeft()
+        && figmaNode.getPaddingTop() == figmaNode.getPaddingBottom()) {
+      return """
+            padding: EdgeInsets.symmetric(vertical: %s, horizontal: %s),
+              """
+          .formatted(figmaNode.getPaddingTop(), figmaNode.getPaddingRight());
+    }
 
-    String top = "top:" + figmaNode.getPaddingTop() + ",";
-
-    return upperPadding + leftPaing + right + top + bottom + lowerPadding;
+    return """
+            padding: EdgeInsets.only(
+              left: %s,
+              top: %s,
+              right: %s,
+              bottom: %s,
+            ),
+            """
+        .formatted(
+            figmaNode.getPaddingLeft(),
+            figmaNode.getPaddingTop(),
+            figmaNode.getPaddingRight(),
+            figmaNode.getPaddingBottom());
+    //    final String upperPadding = " padding: EdgeInsets.only(\n";
+    //    final String lowerPadding = "),\n";
+    //    String bottom = "";
+    //    String right = "";
+    //    if (!(figmaNode.getChild().size() == 1
+    //        && figmaNode.getChild().get(0).getType().equals(FigmaNodeTypes.TEXT))) {
+    //      right = "right:" + figmaNode.getPaddingRight() + ",";
+    //      bottom = "bottom:" + figmaNode.getPaddingBottom() + ",";
+    //    }
+    //    String leftPaing = "left:" + figmaNode.getPaddingLeft() + ",";
+    //    String top = "top:" + figmaNode.getPaddingTop() + ",";
+    //    return upperPadding + leftPaing + right + top + bottom + lowerPadding;
   }
 
   private String getBoxDecoration(FigmaFrameNode fNode) {
@@ -109,7 +118,7 @@ public class FrameFlutterCGI implements FlutterCGI {
         genBoxDecoration += "color:" + color(fills) + ",\n";
       }
     }
-    System.out.println(fNode.getFills().get(0).getType());
+
     if (fNode.getFills().get(0).getType().equals("IMAGE")) {
       final FillsImage fills = (FillsImage) fNode.getFills().get(0);
 
@@ -224,5 +233,4 @@ public class FrameFlutterCGI implements FlutterCGI {
 
     return upperBorder + width + bottomBorder;
   }
-
 }

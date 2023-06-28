@@ -9,15 +9,15 @@ public class SizeUtil {
       switch (fNode.getConstraints().getVertical()) {
         case STRETCH, SCALE -> {
           flutterGI.setResponsive(true);
-          return "height:" + (((float) fNode.getHeight() / mainScreen.getHeight()) * 100) + ".h,\n";
+          return "height:" + (fNode.getHeight() / (mainScreen.getHeight() * 100f)) + ".h,\n";
         }
         default -> {
-          return "height:" + Integer.toString(fNode.getHeight()) + ",\n";
+          return "height:" + fNode.getHeight() + ",\n";
         }
       }
 
     } else {
-      return "height:" + Integer.toString(fNode.getHeight()) + ",\n";
+      return "height:" + fNode.getHeight() + ",\n";
     }
   }
 
@@ -26,14 +26,14 @@ public class SizeUtil {
       switch (fNode.getConstraints().getHorizontal()) {
         case STRETCH, SCALE -> {
           flutterGI.setResponsive(true);
-          return "width:" + (((float)  fNode.getWidth() / mainScreen.getWidth()) * 100) + ".w,\n";
+          return "width:" + (fNode.getWidth() / (mainScreen.getWidth() * 100f)) + ".w,\n";
         }
         default -> {
-          return "width:" + Integer.toString(fNode.getWidth()) + ",\n";
+          return "width:" + fNode.getWidth() + ",\n";
         }
       }
     } else {
-      return "width:" + Integer.toString(fNode.getWidth()) + ",\n";
+      return "width:" + fNode.getWidth() + ",\n";
     }
   }
 }

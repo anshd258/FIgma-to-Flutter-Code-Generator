@@ -97,7 +97,7 @@ public class RectangleFlutterCGI implements FlutterCGI {
         genBoxDecoration += "color:" + color(fills) + ",\n";
       }
     }
-    System.out.println(fNode.getFills().get(0).getType());
+
     if (fNode.getFills().get(0).getType().equals("IMAGE")) {
       final FillsImage fills = (FillsImage) fNode.getFills().get(0);
 

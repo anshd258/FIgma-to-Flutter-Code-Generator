@@ -2,7 +2,8 @@ package com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes;
 
 public enum FigmaNodeTypes {
   RECTANGLE,
-  ELLIPSE,  POLYGON,
+  ELLIPSE,
+  POLYGON,
   LINE,
   VECTOR,
   TEXT,

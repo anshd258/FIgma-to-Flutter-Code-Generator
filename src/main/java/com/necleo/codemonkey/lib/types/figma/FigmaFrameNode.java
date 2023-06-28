@@ -5,9 +5,8 @@ import com.necleo.codemonkey.lib.types.enums.figmaEnums.*;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.FillGeometry;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.Fills;
 import com.necleo.codemonkey.lib.types.figma.properties.strokes.Strokes;
-import java.util.List;
-
 import com.necleo.codemonkey.service.flutter.InferredAutoLayout;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
