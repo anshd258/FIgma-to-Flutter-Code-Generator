@@ -2,8 +2,11 @@ package com.necleo.codemonkey.service.flutter.utils;
 
 import com.necleo.codemonkey.flutter.index.FlutterGI;
 import com.necleo.codemonkey.lib.types.FigmaNode;
+import org.springframework.stereotype.Service;
 
+@Service
 public class SizeUtil {
+
   public String getHeight(FigmaNode fNode, FigmaNode mainScreen, FlutterGI flutterGI) {
     if (fNode.getConstraints() != null) {
       switch (fNode.getConstraints().getVertical()) {

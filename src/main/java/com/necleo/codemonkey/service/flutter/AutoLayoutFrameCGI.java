@@ -12,9 +12,11 @@ import com.necleo.codemonkey.model.factory.FlutterWI;
 import com.necleo.codemonkey.service.flutter.utils.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -27,12 +29,46 @@ import org.springframework.stereotype.Service;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class AutoLayoutFrameCGI {
 
-  SizeUtil sizeUtil = new SizeUtil();
+  SizeUtil sizeUtil;
   PositionUtil positionUtil = new PositionUtil();
   FlexibleUtil flexibleUtil = new FlexibleUtil();
   SpacingUtil spacingUtil = new SpacingUtil();
   MainCrossAlignUtil mainCrossAlignUtil = new MainCrossAlignUtil();
   @Lazy FlutterFigmaWidgetFactory flutterFigmaNodeFactory;
+
+  @Builder(access = AccessLevel.PRIVATE)
+  @FieldDefaults(level = AccessLevel.PROTECTED)
+  private static class Flex {
+    enum MainAxisAligment {
+      STRETCH,
+      START,
+      END;
+    }
+
+    enum Type {
+      Row,
+      Column
+    }
+
+    MainAxisAligment mainAxisAligment;
+    Type type;
+
+    String wrap(List<String> child) {
+      return """
+                  %s(
+                    mainAxisAligment: %s,
+                    children: [
+                        %s
+                    ],
+                  ),
+                  """
+          .formatted(type.name(), mainAxisAligment, child);
+    }
+
+    static Flex of(Type type, MainAxisAligment mainAxisAligment) {
+      return Flex.builder().type(type).mainAxisAligment(mainAxisAligment).build();
+    }
+  }
 
   public String generateAutoLayoutFrame(
       StringBuilder genCode,
@@ -40,6 +76,13 @@ public class AutoLayoutFrameCGI {
       FlutterWI flutterNecleoDataNode,
       FlutterGI flutterGI,
       FigmaNode parentFigmaNode) {
+
+    Flex.of(Flex.Type.Row, Flex.MainAxisAligment.START).wrap(List.of(""));
+
+    //
+    //      figmaNode.getChild().stream().reduce("",
+    //              child -> mapper()
+    //              , (x,y) -> String.join(",", x,y));
 
     LayoutAlign layoutAlign = figmaNode.getLayoutAlign();
     int layoutGrow = figmaNode.getLayoutGrow();
@@ -79,6 +122,13 @@ public class AutoLayoutFrameCGI {
               case AUTO -> hugAndFillProperties.put("hugVertically", true);
             }
           }
+        }
+
+        switch (layoutWrap) {
+          case WRAP -> genCode.append(
+              getWrap(genCode, figmaNode, flutterNecleoDataNode, flutterGI, hugAndFillProperties));
+          case NO_WRAP -> genCode.append(
+              getRow(genCode, figmaNode, flutterNecleoDataNode, flutterGI, hugAndFillProperties));
         }
       }
 
