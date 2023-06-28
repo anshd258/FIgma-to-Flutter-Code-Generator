@@ -28,6 +28,10 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+/**
+ * This class is to generate Flutter Code from Figma Object.
+ *
+ */
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -46,10 +50,21 @@ public class FlutterCodeGenImpl implements CodeGen {
     return Language.FLUTTER;
   }
 
+  /**
+   * TODO: To get FlutterGI from S3.
+   * Returning project Global Index from S3.
+   * @return Closure of object of {@link FlutterGI}
+   */
   Index<FlutterGI> loadFlutterGI() {
     return () -> FlutterGI.builder().build();
   }
 
+  /**
+   * This class is to generate Flutter Code from Figma Object.
+   *
+   * @param figmaNodes List of Figma Screen Nodes
+   * @param tagDataMap Map of Figma Node Id mapped with Tag Data of that Figma Node.
+   */
   @Override
   public void generate(List<FigmaNode> figmaNodes, Map<String, TagData> tagDataMap) {
     FlutterGI flutterGI = loadFlutterGI().getIndex();

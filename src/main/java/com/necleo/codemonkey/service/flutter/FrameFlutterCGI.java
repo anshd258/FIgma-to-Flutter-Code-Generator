@@ -1,12 +1,12 @@
 package com.necleo.codemonkey.service.flutter;
 
-import static com.necleo.codemonkey.lib.types.enums.figmaEnums.PrimaryAxisAlignItems.SPACE_BETWEEN;
 import static com.necleo.codemonkey.lib.types.figma.properties.fills.enums.ScaleMode.FILL;
 
 import com.necleo.codemonkey.factory.FlutterFigmaWidgetFactory;
 import com.necleo.codemonkey.flutter.index.FlutterGI;
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.lib.types.TagData;
+import com.necleo.codemonkey.lib.types.enums.figmaEnums.*;
 import com.necleo.codemonkey.lib.types.enums.figmaEnums.nodeTypes.FigmaNodeTypes;
 import com.necleo.codemonkey.lib.types.figma.FigmaFrameNode;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.Color;
@@ -16,7 +16,6 @@ import com.necleo.codemonkey.lib.types.figma.properties.fills.subtypes.FillsSoli
 import com.necleo.codemonkey.model.factory.FigmaNodeMapper;
 import com.necleo.codemonkey.model.factory.FlutterWI;
 import com.necleo.codemonkey.service.flutter.utils.*;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
@@ -36,8 +35,9 @@ public class FrameFlutterCGI implements FlutterCGI {
   FlexibleUtil flexibleUtil = new FlexibleUtil();
   SpacingUtil spacingUtil = new SpacingUtil();
   MainCrossAlignUtil mainCrossAlignUtil = new MainCrossAlignUtil();
-  @Lazy FlutterFigmaWidgetFactory flutterFigmaNodeFactory;
-
+  AutoLayoutFrameCGI autoLayoutFrameCGI;
+  @Lazy
+  FlutterFigmaWidgetFactory flutterFigmaNodeFactory;
   @Override
   public Set<FigmaNodeMapper> getStrategy() {
     return Set.of(new FigmaNodeMapper(FigmaNodeTypes.FRAME, null));
@@ -49,364 +49,54 @@ public class FrameFlutterCGI implements FlutterCGI {
     if (!(figmaNode instanceof FigmaFrameNode fNode)) {
       throw new IllegalArgumentException();
     }
-    return generat(fNode, flutterWI.getTagData().get(figmaNode.getId()), flutterWI, flutterGI);
+    return generateWidgetCode(fNode, flutterWI.getTagData().get(figmaNode.getId()), flutterWI, flutterGI, parentFigmaNode);
   }
 
   @Override
-  public String generate(FlutterWI fultterNecleoDataNode, FigmaNode figmaNode) {
+  public String generate(FlutterWI flutterNecleoDataNode, FigmaNode figmaNode) {
     return null;
   }
 
-  private String generat(
+  private String generateWidgetCode(
       FigmaFrameNode figmaNode,
       TagData tagData,
-      FlutterWI fultterNecleoDataNode,
-      FlutterGI flutterGI) {
-    String genCode = "";
+      FlutterWI flutterNecleoDataNode,
+      FlutterGI flutterGI,
+      FigmaNode parentFigmaNode) {
 
-    genCode += "\nContainer( \n";
-    genCode += sizeUtil.getHeight(figmaNode, fultterNecleoDataNode.getMainScreen(), flutterGI);
-    genCode += sizeUtil.getWidth(figmaNode, fultterNecleoDataNode.getMainScreen(), flutterGI);
-    genCode += getPadding(figmaNode);
+    StringBuilder genCode = new StringBuilder();
+    Boolean flexCheck = false;
+
+    String startContainer = "\n\tContainer(\n\t";
+
+    genCode.append(startContainer);
+
+    if( !(figmaNode.getLayoutMode().equals(LayoutMode.NONE))) {
+      genCode.append(getPadding(figmaNode));
+    }
     if (!(figmaNode.getFills().isEmpty())) {
-      genCode += getBoxDecoration(figmaNode);
+      genCode.append(getBoxDecoration(figmaNode));
     }
 
-    genCode += "child:" + getchild(figmaNode, tagData, fultterNecleoDataNode, flutterGI) + "\n";
-
-    genCode += "),\n";
-    System.out.println(genCode); // end indent
-
-    return genCode;
+    return autoLayoutFrameCGI.generateAutoLayoutFrame(genCode, figmaNode, flutterNecleoDataNode, tagData, flutterGI, parentFigmaNode);
   }
 
   private String getPadding(FigmaFrameNode figmaNode) {
     final String upperPadding = " padding: EdgeInsets.only(\n";
     final String lowerPadding = "),\n";
     String bottom = "";
-    String rigt = "";
+    String right = "";
     if (!(figmaNode.getChild().size() == 1
         && figmaNode.getChild().get(0).getType().equals(FigmaNodeTypes.TEXT))) {
-      rigt = "right:" + figmaNode.getPaddingRight() + ",";
+      right = "right:" + figmaNode.getPaddingRight() + ",";
       bottom = "bottom:" + figmaNode.getPaddingBottom() + ",";
     }
     String leftPaing = "left:" + figmaNode.getPaddingLeft() + ",";
 
     String top = "top:" + figmaNode.getPaddingTop() + ",";
 
-    return upperPadding + leftPaing + rigt + top + bottom + lowerPadding;
+    return upperPadding + leftPaing + right + top + bottom + lowerPadding;
   }
-
-  private String getchild(
-      FigmaFrameNode figmaNode,
-      TagData tagData,
-      FlutterWI fultterNecleoDataNode,
-      FlutterGI flutterGI) {
-
-    StringBuilder genCode = new StringBuilder();
-    Boolean flexCheck = false;
-    //    int hugcheckval = 0;
-    //    int fillcheckval = 0;
-    //    if (!(figmaNode.getLayoutMode().equals(LayoutMode.HORIZONTAL))) {
-    //      for (int i = 0; i <= figmaNode.getChild().toArray().length - 1; i++) {
-    //        if (figmaNode.getChild().get(i).getLayoutAlign().equals(LayoutAlign.INHERIT)
-    //            && figmaNode
-    //                .getChild()
-    //                .get(i)
-    //                .getCounterAxisSizingMode()
-    //                .equals(CounterAxisSizingMode.AUTO)) {
-    //          hugcheckval += 1;
-    //        }
-    //      }
-    //      for (int i = 0; i <= figmaNode.getChild().toArray().length - 1; i++) {
-    //        if (figmaNode.getChild().get(i).getLayoutAlign().equals(LayoutAlign.STRETCH)
-    //            && figmaNode
-    //                .getChild()
-    //                .get(i)
-    //                .getCounterAxisSizingMode()
-    //                .equals(CounterAxisSizingMode.FIXED)) {
-    //          fillcheckval += 1;
-    //        }
-    //      }
-    //    }
-    //    if (!(figmaNode.getLayoutMode().equals(LayoutMode.VERTICAL))) {
-    //      for (int i = 0; i <= figmaNode.getChild().toArray().length - 1; i++) {
-    //        if (figmaNode.getChild().get(i).getLayoutGrow() == 0
-    //            && figmaNode
-    //                .getChild()
-    //                .get(i)
-    //                .getPrimaryAxisSizingMode()
-    //                .equals(PrimaryAxisSizingMode.AUTO)) {
-    //          hugcheckval += 1;
-    //        }
-    //      }
-    //      for (int i = 0; i <= figmaNode.getChild().toArray().length - 1; i++) {
-    //        if (figmaNode.getChild().get(i).getLayoutGrow() == 1
-    //            && figmaNode
-    //                .getChild()
-    //                .get(i)
-    //                .getPrimaryAxisSizingMode()
-    //                .equals(PrimaryAxisSizingMode.FIXED)) {
-    //          fillcheckval += 1;
-    //        }
-    //      }
-    //    }
-
-    //    if (figmaNode.getChild().size() == 1) {
-    //      FigmaNodeMapper figmaNodeMapper =
-    //          new FigmaNodeMapper(figmaNode.getChild().get(0).getType(), null);
-    //      Optional<FlutterCGI> flutterCGIOptional =
-    //          flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
-    //
-    //      genCode.append(
-    //          flutterCGIOptional
-    //              .map(
-    //                  flutterCGI ->
-    //                      flutterCGI.generate(
-    //                          figmaNode.getChild().get(0), figmaNode, flutterGI,
-    // fultterNecleoDataNode))
-    //              .orElse(""));
-    //      return genCode.toString();
-    //    } else {
-    switch (figmaNode.getLayoutMode().name()) {
-      case "NONE" -> {
-        final String upperStack = "Stack(\n";
-        final String lowerStack = "),";
-        String center = "";
-        genCode.append(" alignment: Alignment.center,");
-        genCode.append("children:[\n");
-        for (int i = 0; i <= figmaNode.getChild().toArray().length - 1; i++) {
-          String genChild = "";
-          String gen = "";
-
-          FigmaNodeMapper figmaNodeMapper =
-              new FigmaNodeMapper(figmaNode.getChild().get(i).getType(), null);
-          Optional<FlutterCGI> flutterCGIOptional =
-              flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
-          if (i < figmaNode.getChild().toArray().length - 1) {
-
-            int finalI = i;
-            genChild +=
-                flutterCGIOptional
-                    .map(
-                        flutterCGI ->
-                            flutterCGI.generate(
-                                figmaNode.getChild().get(finalI),
-                                figmaNode,
-                                flutterGI,
-                                fultterNecleoDataNode))
-                    .orElse("");
-            gen = positionUtil.getPosition(genChild, figmaNode.getChild().get(i), figmaNode,fultterNecleoDataNode);
-            genCode.append(gen);
-          } else {
-
-            int finalI1 = i;
-            genChild +=
-                flutterCGIOptional
-                    .map(
-                        flutterCGI ->
-                            flutterCGI.generate(
-                                figmaNode.getChild().get(finalI1),
-                                figmaNode,
-                                flutterGI,
-                                fultterNecleoDataNode))
-                    .orElse("");
-            gen = positionUtil.getPosition(genChild, figmaNode.getChild().get(i), figmaNode, fultterNecleoDataNode);
-            genCode.append(gen);
-          }
-        }
-
-        genCode.append("],\n");
-        return upperStack + center + genCode + lowerStack;
-      }
-      case "HORIZONTAL" -> {
-        final String upperRow = "Row(\n";
-        final String lowerRow = "),\n";
-        genCode.append(
-            mainCrossAlignUtil.getMainAxisAlignment(figmaNode.getPrimaryAxisAlignItems()));
-        genCode.append(
-            mainCrossAlignUtil.getCrossAxisAlignment(
-                figmaNode.getCounterAxisAlignItems(), figmaNode));
-        genCode.append("children:[\n");
-        for (int i = 0; i < figmaNode.getChild().size(); i++) {
-          String genChild = "";
-          String gen = "";
-          FigmaNodeMapper figmaNodeMapper =
-              new FigmaNodeMapper(figmaNode.getChild().get(i).getType(), null);
-          Optional<FlutterCGI> flutterCGIOptional =
-              flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
-          if (i == (figmaNode.getChild().size() - 1)) {
-
-            int finalI = i;
-            genChild +=
-                flutterCGIOptional
-                    .map(
-                        flutterCGI ->
-                            flutterCGI.generate(
-                                figmaNode.getChild().get(finalI),
-                                figmaNode,
-                                flutterGI,
-                                fultterNecleoDataNode))
-                    .orElse("");
-            genCode.append(genChild);
-          } else {
-
-            int finalI1 = i;
-            genChild +=
-                flutterCGIOptional
-                    .map(
-                        flutterCGI ->
-                            flutterCGI.generate(
-                                figmaNode.getChild().get(finalI1),
-                                figmaNode,
-                                flutterGI,
-                                fultterNecleoDataNode))
-                    .orElse("");
-            if (!(figmaNode.getPrimaryAxisAlignItems().equals(SPACE_BETWEEN))) {
-              gen += spacingUtil.getSpacing(figmaNode);
-            }
-
-            genCode.append(genChild);
-
-            genCode.append(gen);
-          }
-        }
-        genCode.append("],\n");
-        return upperRow + genCode + lowerRow;
-      }
-      case "VERTICAL" -> {
-        final String upperColumn = "Column(\n";
-        final String lowerColumn = "),\n";
-        genCode.append(
-            mainCrossAlignUtil.getMainAxisAlignment(figmaNode.getPrimaryAxisAlignItems()));
-        genCode.append(
-            mainCrossAlignUtil.getCrossAxisAlignment(
-                figmaNode.getCounterAxisAlignItems(), figmaNode));
-        genCode.append("children:[\n");
-        for (int i = 0; i < figmaNode.getChild().size(); i++) {
-          String genChild = "";
-          String gen = "";
-          FigmaNodeMapper figmaNodeMapper =
-              new FigmaNodeMapper(figmaNode.getChild().get(i).getType(), null);
-          Optional<FlutterCGI> flutterCGIOptional =
-              flutterFigmaNodeFactory.getProcessor(figmaNodeMapper);
-          if (i == (figmaNode.getChild().size() - 1)) {
-
-            int finalI = i;
-            genChild +=
-                flutterCGIOptional
-                    .map(
-                        flutterCGI ->
-                            flutterCGI.generate(
-                                figmaNode.getChild().get(finalI),
-                                figmaNode,
-                                flutterGI,
-                                fultterNecleoDataNode))
-                    .orElse("");
-            genCode.append(genChild);
-          } else {
-
-            int finalI1 = i;
-            genChild +=
-                flutterCGIOptional
-                    .map(
-                        flutterCGI ->
-                            flutterCGI.generate(
-                                figmaNode.getChild().get(finalI1),
-                                figmaNode,
-                                flutterGI,
-                                fultterNecleoDataNode))
-                    .orElse("");
-            if (!(figmaNode.getPrimaryAxisAlignItems().equals(SPACE_BETWEEN))) {
-              gen += spacingUtil.getSpacing(figmaNode);
-            }
-
-            genCode.append(genChild);
-
-            genCode.append(gen);
-          }
-        }
-        genCode.append("],\n");
-        return upperColumn + genCode + lowerColumn;
-      }
-    }
-    // }
-
-    return "";
-  }
-
-  //  private String getMainAxisSize(LayoutMode layoutMode) {
-  //
-  //    if (layoutMode.g == 1) {
-  //      return  "\nmainAxisSize: MainAxisSize.max,";
-  //    } else {
-  //      return "\nmainAxisSize: MainAxisSize.min,";
-  //    }
-  //  }
-
-  //  private String getMainAxisAlignment(PrimaryAxisAlignItems primaryAxisAlignItems) {
-  //
-  //
-  //    String mainAlignType = switch (primaryAxisAlignItems) {
-  //      case MIN -> "start";
-  //      case CENTER -> "center";
-  //      case MAX -> "end";
-  //      case SPACE_BETWEEN -> "spaceBetween";
-  //      default -> "";
-  //    };
-  //    if (mainAlignType.equals("")){
-  //      return "";
-  //    }
-  //      return "\n mainAxisAlignment: MainAxisAlignment." + mainAlignType + ",";
-  //
-  //
-  //  }
-  //
-  //  private String getCrossAxisAlignment(CounterAxisAlignItems counterAxisAlignItems) {
-  //
-  //
-  //    String mainAlignType = switch (counterAxisAlignItems) {
-  //      case MIN -> "start";
-  //      case CENTER -> "center";
-  //      case MAX -> "end";
-  //      default -> "";
-  //    };
-  //    if (mainAlignType.equals("")){
-  //      return "";
-  //    }
-  //      return "\n crossAxisAlignment: CrossAxisAlignment." + mainAlignType + ",";
-  //
-  //  }
-
-  //  private String getSpacing(FigmaFrameNode figmaNode) {
-  //    if (figmaNode.getLayoutMode().name().equals("HORIZONTAL")) {
-  //      return "SizedBox(width:" + figmaNode.getItemSpacing() + ",),";
-  //    } else {
-  //      return "SizedBox(height:" + figmaNode.getItemSpacing() + ",),";
-  //    }
-  //  }
-
-  //  private String getPosition(String genCode, FigmaNode figmaNode) {
-  //    final String upperPosition = "  Positioned(child:\n";
-  //    final String lowerPosition = "),\n";
-  //    String top = "top:" + figmaNode.getY() + ",\n";
-  //    String left = "left:" + figmaNode.getX() + ",\n";
-  //    return upperPosition + genCode + top + left + lowerPosition;
-  //  }
-
-  //  private String getHeight(FigmaFrameNode fNode) {
-  //    if (fNode.getHeight() != 0) {
-  //      return "height:" + Integer.toString(fNode.getHeight()) + ",\n";
-  //    }
-  //    return "height:0,\n";
-  //  }
-  //
-  //  private String getWidth(FigmaFrameNode fNode) {
-  //    if (fNode.getWidth() != 0) {
-  //      return "width:" + Integer.toString(fNode.getWidth()) + ",\n";
-  //    }
-  //    return "width:0,\n";
-  //  }
 
   private String getBoxDecoration(FigmaFrameNode fNode) {
     final String upperBoxDecoration = "decoration: BoxDecoration(\n";
@@ -534,4 +224,5 @@ public class FrameFlutterCGI implements FlutterCGI {
 
     return upperBorder + width + bottomBorder;
   }
+
 }

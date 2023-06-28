@@ -6,6 +6,8 @@ import com.necleo.codemonkey.lib.types.figma.properties.fills.FillGeometry;
 import com.necleo.codemonkey.lib.types.figma.properties.fills.Fills;
 import com.necleo.codemonkey.lib.types.figma.properties.strokes.Strokes;
 import java.util.List;
+
+import com.necleo.codemonkey.service.flutter.InferredAutoLayout;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
@@ -48,7 +50,9 @@ public class FigmaFrameNode extends FigmaNode {
   int strokeBottomWeight;
   int strokeLeftWeight;
   int strokeRightWeight;
+  InferredAutoLayout inferredAutoLayout;
   LayoutMode layoutMode;
+  LayoutWrap layoutWrap;
   PrimaryAxisSizingMode primaryAxisSizingMode;
   CounterAxisSizingMode counterAxisSizingMode;
   PrimaryAxisAlignItems primaryAxisAlignItems;
@@ -59,6 +63,7 @@ public class FigmaFrameNode extends FigmaNode {
   int paddingTop;
   int paddingBottom;
   int itemSpacing;
+  int counterAxisSpacing;
   int layoutGrow;
   boolean itemReverseZIndex;
   boolean strokesIncludedInLayout;
