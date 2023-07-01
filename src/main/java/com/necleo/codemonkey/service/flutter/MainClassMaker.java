@@ -10,23 +10,19 @@ public class MainClassMaker {
   S3FileLoader s3FileLoader;
 
   public String uploadMain(String imports, String home) {
-    String upperMainfile =
-        """
+    return  """
+                %s
+                
                 void main() => runApp(MyApp());
 
                 class MyApp extends StatelessWidget {
                   @override
                   Widget build(BuildContext context) {
                     return MaterialApp(
-                    home:\s
-                """;
-    String lowerMainfile =
-        """
-                 ,);
+                    home: %s,
+                    );
                   }
                 }
-                """;
-
-    return imports + upperMainfile + home + lowerMainfile;
+                """.formatted(imports, home);
   }
 }

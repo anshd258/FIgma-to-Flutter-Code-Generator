@@ -49,7 +49,9 @@ public class FigmaFrameNode extends FigmaNode {
   int strokeBottomWeight;
   int strokeLeftWeight;
   int strokeRightWeight;
-  InferredAutoLayout inferredAutoLayout;
+//  InferredAutoLayout inferredAutoLayout;
+  LayoutSizing layoutSizingHorizontal;
+  LayoutSizing layoutSizingVertical;
   LayoutMode layoutMode;
   LayoutWrap layoutWrap;
   PrimaryAxisSizingMode primaryAxisSizingMode;

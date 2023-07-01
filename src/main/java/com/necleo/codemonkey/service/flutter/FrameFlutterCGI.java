@@ -42,18 +42,15 @@ public class FrameFlutterCGI implements FlutterCGI {
     }
 
     StringBuilder genCode = new StringBuilder();
-
-    String startContainer = "\n\tContainer(\n\t";
+    String startContainer =
+        """
+            Container(
+              %s
+              %s
+            """
+            .formatted(getPadding(fNode), getBoxDecoration(fNode));
 
     genCode.append(startContainer);
-
-    if (!fNode.getLayoutMode().equals(LayoutMode.NONE)) {
-      genCode.append(getPadding(fNode));
-    }
-    if (!fNode.getFills().isEmpty()) {
-      genCode.append(getBoxDecoration(fNode));
-    }
-
     return autoLayoutFrameCGI.generateAutoLayoutFrame(
         genCode, fNode, flutterWI, flutterGI, parentFigmaNode);
   }
@@ -64,23 +61,24 @@ public class FrameFlutterCGI implements FlutterCGI {
   }
 
   private String getPadding(FigmaFrameNode figmaNode) {
-    if (figmaNode.getPaddingRight() == figmaNode.getPaddingLeft()
-        && figmaNode.getPaddingTop() == figmaNode.getPaddingBottom()
-        && figmaNode.getPaddingRight() == figmaNode.getPaddingTop()) {
-      return """
+    if (!figmaNode.getLayoutMode().equals(LayoutMode.NONE)) {
+      if (figmaNode.getPaddingRight() == figmaNode.getPaddingLeft()
+          && figmaNode.getPaddingTop() == figmaNode.getPaddingBottom()
+          && figmaNode.getPaddingRight() == figmaNode.getPaddingTop()) {
+        return """
             padding: EdgeInsets.all(%s),
               """
-          .formatted(figmaNode.getPaddingRight());
-    }
-    if (figmaNode.getPaddingRight() == figmaNode.getPaddingLeft()
-        && figmaNode.getPaddingTop() == figmaNode.getPaddingBottom()) {
-      return """
+            .formatted(figmaNode.getPaddingRight());
+      }
+      if (figmaNode.getPaddingRight() == figmaNode.getPaddingLeft()
+          && figmaNode.getPaddingTop() == figmaNode.getPaddingBottom()) {
+        return """
             padding: EdgeInsets.symmetric(vertical: %s, horizontal: %s),
               """
-          .formatted(figmaNode.getPaddingTop(), figmaNode.getPaddingRight());
-    }
+            .formatted(figmaNode.getPaddingTop(), figmaNode.getPaddingRight());
+      }
 
-    return """
+      return """
             padding: EdgeInsets.only(
               left: %s,
               top: %s,
@@ -88,11 +86,15 @@ public class FrameFlutterCGI implements FlutterCGI {
               bottom: %s,
             ),
             """
-        .formatted(
-            figmaNode.getPaddingLeft(),
-            figmaNode.getPaddingTop(),
-            figmaNode.getPaddingRight(),
-            figmaNode.getPaddingBottom());
+          .formatted(
+              figmaNode.getPaddingLeft(),
+              figmaNode.getPaddingTop(),
+              figmaNode.getPaddingRight(),
+              figmaNode.getPaddingBottom());
+    }
+
+    return "";
+
     //    final String upperPadding = " padding: EdgeInsets.only(\n";
     //    final String lowerPadding = "),\n";
     //    String bottom = "";
@@ -108,37 +110,40 @@ public class FrameFlutterCGI implements FlutterCGI {
   }
 
   private String getBoxDecoration(FigmaFrameNode fNode) {
-    final String upperBoxDecoration = "decoration: BoxDecoration(\n";
-    final String bottomBoxDecoration = "),\n";
-    String genBoxDecoration = "";
+    if (!fNode.getFills().isEmpty()) {
+      final String upperBoxDecoration = "decoration: BoxDecoration(\n";
+      final String bottomBoxDecoration = "),\n";
+      String genBoxDecoration = "";
 
-    if (fNode.getFills().get(0).getType().equals("SOLID")) {
-      final FillsSolid fills = (FillsSolid) fNode.getFills().get(0);
-      if (fills.getColor() != null && fNode.getFills().get(0).getOpacity() != 0) {
-        genBoxDecoration += "color:" + color(fills) + ",\n";
+      if (fNode.getFills().get(0).getType().equals("SOLID")) {
+        final FillsSolid fills = (FillsSolid) fNode.getFills().get(0);
+        if (fills.getColor() != null && fNode.getFills().get(0).getOpacity() != 0) {
+          genBoxDecoration += "color:" + color(fills) + ",\n";
+        }
       }
-    }
 
-    if (fNode.getFills().get(0).getType().equals("IMAGE")) {
-      final FillsImage fills = (FillsImage) fNode.getFills().get(0);
+      if (fNode.getFills().get(0).getType().equals("IMAGE")) {
+        final FillsImage fills = (FillsImage) fNode.getFills().get(0);
 
-      genBoxDecoration += getImage(fills);
-    }
-    if (fNode.getFills().get(0).getType().equals("GRADIENT_LINEAR")) {
-      final FillsGradient fills = (FillsGradient) fNode.getFills().get(0);
-      genBoxDecoration += getGradient(fills);
-    }
+        genBoxDecoration += getImage(fills);
+      }
+      if (fNode.getFills().get(0).getType().equals("GRADIENT_LINEAR")) {
+        final FillsGradient fills = (FillsGradient) fNode.getFills().get(0);
+        genBoxDecoration += getGradient(fills);
+      }
 
-    if (fNode.getBottomLeftRadius() != 0
-        || fNode.getTopLeftRadius() != 0
-        || fNode.getTopRightRadius() != 0
-        || fNode.getBottomRightRadius() != 0) {
-      genBoxDecoration += borderRadius(fNode);
+      if (fNode.getBottomLeftRadius() != 0
+          || fNode.getTopLeftRadius() != 0
+          || fNode.getTopRightRadius() != 0
+          || fNode.getBottomRightRadius() != 0) {
+        genBoxDecoration += borderRadius(fNode);
+      }
+      if (fNode.getStrokeWeight() != 0) {
+        genBoxDecoration += border(fNode);
+      }
+      return upperBoxDecoration + genBoxDecoration + bottomBoxDecoration;
     }
-    if (fNode.getStrokeWeight() != 0) {
-      genBoxDecoration += border(fNode);
-    }
-    return upperBoxDecoration + genBoxDecoration + bottomBoxDecoration;
+    return "";
   }
 
   private String getGradient(FillsGradient fills) {

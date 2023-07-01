@@ -76,6 +76,7 @@ public class FlutterCodeGenImpl implements CodeGen {
     String widget = wrapFile(genCode);
     String imports = importHandler.getPackageImports(dataNode.getImports());
     String finalCode = imports + widget;
+//    s3FileLoader.uploadFile(finalCode, "dart", figmaNode.getName(), "/project/lib/");
   }
 
   private void handleMainAppFile() {

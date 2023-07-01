@@ -2,11 +2,12 @@ package com.necleo.codemonkey.service.flutter.utils;
 
 import com.necleo.codemonkey.lib.types.FigmaNode;
 import com.necleo.codemonkey.model.factory.FlutterWI;
+import org.springframework.stereotype.Service;
 
 public class PositionUtil {
-  PercentageUtil percentageUtil = new PercentageUtil();
+  static PercentageUtil percentageUtil;
 
-  public String getPosition(
+  public static String getPosition(
       String genCode, FigmaNode figmaNode, FigmaNode ParentNode, FlutterWI FlutterWI) {
     final String upperPosition = "  Positioned(";
     final String lowerPosition = "),\n";

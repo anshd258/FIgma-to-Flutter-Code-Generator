@@ -1,5 +1,8 @@
 package com.necleo.codemonkey.service.flutter.utils;
 
+import org.springframework.stereotype.Service;
+
+@Service
 public class PercentageUtil {
   public float getLeft(int x, int parentWidth) {
     return ((float) x / parentWidth) * 100;
