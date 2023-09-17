@@ -41,6 +41,7 @@ public class FrameFlutterCGI implements FlutterCGI {
       throw new IllegalArgumentException();
     }
 
+
     StringBuilder genCode = new StringBuilder();
     String startContainer =
         """

@@ -68,28 +68,34 @@ public class AutoLayoutFrameCGI {
     switch (parentLayoutMode) {
       case VERTICAL -> {
         if( figmaNode.getLayoutSizingHorizontal().equals(LayoutSizing.HUG) ) {
-          finalCode = wrapWithSingleParent("IntrinsicWidth", genCode);
+          return wrapWithSingleParent("IntrinsicWidth", genCode);
         }
-        if( figmaNode.getLayoutSizingVertical().equals(LayoutSizing.FILL) ) {
-          finalCode = wrapWithSingleParent("Expanded", genCode);
+       else if( figmaNode.getLayoutSizingVertical().equals(LayoutSizing.FILL) ) {
+          return wrapWithSingleParent("Expanded", genCode);
         }
+//        else {
+//          return genCode.toString();
+//        }
       }
 
       case HORIZONTAL -> {
         if( figmaNode.getLayoutSizingVertical().equals(LayoutSizing.HUG) ) {
-          finalCode = wrapWithSingleParent("IntrinsicHeight", genCode);
+          return wrapWithSingleParent("IntrinsicHeight", genCode);
         }
-        if( figmaNode.getLayoutSizingHorizontal().equals(LayoutSizing.FILL) ) {
-          finalCode = wrapWithSingleParent("Expanded", genCode);
+       else if( figmaNode.getLayoutSizingHorizontal().equals(LayoutSizing.FILL) ) {
+          return wrapWithSingleParent("Expanded", genCode);
         }
+        else {
+        return genCode.toString();
+      }
       }
 
       case NONE -> {
-        finalCode = genCode.toString();
+       return genCode.toString();
       }
     }
 
-    return finalCode;
+    return "not able to get hild";
   }
 
   private String wrapWithSingleParent(String name, StringBuilder genCode) {
